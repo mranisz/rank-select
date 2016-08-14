@@ -688,7 +688,7 @@ public:
                 }
             }
 
-            this->bitsLen = (this->border - 1) * ((BLOCK_LEN / sizeof(unsigned int)) + 1) + (extendedTextLen / BLOCK_LEN - (this->border - 1)) * 2 + 1;
+            this->bitsLen = (this->border - 1) * ((BLOCK_LEN / sizeof(unsigned int)) + 1) + (extendedTextLen / BLOCK_LEN - (this->border - 1)) * 2 + 16;
             this->bits = new unsigned int[this->bitsLen + 32];
             this->alignedBits = this->bits;
             while ((unsigned long long)this->alignedBits % 128) ++this->alignedBits;
