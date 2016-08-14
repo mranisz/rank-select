@@ -1,10 +1,10 @@
-# rank&select libriary
+# Rank&Select libriary
 
 ##What is it?
-The rank&select library is ...
+The Rank&Select library is ...
 
 ##Requirements
-The rank&select library require:
+The Rank&Select library require:
 - C++11 ready compiler such as g++ version 4.7 or higher
 - a 64-bit operating system
 - text size is limited to 512MB (4GB of bits)
@@ -18,23 +18,23 @@ make
 ```
 
 ##Usage
-To use the rank&select library:
+To use the Rank&Select library:
 - compile your project with "-std=c++11 -O3 -mpopcnt" options and link it with libraries:
   - rank-select/libshared.a
   - rank-select/libs/libaelf64.a (linux) or samsami/libs/libacof64.lib (windows)
-- use "shared" namespaces
+- use "shared" namespace
 
 ##API
-There are several functions you can call on each of the Rank or Select object:
+There are several functions you can call on each of the rank or select object:
 - **build** the rank or select using text and textLen:
 ```
 void build(unsigned char *text, unsigned int textLen);
 ```
-- **save** the index to FILE object:
+- **save** the rank or select to FILE object:
 ```
 void save(FILE *outFile);
 ```
-- **load** the index from FILE object:
+- **load** the rank or select from FILE object:
 ```
 void load(FILE *inFile);
 ```
@@ -59,7 +59,7 @@ unsigned int rank(unsigned int i);
 unsigned int select(unsigned int i);
 ```
 
-##RankBasic<RankBasicType T>
+##RankBasic\<RankBasicType T\>
 
 Parameters:
 - T:
@@ -78,7 +78,7 @@ Constructors:
 RankCF<RankBasicType T>();
 ```
 
-##RankMPE<RankMPEType T>
+##RankMPE\<RankMPEType T\>
 
 Parameters:
 - T:
@@ -91,7 +91,7 @@ Constructors:
 RankMPE<RankMPEType T>();
 ```
 
-##SelectBasic<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>
+##SelectBasic\<SelectBasicType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -109,7 +109,7 @@ Constructors:
 SelectBasic<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
-##SelectMPE<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>
+## SelectMPE\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -215,7 +215,7 @@ int main(int argc, char *argv[]) {
 ```
 Using other types of selects is analogous.
 
-##External resources used in rank&select project
+##External resources used in Rank&Select project
 - Suffix array building by Yuta Mori (sais)
 - A multi-platform library of highly optimized functions for C and C++ by Agner Fog (asmlib)
 - A very fast hash function by Yann Collet (xxHash)
