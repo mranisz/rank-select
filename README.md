@@ -218,7 +218,6 @@ Using other types of selects is analogous.
 ##External resources used in Rank&Select project
 - Suffix array building by Yuta Mori (sais)
 - A multi-platform library of highly optimized functions for C and C++ by Agner Fog (asmlib)
-- A very fast hash function by Yann Collet (xxHash)
 
 ##Authors
 - Szymon Grabowski
