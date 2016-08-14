@@ -1,7 +1,7 @@
 #ifndef SHARED_WT_H_
 #define SHARED_WT_H_
 
-namespace fmdummy {
+namespace shared {
 
 class WT {
 private:

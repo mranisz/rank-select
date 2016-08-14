@@ -1,7 +1,7 @@
 #ifndef SHARED_HASH_H_
 #define SHARED_HASH_H_
-
-namespace fmdummy {
+    
+namespace shared {
     
 /*HTBASE*/
 

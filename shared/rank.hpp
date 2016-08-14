@@ -4,8 +4,8 @@
 #include <iostream>
 
 using namespace std;
-
-namespace fmdummy {
+    
+namespace shared {
     
 enum RankBasicType {
         STANDARD = 1,
@@ -263,13 +263,13 @@ public:
         const static unsigned int OFFSETSTARTINSUPERBLOCK = 17;
         const static unsigned int INTSINSUPERBLOCK = 19;
         /*
-         INTSINSUPERBLOCK = 2 + (SUPERBLOCKLEN - 1) / 2 + (SUPERBLOCKLEN - 1) / 32;
-         if ((SUPERBLOCKLEN - 1) % 2 == 1) ++INTSINSUPERBLOCK;
-         if ((SUPERBLOCKLEN - 1) % 32 > 0) ++INTSINSUPERBLOCK;
-         * 
-         OFFSETSTARTINSUPERBLOCK = 1 + (SUPERBLOCKLEN - 1) / 2;
-         if ((SUPERBLOCKLEN - 1) % 2 == 1) ++OFFSETSTARTINSUPERBLOCK;
-         */
+        INTSINSUPERBLOCK = 2 + (SUPERBLOCKLEN - 1) / 2 + (SUPERBLOCKLEN - 1) / 32;
+        if ((SUPERBLOCKLEN - 1) % 2 == 1) ++INTSINSUPERBLOCK;
+        if ((SUPERBLOCKLEN - 1) % 32 > 0) ++INTSINSUPERBLOCK;
+        * 
+        OFFSETSTARTINSUPERBLOCK = 1 + (SUPERBLOCKLEN - 1) / 2;
+        if ((SUPERBLOCKLEN - 1) % 2 == 1) ++OFFSETSTARTINSUPERBLOCK;
+        */
 
         const unsigned long long masks[64] = {
             0x0000000000000000,
@@ -1519,13 +1519,13 @@ public:
         const static unsigned int OFFSETSTARTINSUPERBLOCK = 9;
         const static unsigned int INTSINSUPERBLOCK = 18;
         /*
-         INTSINSUPERBLOCK = 2 + (SUPERBLOCKLEN - 1) / 2 + (SUPERBLOCKLEN - 1) / 2;
-         if ((SUPERBLOCKLEN - 1) % 2 == 1) INTSINSUPERBLOCK += 2;
-         if ((SUPERBLOCKLEN - 1) % 32 > 0) ++INTSINSUPERBLOCK;
-         * 
-         OFFSETSTARTINSUPERBLOCK = 1 + (SUPERBLOCKLEN - 1) / 2;
-         if ((SUPERBLOCKLEN - 1) % 2 == 1) ++OFFSETSTARTINSUPERBLOCK;
-         */
+        INTSINSUPERBLOCK = 2 + (SUPERBLOCKLEN - 1) / 2 + (SUPERBLOCKLEN - 1) / 2;
+        if ((SUPERBLOCKLEN - 1) % 2 == 1) INTSINSUPERBLOCK += 2;
+        if ((SUPERBLOCKLEN - 1) % 32 > 0) ++INTSINSUPERBLOCK;
+        * 
+        OFFSETSTARTINSUPERBLOCK = 1 + (SUPERBLOCKLEN - 1) / 2;
+        if ((SUPERBLOCKLEN - 1) % 2 == 1) ++OFFSETSTARTINSUPERBLOCK;
+        */
 
         const unsigned long long masks[64] = {
             0x0000000000000000ULL,

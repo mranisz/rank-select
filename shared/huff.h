@@ -4,8 +4,8 @@
 #include <vector>
 
 using namespace std;
-
-namespace fmdummy {
+    
+namespace shared {
     
 const int ALPHABET = 256;
 

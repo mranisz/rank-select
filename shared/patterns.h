@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace fmdummy {
+namespace shared {
 
 class Patterns {
 private:

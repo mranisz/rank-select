@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace fmdummy {
+namespace shared {
 
 unsigned int WT::getWTSize() {
 	unsigned int size = sizeof(this->bitsLen) + sizeof(this->nodesLen) + sizeof(unsigned long long *);

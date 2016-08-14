@@ -8,8 +8,8 @@
 #include "hash.h"
 
 using namespace std;
-
-namespace fmdummy {
+    
+namespace shared {
     
 /*HTBASE*/
 

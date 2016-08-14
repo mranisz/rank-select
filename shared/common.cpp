@@ -7,7 +7,7 @@
 #include "sais.h"
 #include "../libs/asmlib.h"
 
-namespace fmdummy {
+namespace shared {
 
 unsigned long long getFileSize(const char *inFileName, int elemSize) {
 	FILE *InFile;
