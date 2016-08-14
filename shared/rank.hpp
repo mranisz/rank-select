@@ -424,7 +424,7 @@ public:
             delete[] emptyBlock;
         }
         
-        unsigned int getRank(unsigned int i) {
+        unsigned int rank(unsigned int i) {
                 switch(T) {
                 case RankBasicType::WITH_COMPRESSED_HEADERS:
                         return this->getRank_bch(i);
@@ -488,7 +488,7 @@ public:
             this->initialize();
         }
 	
-        unsigned int getRankSize() {
+        unsigned int getSize() {
             unsigned int size = sizeof(this->ranksLen) + sizeof(this->bitsLen) + sizeof(this->pointer) + sizeof(this->pointer2);
             if (this->ranksLen > 0) size += (this->ranksLen + 32) * sizeof(unsigned int);
             if (this->bitsLen > 0) size += (this->bitsLen + 16) * sizeof(unsigned long long);
@@ -506,8 +506,8 @@ public:
                 unsigned int bits = (unsigned int)text[i];
                 for (unsigned int j = 0; j < 8; ++j) {
                     if (((bits >> (7 - j)) & 1) == 1) ++rankTest;
-                    if (rankTest != this->getRank(8 * i + j + 1)) {
-                        cout << (8 * i + j + 1) << " " << rankTest << " " << this->getRank(8 * i + j + 1);
+                    if (rankTest != this->rank(8 * i + j + 1)) {
+                        cout << (8 * i + j + 1) << " " << rankTest << " " << this->rank(8 * i + j + 1);
                         cin.ignore();
                     }
                 }
@@ -727,7 +727,7 @@ public:
             delete[] emptyBlock;
         }
         
-        unsigned int getRank(unsigned int i) {
+        unsigned int rank(unsigned int i) {
             unsigned int start = i / BLOCK_IN_BITS;
             unsigned int rank;
             if (start < this->border) {
@@ -846,7 +846,7 @@ public:
             this->initialize();
         }
 	
-        unsigned int getRankSize() {
+        unsigned int getSize() {
             unsigned int size = sizeof(this->border) + sizeof(this->blockBorder) + sizeof(this->bitsLen) + sizeof(this->textLen) + sizeof(this->pointer);
             if (this->bitsLen > 0) size += (this->bitsLen + 32) * sizeof(unsigned int);
             return size;
@@ -863,8 +863,8 @@ public:
                 unsigned int bits = (unsigned int)text[i];
                 for (unsigned int j = 0; j < 8; ++j) {
                     if (((bits >> (7 - j)) & 1) == 1) ++rankTest;
-                    if (rankTest != this->getRank(8 * i + j + 1)) {
-                        cout << (8 * i + j + 1) << " " << rankTest << " " << this->getRank(8 * i + j + 1);
+                    if (rankTest != this->rank(8 * i + j + 1)) {
+                        cout << (8 * i + j + 1) << " " << rankTest << " " << this->rank(8 * i + j + 1);
                         cin.ignore();
                     }
                 }
@@ -1683,7 +1683,7 @@ public:
             }
         }
         
-        unsigned int getRank(unsigned int i) {
+        unsigned int rank(unsigned int i) {
                 switch(T) {
                 case RankMPEType::V1:
                         return this->getRank_v1(i);
@@ -1747,7 +1747,7 @@ public:
             this->initialize();
         }
 	
-        unsigned int getRankSize() {
+        unsigned int getSize() {
             unsigned int size = sizeof(this->ranksLen) + sizeof(this->bitsLen) + sizeof(this->textLen) + sizeof(this->pointer) + sizeof(this->pointer2);
             if (this->ranksLen > 0) size += (this->ranksLen + 32) * sizeof(unsigned int);
             if (this->bitsLen > 0) size += (this->bitsLen + 128) * sizeof(unsigned char);
@@ -1765,8 +1765,8 @@ public:
                 unsigned int bits = (unsigned int)text[i];
                 for (unsigned int j = 0; j < 8; ++j) {
                     if (((bits >> (7 - j)) & 1) == 1) ++rankTest;
-                    if (rankTest != this->getRank(8 * i + j + 1)) {
-                        cout << (8 * i + j + 1) << " " << rankTest << " " << this->getRank(8 * i + j + 1);
+                    if (rankTest != this->rank(8 * i + j + 1)) {
+                        cout << (8 * i + j + 1) << " " << rankTest << " " << this->rank(8 * i + j + 1);
                         cin.ignore();
                     }
                 }

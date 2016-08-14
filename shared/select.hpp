@@ -470,7 +470,7 @@ public:
             }
         }
         
-        unsigned int getSelect(unsigned int i) {
+        unsigned int select(unsigned int i) {
             switch(T) {
             case SelectBasicType::WITH_COMPRESSED_HEADERS:
                 return this->getSelect_bch(i);
@@ -534,7 +534,7 @@ public:
             this->initialize();
         }
 	
-        unsigned int getSelectSize() {
+        unsigned int getSize() {
             unsigned int size = sizeof(this->selectsLen) + sizeof(this->bitsLen) + sizeof(this->textLen) + sizeof(this->pointer) + sizeof(this->pointer2);
             if (this->selectsLen > 0) size += (this->selectsLen + 32) * sizeof(unsigned int);
             if (this->bitsLen > 0) size += (this->bitsLen + 128) * sizeof(unsigned char);
@@ -552,8 +552,8 @@ public:
                 for (unsigned int j = 0; j < 8; ++j) {
                     if (((text[i] >> (7 - j)) & 1) == 1) {
                         ++selectTest;
-                        if ((8 * i + j) != this->getSelect(selectTest)) {
-                            cout << selectTest << " " << (8 * i + j) << " " << this->getSelect(selectTest);
+                        if ((8 * i + j) != this->select(selectTest)) {
+                            cout << selectTest << " " << (8 * i + j) << " " << this->select(selectTest);
                             cin.ignore();
                         }
                     }
@@ -1758,7 +1758,7 @@ public:
             }
         }
         
-        unsigned int getSelect(unsigned int i) {
+        unsigned int select(unsigned int i) {
                 switch(T) {
                 case SelectMPEType::V1:
                         return this->getSelect_v1(i);
@@ -1822,7 +1822,7 @@ public:
             this->initialize();
         }
 	
-        unsigned int getSelectSize() {
+        unsigned int getSize() {
             unsigned int size = sizeof(this->selectsLen) + sizeof(this->bitsLen) + sizeof(this->textLen) + sizeof(this->pointer) + sizeof(this->pointer2) + sizeof(this->pointerData) + sizeof(this->pointerBits2);
             size += (8 + 128) * sizeof(unsigned char);
             if (this->selectsLen > 0) size += (this->selectsLen + 32) * sizeof(unsigned int);
@@ -1841,8 +1841,8 @@ public:
                 for (unsigned int j = 0; j < 8; ++j) {
                     if (((text[i] >> (7 - j)) & 1) == 1) {
                         ++selectTest;
-                        if ((8 * i + j) != this->getSelect(selectTest)) {
-                            cout << selectTest << " " << (8 * i + j) << " " << this->getSelect(selectTest);
+                        if ((8 * i + j) != this->select(selectTest)) {
+                            cout << selectTest << " " << (8 * i + j) << " " << this->select(selectTest);
                             cin.ignore();
                         }
                     }
