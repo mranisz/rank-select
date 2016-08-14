@@ -1,4 +1,4 @@
-# Rank&Select libriary
+# Rank&Select library
 
 ##What is it?
 The Rank&Select library is ...
@@ -109,7 +109,7 @@ Constructors:
 SelectBasic<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
-## SelectMPE\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
+##SelectMPE\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
