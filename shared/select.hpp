@@ -562,6 +562,1295 @@ public:
         }
 };
 
+enum SelectMPEType {
+        V1 = 1,
+        V2 = 2,
+        V3 = 3
+};
+
+template<SelectMPEType T, unsigned int L, unsigned int THRESHOLD> class SelectMPE {
+private:
+	void freeMemory() {
+            if (this->selects != NULL) delete[] this->selects;
+            if (this->bits != NULL) delete[] this->bits;
+            if (this->buffer != NULL) delete[] this->buffer;
+        }
+        
+	void initialize() {
+            this->selects = NULL;
+            this->alignedSelects = NULL;
+            this->selectsLen = 0;
+            this->bits = NULL;
+            this->alignedBits = NULL;
+            this->bitsLen = 0;
+            this->textLen = 0;
+            this->pointer = NULL;
+            this->pointerBits2 = NULL;
+            this->pointerData = NULL;
+            this->pointer2 = NULL;
+            this->buffer = new unsigned char[8 + 128];
+            this->alignedBuffer = this->buffer;
+            while ((unsigned long long)this->alignedBuffer % 128) ++this->alignedBuffer;
+        }
+        
+        void build_v1(unsigned char* text, unsigned int textLen) {
+            this->free();
+            this->textLen = textLen;
+
+            unsigned numberOfOnes = 0;
+            for (unsigned int i = 0; i < textLen; ++i) numberOfOnes += __builtin_popcount(text[i]);
+
+            unsigned int selectLenTemp = 2 * (numberOfOnes / L) + 2;
+            if ((numberOfOnes % L) > 0) selectLenTemp += 2;
+            unsigned int selectLenTempNotExtended = selectLenTemp;
+            if (selectLenTemp % (2 * SUPERBLOCKLEN) > 0) selectLenTemp += ((2 * SUPERBLOCKLEN) - selectLenTemp % (2 * SUPERBLOCKLEN));
+            unsigned int *selectsTemp = new unsigned int[selectLenTemp];
+
+            unsigned int select = 0;
+            unsigned int selectCounter = 0;
+            unsigned int lastSelectPos = 0;
+            unsigned int blockLenInBits;
+            unsigned int blockCounter = 0;
+            this->bitsLen = 0;
+            selectsTemp[selectCounter++] = 0;
+            selectsTemp[selectCounter++] = 0;
+            for (unsigned int i = 0; i < textLen; ++i) {
+                for (unsigned int j = 0; j < 8; ++j) {
+                    if (((text[i] >> (7 - j)) & 1) == 1) {
+                        ++select;
+                        lastSelectPos = 8 * i + j;
+                        if (select % L == 0) {
+                            ++blockCounter;
+                            selectsTemp[selectCounter++] = lastSelectPos;
+                            selectsTemp[selectCounter++] = 0;
+                            blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                            if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned int) * (L - 1);
+                            else if (blockLenInBits > L) {
+                                if (selectCounter == 4) { //for select[0] = 0
+                                    this->bitsLen += (blockLenInBits / 8);
+                                    if (blockLenInBits % 8 > 0) ++this->bitsLen;
+                                } else {
+                                    this->bitsLen += ((blockLenInBits - 1) / 8);
+                                    if ((blockLenInBits - 1) % 8 > 0) ++this->bitsLen;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ((numberOfOnes % L) > 0) {
+                selectsTemp[selectCounter++] = lastSelectPos;
+                selectsTemp[selectCounter++] = 0;
+                blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned int) * (select % L);
+                else {
+                    this->bitsLen += (blockLenInBits / 8);
+                    if (blockLenInBits % 8 > 0) ++this->bitsLen;
+                }
+                ++blockCounter;
+            }
+            for (unsigned int i = selectCounter; i < selectLenTemp; ++i) {
+                selectsTemp[i] = 0;
+            }
+            
+            bool *blockToCompress = new bool[blockCounter];
+            unsigned int bitsContainer[THRESHOLD / 8 + 1];
+            
+            selectCounter = 0;
+            blockCounter = 0;
+            unsigned int addedBitTablesInBytes = 0;
+            unsigned int pairsToRemove = 0;
+            unsigned int pairsToRemoveInBlock = 0;
+            unsigned int bytesCounter = 0;
+            unsigned char bitsToWrite = 0;
+            unsigned int bitsToWritePos = 7;
+            unsigned int upToBitPos = selectsTemp[2];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            bool sparseBlock = false, monoBlock = false;
+            if (blockLenInBits > THRESHOLD) sparseBlock = true;
+            else if (blockLenInBits == L) monoBlock = true;
+            for (unsigned int i = 0; i < textLen; ++i) {
+                for (unsigned int j = 0; j < 8; ++j) {
+                    if ((8 * i + j) == upToBitPos) {
+                        selectCounter += 2;
+                        if (selectCounter == selectLenTempNotExtended - 2) {
+                            if ((numberOfOnes % L) > 0) {
+                                blockToCompress[blockCounter++] = false;
+                                if (!sparseBlock && !monoBlock) {
+                                    if (((text[i] >> (7 - j)) & 1) == 1) {
+                                        bitsToWrite += (1 << bitsToWritePos);
+                                    }
+                                    bitsContainer[bytesCounter++] = bitsToWrite;
+                                }
+                            }
+                            i = textLen;
+                            break;
+                        }
+                        if (!monoBlock && !sparseBlock && bitsToWritePos != 7) {
+                            bitsContainer[bytesCounter++] = bitsToWrite;
+                        }
+                        blockToCompress[blockCounter] = false;
+                        if (!sparseBlock && !monoBlock) {
+                            pairsToRemoveInBlock = 0;
+                            for (unsigned int k = 0; k < bytesCounter; k += 2) {
+                                if (k + 1 == bytesCounter) break;
+                                if ((bitsContainer[k] == 0 && bitsContainer[k + 1] == 0) || (bitsContainer[k] == 255 && bitsContainer[k + 1] == 255)) ++pairsToRemoveInBlock;
+                            }
+                            if (pairsToRemoveInBlock > (((blockLenInBits - 1) / 128) + 1)) {
+                                pairsToRemove += pairsToRemoveInBlock;
+                                addedBitTablesInBytes += (2 * (((blockLenInBits - 1) / 128) + 1));
+                                blockToCompress[blockCounter] = true;
+                            }
+                        }
+                        ++blockCounter;
+                        upToBitPos = selectsTemp[selectCounter + 2];
+                        blockLenInBits = selectsTemp[selectCounter + 2] - selectsTemp[selectCounter];
+                        sparseBlock = false;
+                        monoBlock = false;
+                        if (blockLenInBits > THRESHOLD) sparseBlock = true;
+                        else if (blockLenInBits == L) monoBlock = true;
+                        bitsToWrite = 0;
+                        bitsToWritePos = 7;
+                        bytesCounter = 0;
+                        continue;
+                    }
+                    if (monoBlock) continue;
+                    if (!sparseBlock) {
+                        if (((text[i] >> (7 - j)) & 1) == 1) {
+                            bitsToWrite += (1 << bitsToWritePos);
+                        }
+                        if (bitsToWritePos == 0) {
+                            bitsContainer[bytesCounter++] = bitsToWrite;
+                            bitsToWrite = 0;
+                            bitsToWritePos = 7;
+                        } else {
+                            --bitsToWritePos;
+                        }
+                    }
+                }
+            }
+            
+            this->bitsLen += addedBitTablesInBytes;
+            this->bitsLen -= (2 * pairsToRemove);
+
+            this->bits = new unsigned char[this->bitsLen + 128];
+            this->alignedBits = this->bits;
+            while ((unsigned long long)this->alignedBits % 128) ++this->alignedBits;
+
+            unsigned char bits1[((THRESHOLD / 8) / 2) / 8 + 1];
+            unsigned char bits2[((THRESHOLD / 8) / 2) / 8 + 1];
+            selectCounter = 0;
+            bytesCounter = 0;
+            blockCounter = 0;
+            unsigned int bitsCounter = 0;
+            unsigned int bitTableLen = 0;
+            unsigned int bitTableOffset = 0;
+            bitsToWrite = 0;
+            bitsToWritePos = 7;
+            upToBitPos = selectsTemp[2];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            sparseBlock = false;
+            monoBlock = false;
+            if (blockLenInBits > THRESHOLD) sparseBlock = true;
+            else if (blockLenInBits == L) monoBlock = true;
+            bool compressedBlock = blockToCompress[blockCounter++];
+            for (unsigned int i = 0; i < textLen; ++i) {
+                for (unsigned int j = 0; j < 8; ++j) {
+                    if ((8 * i + j) == upToBitPos) {
+                        selectCounter += 2;
+                        if (selectCounter == selectLenTempNotExtended - 2) {
+                            if ((numberOfOnes % L) > 0) {
+                                if (sparseBlock && (((text[i] >> (7 - j)) & 1) == 1)) {
+                                    unsigned int position = 8 * i + j;
+                                    this->alignedBits[bitsCounter++] = position & 0xFF;
+                                    this->alignedBits[bitsCounter++] = (position >> 8) & 0xFF;
+                                    this->alignedBits[bitsCounter++] = (position >> 16) & 0xFF;
+                                    this->alignedBits[bitsCounter++] = (position >> 24);
+                                }
+                                if (!sparseBlock && !monoBlock) {
+                                    if (((text[i] >> (7 - j)) & 1) == 1) {
+                                        bitsToWrite += (1 << bitsToWritePos);
+                                    }
+                                    bitsContainer[bytesCounter++] = bitsToWrite;
+                                    for (unsigned int k = 0; k < bytesCounter; ++k) {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                    }
+                                }
+                            } else if (!monoBlock && !sparseBlock) {
+                                if (bitsToWritePos != 7) bitsContainer[bytesCounter++] = bitsToWrite;
+                                for (unsigned int k = 0; k < bytesCounter; ++k) {
+                                    this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                }
+                            }
+                            i = textLen;
+                            break;
+                        }
+                        if (!monoBlock && !sparseBlock && bitsToWritePos != 7) {
+                            bitsContainer[bytesCounter++] = bitsToWrite;
+                        }
+                        if (!sparseBlock && !monoBlock) {
+                            if (compressedBlock) {
+                                bitTableOffset = bitsCounter;
+                                bitTableLen = (((blockLenInBits - 1) / 128) + 1);
+                                for (unsigned int k = 0; k < bitTableLen; ++k) {
+                                    bits1[k] = 0;
+                                    bits2[k] = 0;
+                                }
+                                bitsCounter += (2 * bitTableLen);
+                                for (unsigned int k = 0; k < bytesCounter; k += 2) {
+                                    if (k + 1 == bytesCounter) {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                        break;
+                                    }
+                                    if (bitsContainer[k] == 255 && bitsContainer[k + 1] == 255) {
+                                        bits2[k / 16] += (1 << (7 - ((k % 16) / 2)));
+                                    }
+                                    if ((bitsContainer[k] == 0 && bitsContainer[k + 1] == 0) || (bitsContainer[k] == 255 && bitsContainer[k + 1] == 255)) {
+                                        bits1[k / 16] += (1 << (7 - ((k % 16) / 2)));
+                                    } else {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k + 1];
+                                    }
+                                }
+                                for (unsigned int k = 0; k < bitTableLen; ++k) this->alignedBits[bitTableOffset++] = bits1[k];
+                                for (unsigned int k = 0; k < bitTableLen; ++k) this->alignedBits[bitTableOffset++] = bits2[k];
+                            } else {
+                                for (unsigned int k = 0; k < bytesCounter; ++k) {
+                                    this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                }
+                            }
+                        }
+                        selectsTemp[selectCounter + 1] = bitsCounter;
+                        upToBitPos = selectsTemp[selectCounter + 2];
+                        blockLenInBits = selectsTemp[selectCounter + 2] - selectsTemp[selectCounter];
+                        sparseBlock = false;
+                        monoBlock = false;
+                        if (blockLenInBits > THRESHOLD) sparseBlock = true;
+                        else if (blockLenInBits == L) monoBlock = true;
+                        compressedBlock = blockToCompress[blockCounter++];
+                        bitsToWrite = 0;
+                        bitsToWritePos = 7;
+                        bytesCounter = 0;
+                        continue;
+                    }
+                    if (monoBlock) continue;
+                    if (sparseBlock) {
+                        if (((text[i] >> (7 - j)) & 1) == 1) {
+                            unsigned int position = 8 * i + j;
+                            this->alignedBits[bitsCounter++] = position & 0xFF;
+                            this->alignedBits[bitsCounter++] = (position >> 8) & 0xFF;
+                            this->alignedBits[bitsCounter++] = (position >> 16) & 0xFF;
+                            this->alignedBits[bitsCounter++] = (position >> 24);
+                        }
+                    } else {
+                        if (((text[i] >> (7 - j)) & 1) == 1) {
+                            bitsToWrite += (1 << bitsToWritePos);
+                        }
+                        if (bitsToWritePos == 0) {
+                            bitsContainer[bytesCounter++] = bitsToWrite;
+                            bitsToWrite = 0;
+                            bitsToWritePos = 7;
+                        } else {
+                            --bitsToWritePos;
+                        }
+                    }
+                }
+            }
+            for (unsigned int i = selectCounter + 1; i < selectLenTemp; i += 2) selectsTemp[i] = selectsTemp[selectCounter - 1];
+
+            for (unsigned int i = 2; i < selectLenTempNotExtended; i += 2) ++selectsTemp[i];
+
+            this->selectsLen = selectLenTemp / 2;
+            this->selectsLen = (this->selectsLen / SUPERBLOCKLEN) * INTSINSUPERBLOCK;
+            selectLenTemp /= 2;
+
+            this->selects = new unsigned int[this->selectsLen + 32];
+            this->alignedSelects = this->selects;
+            while ((unsigned long long)this->alignedSelects % 128) ++this->alignedSelects;
+
+            unsigned int bucket[INTSINSUPERBLOCK];
+            selectCounter = 0;
+            for (unsigned int j = 0; j < INTSINSUPERBLOCK; ++j) bucket[j] = 0;
+
+            for (unsigned int i = 0; i < selectLenTemp; i += SUPERBLOCKLEN) {
+                for (unsigned int j = 0; j < SUPERBLOCKLEN; ++j) {
+                    bucket[j] = selectsTemp[2 * (i + j)];
+                }
+                bucket[SUPERBLOCKLEN] = selectsTemp[2 * i + 1];
+                for (unsigned int j = 0; j < SUPERBLOCKLEN - 1; ++j) {
+                    unsigned int offsetDiff = (selectsTemp[2 * (i + j + 1) + 1] - bucket[SUPERBLOCKLEN]);
+                    if (blockToCompress[i + j + 1]) offsetDiff += (1 << 15);
+                    bucket[(SUPERBLOCKLEN + 1) + j / 2] += (offsetDiff << (16 * (j % 2)));   
+                }
+                if (blockToCompress[i]) bucket[(SUPERBLOCKLEN + 1)] += (1 << 30);
+                for (unsigned int j = 0; j < INTSINSUPERBLOCK; ++j) {
+                    this->alignedSelects[selectCounter++] = bucket[j];
+                    bucket[j] = 0;
+                }
+            }
+
+            delete[] selectsTemp;
+            delete[] blockToCompress;
+        }
+        
+        void build_v2(unsigned char* text, unsigned int textLen) {
+            this->free();
+            this->textLen = textLen;
+
+            unsigned numberOfOnes = 0;
+            for (unsigned int i = 0; i < textLen; ++i) numberOfOnes += __builtin_popcount(text[i]);
+
+            unsigned int selectLenTemp = 2 * (numberOfOnes / L) + 2;
+            if ((numberOfOnes % L) > 0) selectLenTemp += 2;
+            unsigned int selectLenTempNotExtended = selectLenTemp;
+            if (selectLenTemp % (2 * SUPERBLOCKLEN) > 0) selectLenTemp += ((2 * SUPERBLOCKLEN) - selectLenTemp % (2 * SUPERBLOCKLEN));
+            unsigned int *selectsTemp = new unsigned int[selectLenTemp];
+
+            unsigned int select = 0;
+            unsigned int selectCounter = 0;
+            unsigned int lastSelectPos = 0;
+            unsigned int blockLenInBits;
+            unsigned int blockCounter = 0;
+            this->bitsLen = 0;
+            selectsTemp[selectCounter++] = 0;
+            selectsTemp[selectCounter++] = 0;
+            for (unsigned int i = 0; i < textLen; ++i) {
+                for (unsigned int j = 0; j < 8; ++j) {
+                    if (((text[i] >> (7 - j)) & 1) == 1) {
+                        ++select;
+                        lastSelectPos = 8 * i + j;
+                        if (select % L == 0) {
+                            ++blockCounter;
+                            selectsTemp[selectCounter++] = lastSelectPos;
+                            selectsTemp[selectCounter++] = 0;
+                            blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                            if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned int) * (L - 1);
+                            else if (blockLenInBits > L) {
+                                if (selectCounter == 4) { //for select[0] = 0
+                                    this->bitsLen += (blockLenInBits / 8);
+                                    if (blockLenInBits % 8 > 0) ++this->bitsLen;
+                                } else {
+                                    this->bitsLen += ((blockLenInBits - 1) / 8);
+                                    if ((blockLenInBits - 1) % 8 > 0) ++this->bitsLen;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ((numberOfOnes % L) > 0) {
+                selectsTemp[selectCounter++] = lastSelectPos;
+                selectsTemp[selectCounter++] = 0;
+                blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned int) * (select % L);
+                else {
+                    this->bitsLen += (blockLenInBits / 8);
+                    if (blockLenInBits % 8 > 0) ++this->bitsLen;
+                }
+                ++blockCounter;
+            }
+            for (unsigned int i = selectCounter; i < selectLenTemp; ++i) {
+                selectsTemp[i] = 0;
+            }
+            
+            unsigned char *blockToCompress = new unsigned char[blockCounter];
+            unsigned int bitsContainer[THRESHOLD / 8 + 1];
+            
+            selectCounter = 0;
+            blockCounter = 0;
+            unsigned int addedBitTablesInBytes = 0;
+            unsigned int pairsToRemove = 0;
+            unsigned int pairs0ToRemoveInBlock = 0;
+            unsigned int pairs255ToRemoveInBlock = 0;
+            unsigned int bytesCounter = 0;
+            unsigned char bitsToWrite = 0;
+            unsigned int bitsToWritePos = 7;
+            unsigned int bitTableLen = 0;
+            unsigned int upToBitPos = selectsTemp[2];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            bool sparseBlock = false, monoBlock = false;
+            if (blockLenInBits > THRESHOLD) sparseBlock = true;
+            else if (blockLenInBits == L) monoBlock = true;
+            for (unsigned int i = 0; i < textLen; ++i) {
+                for (unsigned int j = 0; j < 8; ++j) {
+                    if ((8 * i + j) == upToBitPos) {
+                        selectCounter += 2;
+                        if (selectCounter == selectLenTempNotExtended - 2) {
+                            if ((numberOfOnes % L) > 0) {
+                                blockToCompress[blockCounter++] = 0;
+                                if (!sparseBlock && !monoBlock) {
+                                    if (((text[i] >> (7 - j)) & 1) == 1) {
+                                        bitsToWrite += (1 << bitsToWritePos);
+                                    }
+                                    bitsContainer[bytesCounter++] = bitsToWrite;
+                                }
+                            }
+                            i = textLen;
+                            break;
+                        }
+                        if (!monoBlock && !sparseBlock && bitsToWritePos != 7) {
+                            bitsContainer[bytesCounter++] = bitsToWrite;
+                        }
+                        blockToCompress[blockCounter] = 0;
+                        if (!sparseBlock && !monoBlock) {
+                            pairs0ToRemoveInBlock = 0;
+                            pairs255ToRemoveInBlock = 0;
+                            for (unsigned int k = 0; k < bytesCounter; k += 2) {
+                                if (k + 1 == bytesCounter) break;
+                                if (bitsContainer[k] == 0 && bitsContainer[k + 1] == 0) ++pairs0ToRemoveInBlock;
+                                if (bitsContainer[k] == 255 && bitsContainer[k + 1] == 255) ++pairs255ToRemoveInBlock;
+                            }
+                            bitTableLen = (((blockLenInBits - 1) / 128) + 1);
+                            switch(T) {
+                                case SelectMPEType::V2:
+                                    if (2 * pairs0ToRemoveInBlock > bitTableLen && 2 * pairs255ToRemoveInBlock > bitTableLen) {
+                                            pairsToRemove += (pairs0ToRemoveInBlock + pairs255ToRemoveInBlock);
+                                            addedBitTablesInBytes += (2 * bitTableLen);
+                                            blockToCompress[blockCounter] = 3;
+                                        } else if (2 * pairs0ToRemoveInBlock > bitTableLen && 2 * pairs255ToRemoveInBlock <= bitTableLen) {
+                                            pairsToRemove += pairs0ToRemoveInBlock;
+                                            addedBitTablesInBytes += bitTableLen;
+                                            blockToCompress[blockCounter] = 1;
+                                        } else if (2 * pairs0ToRemoveInBlock <= bitTableLen && 2 * pairs255ToRemoveInBlock > bitTableLen) {
+                                            pairsToRemove += pairs255ToRemoveInBlock;
+                                            addedBitTablesInBytes += bitTableLen;
+                                            blockToCompress[blockCounter] = 2;
+                                        }
+                                    break;
+                                default:
+                                    if (pairs0ToRemoveInBlock > PAIRS0THR && pairs255ToRemoveInBlock > PAIRS255THR) {
+                                            pairsToRemove += (pairs0ToRemoveInBlock + pairs255ToRemoveInBlock);
+                                            addedBitTablesInBytes += (2 * bitTableLen);
+                                            blockToCompress[blockCounter] = 3;
+                                        } else if (pairs0ToRemoveInBlock >= PAIRS0THR * 2 && pairs255ToRemoveInBlock <= PAIRS255THR) {
+                                            pairsToRemove += pairs0ToRemoveInBlock;
+                                            addedBitTablesInBytes += bitTableLen;
+                                            blockToCompress[blockCounter] = 1;
+                                        } else if (pairs0ToRemoveInBlock <= PAIRS0THR && pairs255ToRemoveInBlock >= PAIRS255THR * 2) {
+                                            pairsToRemove += pairs255ToRemoveInBlock;
+                                            addedBitTablesInBytes += bitTableLen;
+                                            blockToCompress[blockCounter] = 2;
+                                        }
+                                    break;
+                            }
+                        }
+                        ++blockCounter;
+                        upToBitPos = selectsTemp[selectCounter + 2];
+                        blockLenInBits = selectsTemp[selectCounter + 2] - selectsTemp[selectCounter];
+                        sparseBlock = false;
+                        monoBlock = false;
+                        if (blockLenInBits > THRESHOLD) sparseBlock = true;
+                        else if (blockLenInBits == L) monoBlock = true;
+                        bitsToWrite = 0;
+                        bitsToWritePos = 7;
+                        bytesCounter = 0;
+                        continue;
+                    }
+                    if (monoBlock) continue;
+                    if (!sparseBlock) {
+                        if (((text[i] >> (7 - j)) & 1) == 1) {
+                            bitsToWrite += (1 << bitsToWritePos);
+                        }
+                        if (bitsToWritePos == 0) {
+                            bitsContainer[bytesCounter++] = bitsToWrite;
+                            bitsToWrite = 0;
+                            bitsToWritePos = 7;
+                        } else {
+                            --bitsToWritePos;
+                        }
+                    }
+                }
+            }
+            
+            this->bitsLen += addedBitTablesInBytes;
+            this->bitsLen -= (2 * pairsToRemove);
+
+            this->bits = new unsigned char[this->bitsLen + 128];
+            this->alignedBits = this->bits;
+            while ((unsigned long long)this->alignedBits % 128) ++this->alignedBits;
+
+            unsigned char bits1[((THRESHOLD / 8) / 2) / 8 + 1];
+            unsigned char bits2[((THRESHOLD / 8) / 2) / 8 + 1];
+            unsigned char bits[((THRESHOLD / 8) / 2) / 8 + 1];
+            selectCounter = 0;
+            bytesCounter = 0;
+            blockCounter = 0;
+            unsigned int bitsCounter = 0;
+            bitTableLen = 0;
+            unsigned int bitTableOffset = 0;
+            bitsToWrite = 0;
+            bitsToWritePos = 7;
+            upToBitPos = selectsTemp[2];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            sparseBlock = false;
+            monoBlock = false;
+            if (blockLenInBits > THRESHOLD) sparseBlock = true;
+            else if (blockLenInBits == L) monoBlock = true;
+            unsigned int compressedBlock = blockToCompress[blockCounter++];
+            for (unsigned int i = 0; i < textLen; ++i) {
+                for (unsigned int j = 0; j < 8; ++j) {
+                    if ((8 * i + j) == upToBitPos) {
+                        selectCounter += 2;
+                        if (selectCounter == selectLenTempNotExtended - 2) {
+                            if ((numberOfOnes % L) > 0) {
+                                if (sparseBlock && (((text[i] >> (7 - j)) & 1) == 1)) {
+                                    unsigned int position = 8 * i + j;
+                                    this->alignedBits[bitsCounter++] = position & 0xFF;
+                                    this->alignedBits[bitsCounter++] = (position >> 8) & 0xFF;
+                                    this->alignedBits[bitsCounter++] = (position >> 16) & 0xFF;
+                                    this->alignedBits[bitsCounter++] = (position >> 24);
+                                }
+                                if (!sparseBlock && !monoBlock) {
+                                    if (((text[i] >> (7 - j)) & 1) == 1) {
+                                        bitsToWrite += (1 << bitsToWritePos);
+                                    }
+                                    bitsContainer[bytesCounter++] = bitsToWrite;
+                                    for (unsigned int k = 0; k < bytesCounter; ++k) {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                    }
+                                }
+                            } else if (!monoBlock && !sparseBlock) {
+                                if (bitsToWritePos != 7) bitsContainer[bytesCounter++] = bitsToWrite;
+                                for (unsigned int k = 0; k < bytesCounter; ++k) {
+                                    this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                }
+                            }
+                            i = textLen;
+                            break;
+                        }
+                        if (!monoBlock && !sparseBlock && bitsToWritePos != 7) {
+                            bitsContainer[bytesCounter++] = bitsToWrite;
+                        }
+                        if (!sparseBlock && !monoBlock) {
+                            if (compressedBlock == 3) {
+                                bitTableOffset = bitsCounter;
+                                bitTableLen = (((blockLenInBits - 1) / 128) + 1);
+                                for (unsigned int k = 0; k < bitTableLen; ++k) {
+                                    bits1[k] = 0;
+                                    bits2[k] = 0;
+                                }
+                                bitsCounter += (2 * bitTableLen);
+                                for (unsigned int k = 0; k < bytesCounter; k += 2) {
+                                    if (k + 1 == bytesCounter) {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                        break;
+                                    }
+                                    if (bitsContainer[k] == 255 && bitsContainer[k + 1] == 255) {
+                                        bits2[k / 16] += (1 << (7 - ((k % 16) / 2)));
+                                    }
+                                    if ((bitsContainer[k] == 0 && bitsContainer[k + 1] == 0) || (bitsContainer[k] == 255 && bitsContainer[k + 1] == 255)) {
+                                        bits1[k / 16] += (1 << (7 - ((k % 16) / 2)));
+                                    } else {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k + 1];
+                                    }
+                                }
+                                for (unsigned int k = 0; k < bitTableLen; ++k) this->alignedBits[bitTableOffset++] = bits1[k];
+                                for (unsigned int k = 0; k < bitTableLen; ++k) this->alignedBits[bitTableOffset++] = bits2[k];
+                            } else if (compressedBlock == 1) {
+                                bitTableOffset = bitsCounter;
+                                bitTableLen = (((blockLenInBits - 1) / 128) + 1);
+                                for (unsigned int k = 0; k < bitTableLen; ++k) bits[k] = 0;
+                                bitsCounter += bitTableLen;
+                                for (unsigned int k = 0; k < bytesCounter; k += 2) {
+                                    if (k + 1 == bytesCounter) {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                        break;
+                                    }
+                                    if (bitsContainer[k] == 0 && bitsContainer[k + 1] == 0) {
+                                        bits[k / 16] += (1 << (7 - ((k % 16) / 2)));
+                                    } else {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k + 1];
+                                    }
+                                }
+                                for (unsigned int k = 0; k < bitTableLen; ++k) this->alignedBits[bitTableOffset++] = bits[k];
+                            } else if (compressedBlock == 2) {
+                                bitTableOffset = bitsCounter;
+                                bitTableLen = (((blockLenInBits - 1) / 128) + 1);
+                                for (unsigned int k = 0; k < bitTableLen; ++k) bits[k] = 0;
+                                bitsCounter += bitTableLen;
+                                for (unsigned int k = 0; k < bytesCounter; k += 2) {
+                                    if (k + 1 == bytesCounter) {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                        break;
+                                    }
+                                    if (bitsContainer[k] == 255 && bitsContainer[k + 1] == 255) {
+                                        bits[k / 16] += (1 << (7 - ((k % 16) / 2)));
+                                    } else {
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                        this->alignedBits[bitsCounter++] = bitsContainer[k + 1];
+                                    }
+                                }
+                                for (unsigned int k = 0; k < bitTableLen; ++k) this->alignedBits[bitTableOffset++] = bits[k];
+                            } else {
+                                for (unsigned int k = 0; k < bytesCounter; ++k) {
+                                    this->alignedBits[bitsCounter++] = bitsContainer[k];
+                                }
+                            }
+                        }
+                        selectsTemp[selectCounter + 1] = bitsCounter;
+                        upToBitPos = selectsTemp[selectCounter + 2];
+                        blockLenInBits = selectsTemp[selectCounter + 2] - selectsTemp[selectCounter];
+                        sparseBlock = false;
+                        monoBlock = false;
+                        if (blockLenInBits > THRESHOLD) sparseBlock = true;
+                        else if (blockLenInBits == L) monoBlock = true;
+                        compressedBlock = blockToCompress[blockCounter++];
+                        bitsToWrite = 0;
+                        bitsToWritePos = 7;
+                        bytesCounter = 0;
+                        continue;
+                    }
+                    if (monoBlock) continue;
+                    if (sparseBlock) {
+                        if (((text[i] >> (7 - j)) & 1) == 1) {
+                            unsigned int position = 8 * i + j;
+                            this->alignedBits[bitsCounter++] = position & 0xFF;
+                            this->alignedBits[bitsCounter++] = (position >> 8) & 0xFF;
+                            this->alignedBits[bitsCounter++] = (position >> 16) & 0xFF;
+                            this->alignedBits[bitsCounter++] = (position >> 24);
+                        }
+                    } else {
+                        if (((text[i] >> (7 - j)) & 1) == 1) {
+                            bitsToWrite += (1 << bitsToWritePos);
+                        }
+                        if (bitsToWritePos == 0) {
+                            bitsContainer[bytesCounter++] = bitsToWrite;
+                            bitsToWrite = 0;
+                            bitsToWritePos = 7;
+                        } else {
+                            --bitsToWritePos;
+                        }
+                    }
+                }
+            }
+            for (unsigned int i = selectCounter + 1; i < selectLenTemp; i += 2) selectsTemp[i] = selectsTemp[selectCounter - 1];
+
+            for (unsigned int i = 2; i < selectLenTempNotExtended; i += 2) ++selectsTemp[i];
+
+            this->selectsLen = selectLenTemp / 2;
+            this->selectsLen = (this->selectsLen / SUPERBLOCKLEN) * INTSINSUPERBLOCK;
+            selectLenTemp /= 2;
+
+            this->selects = new unsigned int[this->selectsLen + 32];
+            this->alignedSelects = this->selects;
+            while ((unsigned long long)this->alignedSelects % 128) ++this->alignedSelects;
+
+            unsigned int bucket[INTSINSUPERBLOCK];
+            selectCounter = 0;
+            for (unsigned int j = 0; j < INTSINSUPERBLOCK; ++j) bucket[j] = 0;
+
+            for (unsigned int i = 0; i < selectLenTemp; i += SUPERBLOCKLEN) {
+                for (unsigned int j = 0; j < SUPERBLOCKLEN; ++j) {
+                    bucket[j] = selectsTemp[2 * (i + j)];
+                }
+                bucket[SUPERBLOCKLEN] = selectsTemp[2 * i + 1];
+                for (unsigned int j = 0; j < SUPERBLOCKLEN - 1; ++j) {
+                    unsigned int offsetDiff = (selectsTemp[2 * (i + j + 1) + 1] - bucket[SUPERBLOCKLEN]);
+                    offsetDiff += (blockToCompress[i + j + 1] << 14);
+                    bucket[(SUPERBLOCKLEN + 1) + j / 2] += (offsetDiff << (16 * (j % 2)));   
+                }
+                bucket[SUPERBLOCKLEN + 1] += (blockToCompress[i] << 28);
+                for (unsigned int j = 0; j < INTSINSUPERBLOCK; ++j) {
+                    this->alignedSelects[selectCounter++] = bucket[j];
+                    bucket[j] = 0;
+                }
+            }
+
+            delete[] selectsTemp;
+            delete[] blockToCompress;
+        }
+        
+        unsigned int getSelect_v1(unsigned int i) {
+            unsigned int start = i / L;
+            this->pointer2 = this->alignedSelects + INTSINSUPERBLOCK * (start / SUPERBLOCKLEN);
+            unsigned int selectFromStart = start % SUPERBLOCKLEN;
+            unsigned int select = this->pointer2[selectFromStart];
+            i %= L;
+            if (i == 0) return select - 1;
+            unsigned int selectDiff;
+            if (selectFromStart == (SUPERBLOCKLEN - 1)) {
+                selectDiff = this->pointer2[INTSINSUPERBLOCK] - select;
+            } else {
+                selectDiff = this->pointer2[selectFromStart + 1] - select;
+            }
+            if (selectDiff == L) return select - 1 + i;
+            unsigned int offset = this->pointer2[SUPERBLOCKLEN];
+            if (selectDiff > THRESHOLD) {
+                switch(selectFromStart) {
+                    case 0:
+                        break;
+                    case 1:
+                        offset += (this->pointer2[SUPERBLOCKLEN + 1] & 0x3FFF);
+                        break;
+                    case 2:
+                        offset += ((this->pointer2[SUPERBLOCKLEN + 1] >> 16) & 0x3FFF);
+                        break;
+                    default:
+                        if (selectFromStart % 2 == 1) offset += (this->pointer2[SUPERBLOCKLEN + (selectFromStart + 1) / 2] & 0xFFFF);
+                        else offset += (this->pointer2[SUPERBLOCKLEN + (selectFromStart + 1) / 2] >> 16);
+                }
+                return *((unsigned int *)(this->alignedBits + offset + 4 * (i - 1)));
+            }
+            bool compressedBlock;
+            unsigned int offsetAdd;
+            switch(selectFromStart) {
+                case 0:
+                    compressedBlock = ((this->pointer2[SUPERBLOCKLEN + 1] >> 30) & 1);
+                    break;
+                case 1:
+                    offsetAdd = this->pointer2[SUPERBLOCKLEN + 1];
+                    offset += (offsetAdd & 0x3FFF);
+                    compressedBlock = (offsetAdd >> 15) & 1;
+                    break;
+                case 2:
+                    offsetAdd = this->pointer2[SUPERBLOCKLEN + 1];
+                    offset += ((offsetAdd >> 16) & 0x3FFF);
+                    compressedBlock = (offsetAdd >> 31);
+                    break;
+                default:
+                    offsetAdd = this->pointer2[SUPERBLOCKLEN + (selectFromStart + 1) / 2];
+                    if (selectFromStart % 2 == 1) {
+                        offset += (offsetAdd & 0x7FFF);
+                        compressedBlock = (offsetAdd >> 15) & 1;
+                    } else {
+                        offset += ((offsetAdd >> 16) & 0x7FFF);
+                        compressedBlock = (offsetAdd >> 31);
+                    }
+            }
+            this->pointer = this->alignedBits + offset;
+            unsigned int popcnt;
+            if (compressedBlock) {
+                unsigned int bitTableLen = (((selectDiff - 1) / 128) + 1);
+                unsigned int byteCounter = 0;
+                int bitsToTake = selectDiff;
+                this->pointerBits2 = this->pointer + bitTableLen;
+                this->pointerData = this->pointerBits2 + bitTableLen;
+                for (unsigned int m = 0; m < bitTableLen; ++m) {
+                    for (unsigned int k = 0; k < 8; ++k) {
+                        if ((this->pointer[m] & masks[k]) > 0) {
+                            if ((this->pointerBits2[m] & masks[k]) > 0) {
+                                this->alignedBuffer[byteCounter++] = 255;
+                                this->alignedBuffer[byteCounter++] = 255;
+                            } else {
+                                this->alignedBuffer[byteCounter++] = 0;
+                                this->alignedBuffer[byteCounter++] = 0;
+                            }
+                        } else {
+                            this->alignedBuffer[byteCounter++] = this->pointerData[0];
+                            if (bitsToTake <= 8) {
+                                m = bitTableLen;
+                                break;
+                            }
+                            this->alignedBuffer[byteCounter++] = this->pointerData[1];
+                            this->pointerData += 2;
+                        }
+                        if (bitsToTake <= 16) {
+                            m = bitTableLen;
+                            break;
+                        }
+                        bitsToTake -= 16;
+                        if (byteCounter % 8 == 0) {
+                            popcnt = __builtin_popcountll(*((unsigned long long*)this->alignedBuffer));
+                            if (popcnt >= i) {
+                                byteCounter = 0;
+                                while(true) {
+                                    popcnt = popcntLUT[this->alignedBuffer[byteCounter]];
+                                    if (popcnt >= i) break;
+                                    i -= popcnt;
+                                    select += 8;
+                                    ++byteCounter;
+                                }
+                                for (unsigned int j = 0; j < 8; ++j) {
+                                    if ((this->alignedBuffer[byteCounter] & masks[j]) > 0) {
+                                        if (i == 1) return select + j;
+                                        --i;
+                                    }
+                                }
+                            }
+                            i -= popcnt;
+                            select += 64;
+                            byteCounter = 0;
+                        }
+                    }
+                }
+                byteCounter = 0;
+                while(true) {
+                    popcnt = popcntLUT[this->alignedBuffer[byteCounter]];
+                    if (popcnt >= i) break;
+                    i -= popcnt;
+                    select += 8;
+                    ++byteCounter;
+                }
+                for (unsigned int j = 0; j < 8; ++j) {
+                    if ((this->alignedBuffer[byteCounter] & masks[j]) > 0) {
+                        if (i == 1) return select + j;
+                        --i;
+                    }
+                }
+            }
+            for (unsigned int j = 64; j < selectDiff; j += 64) {
+                popcnt = __builtin_popcountll(*((unsigned long long*)this->pointer));
+                if (popcnt >= i) break;
+                i -= popcnt;
+                select += 64;
+                this->pointer += 8;
+            }
+            while(true) {
+                popcnt = popcntLUT[*this->pointer];
+                if (popcnt >= i) break;
+                i -= popcnt;
+                select += 8;
+                ++this->pointer;
+            }
+            for (unsigned int j = 0; j < 8; ++j) {
+                if ((this->pointer[0] & masks[j]) > 0) {
+                    if (i == 1) return select + j;
+                    --i;
+                }
+            }
+            return 0;
+        }
+
+        unsigned int getSelect_v2(unsigned int i) {
+            unsigned int start = i / L;
+            this->pointer2 = this->alignedSelects + INTSINSUPERBLOCK * (start / SUPERBLOCKLEN);
+            unsigned int selectFromStart = start % SUPERBLOCKLEN;
+            unsigned int select = this->pointer2[selectFromStart];
+            i %= L;
+            if (i == 0) return select - 1;
+            unsigned int selectDiff;
+            if (selectFromStart == (SUPERBLOCKLEN - 1)) {
+                selectDiff = this->pointer2[INTSINSUPERBLOCK] - select;
+            } else {
+                selectDiff = this->pointer2[selectFromStart + 1] - select;
+            }
+            if (selectDiff == L) return select - 1 + i;
+            unsigned int offset = this->pointer2[SUPERBLOCKLEN];
+            if (selectDiff > THRESHOLD) {
+                switch(selectFromStart) {
+                    case 0:
+                        break;
+                    case 1:
+                        offset += (this->pointer2[SUPERBLOCKLEN + 1] & 0x0FFF);
+                        break;
+                    case 2:
+                        offset += ((this->pointer2[SUPERBLOCKLEN + 1] >> 16) & 0x0FFF);
+                        break;
+                    default:
+                        if (selectFromStart % 2 == 1) offset += (this->pointer2[SUPERBLOCKLEN + (selectFromStart + 1) / 2] & 0xFFFF);
+                        else offset += (this->pointer2[SUPERBLOCKLEN + (selectFromStart + 1) / 2] >> 16);
+                }
+                return *((unsigned int *)(this->alignedBits + offset + 4 * (i - 1)));
+            }
+            unsigned int compressedBlock;
+            unsigned int offsetAdd;
+            switch(selectFromStart) {
+                case 0:
+                    compressedBlock = ((this->pointer2[SUPERBLOCKLEN + 1] >> 28) & 3);
+                    break;
+                case 1:
+                    offsetAdd = this->pointer2[SUPERBLOCKLEN + 1];
+                    offset += (offsetAdd & 0x0FFF);
+                    compressedBlock = (offsetAdd >> 14) & 3;
+                    break;
+                case 2:
+                    offsetAdd = this->pointer2[SUPERBLOCKLEN + 1];
+                    offset += ((offsetAdd >> 16) & 0x0FFF);
+                    compressedBlock = (offsetAdd >> 30);
+                    break;
+                default:
+                    offsetAdd = this->pointer2[SUPERBLOCKLEN + (selectFromStart + 1) / 2];
+                    if (selectFromStart % 2 == 1) {
+                        offset += (offsetAdd & 0x3FFF);
+                        compressedBlock = (offsetAdd >> 14) & 3;
+                    } else {
+                        offset += ((offsetAdd >> 16) & 0x3FFF);
+                        compressedBlock = (offsetAdd >> 30);
+                    }
+            }
+            this->pointer = this->alignedBits + offset;
+            unsigned int popcnt, bitTableLen, byteCounter;
+            int bitsToTake;
+            switch(compressedBlock) {
+                case 1:
+                    bitTableLen = (((selectDiff - 1) / 128) + 1);
+                    byteCounter = 0;
+                    bitsToTake = selectDiff;
+                    this->pointerData = this->pointer + bitTableLen;
+                    for (unsigned int m = 0; m < bitTableLen; ++m) {
+                        for (unsigned int k = 0; k < 8; ++k) {
+                            if ((this->pointer[m] & masks[k]) > 0) {
+                                this->alignedBuffer[byteCounter++] = 0;
+                                this->alignedBuffer[byteCounter++] = 0;
+                            } else {
+                                this->alignedBuffer[byteCounter++] = this->pointerData[0];
+                                if (bitsToTake <= 8) {
+                                    m = bitTableLen;
+                                    break;
+                                }
+                                this->alignedBuffer[byteCounter++] = this->pointerData[1];
+                                this->pointerData += 2;
+                            }
+                            if (bitsToTake <= 16) {
+                                m = bitTableLen;
+                                break;
+                            }
+                            bitsToTake -= 16;
+                            if (byteCounter % 8 == 0) {
+                                popcnt = __builtin_popcountll(*((unsigned long long*)this->alignedBuffer));
+                                if (popcnt >= i) {
+                                    byteCounter = 0;
+                                    while(true) {
+                                        popcnt = popcntLUT[this->alignedBuffer[byteCounter]];
+                                        if (popcnt >= i) break;
+                                        i -= popcnt;
+                                        select += 8;
+                                        ++byteCounter;
+                                    }
+                                    for (unsigned int j = 0; j < 8; ++j) {
+                                        if ((this->alignedBuffer[byteCounter] & masks[j]) > 0) {
+                                            if (i == 1) return select + j;
+                                            --i;
+                                        }
+                                    }
+                                }
+                                i -= popcnt;
+                                select += 64;
+                                byteCounter = 0;
+                            }
+                        }
+                    }
+                    byteCounter = 0;
+                    while(true) {
+                        popcnt = popcntLUT[this->alignedBuffer[byteCounter]];
+                        if (popcnt >= i) break;
+                        i -= popcnt;
+                        select += 8;
+                        ++byteCounter;
+                    }
+                    for (unsigned int j = 0; j < 8; ++j) {
+                        if ((this->alignedBuffer[byteCounter] & masks[j]) > 0) {
+                            if (i == 1) return select + j;
+                            --i;
+                        }
+                    }
+                    break;
+                case 2:
+                    bitTableLen = (((selectDiff - 1) / 128) + 1);
+                    byteCounter = 0;
+                    bitsToTake = selectDiff;
+                    this->pointerData = this->pointer + bitTableLen;
+                    for (unsigned int m = 0; m < bitTableLen; ++m) {
+                        for (unsigned int k = 0; k < 8; ++k) {
+                            if ((this->pointer[m] & masks[k]) > 0) {
+                                this->alignedBuffer[byteCounter++] = 255;
+                                this->alignedBuffer[byteCounter++] = 255;
+                            } else {
+                                this->alignedBuffer[byteCounter++] = this->pointerData[0];
+                                if (bitsToTake <= 8) {
+                                    m = bitTableLen;
+                                    break;
+                                }
+                                this->alignedBuffer[byteCounter++] = this->pointerData[1];
+                                this->pointerData += 2;
+                            }
+                            if (bitsToTake <= 16) {
+                                m = bitTableLen;
+                                break;
+                            }
+                            bitsToTake -= 16;
+                            if (byteCounter % 8 == 0) {
+                                popcnt = __builtin_popcountll(*((unsigned long long*)this->alignedBuffer));
+                                if (popcnt >= i) {
+                                    byteCounter = 0;
+                                    while(true) {
+                                        popcnt = popcntLUT[this->alignedBuffer[byteCounter]];
+                                        if (popcnt >= i) break;
+                                        i -= popcnt;
+                                        select += 8;
+                                        ++byteCounter;
+                                    }
+                                    for (unsigned int j = 0; j < 8; ++j) {
+                                        if ((this->alignedBuffer[byteCounter] & masks[j]) > 0) {
+                                            if (i == 1) return select + j;
+                                            --i;
+                                        }
+                                    }
+                                }
+                                i -= popcnt;
+                                select += 64;
+                                byteCounter = 0;
+                            }
+                        }
+                    }
+                    byteCounter = 0;
+                    while(true) {
+                        popcnt = popcntLUT[this->alignedBuffer[byteCounter]];
+                        if (popcnt >= i) break;
+                        i -= popcnt;
+                        select += 8;
+                        ++byteCounter;
+                    }
+                    for (unsigned int j = 0; j < 8; ++j) {
+                        if ((this->alignedBuffer[byteCounter] & masks[j]) > 0) {
+                            if (i == 1) return select + j;
+                            --i;
+                        }
+                    }
+                    break;
+                case 3:
+                    bitTableLen = (((selectDiff - 1) / 128) + 1);
+                    byteCounter = 0;
+                    bitsToTake = selectDiff;
+                    this->pointerBits2 = this->pointer + bitTableLen;
+                    this->pointerData = this->pointerBits2 + bitTableLen;
+                    for (unsigned int m = 0; m < bitTableLen; ++m) {
+                        for (unsigned int k = 0; k < 8; ++k) {
+                            if ((this->pointer[m] & masks[k]) > 0) {
+                                if ((this->pointerBits2[m] & masks[k]) > 0) {
+                                    this->alignedBuffer[byteCounter++] = 255;
+                                    this->alignedBuffer[byteCounter++] = 255;
+                                } else {
+                                    this->alignedBuffer[byteCounter++] = 0;
+                                    this->alignedBuffer[byteCounter++] = 0;
+                                }
+                            } else {
+                                this->alignedBuffer[byteCounter++] = this->pointerData[0];
+                                if (bitsToTake <= 8) {
+                                    m = bitTableLen;
+                                    break;
+                                }
+                                this->alignedBuffer[byteCounter++] = this->pointerData[1];
+                                this->pointerData += 2;
+                            }
+                            if (bitsToTake <= 16) {
+                                m = bitTableLen;
+                                break;
+                            }
+                            bitsToTake -= 16;
+                            if (byteCounter % 8 == 0) {
+                                popcnt = __builtin_popcountll(*((unsigned long long*)this->alignedBuffer));
+                                if (popcnt >= i) {
+                                    byteCounter = 0;
+                                    while(true) {
+                                        popcnt = popcntLUT[this->alignedBuffer[byteCounter]];
+                                        if (popcnt >= i) break;
+                                        i -= popcnt;
+                                        select += 8;
+                                        ++byteCounter;
+                                    }
+                                    for (unsigned int j = 0; j < 8; ++j) {
+                                        if ((this->alignedBuffer[byteCounter] & masks[j]) > 0) {
+                                            if (i == 1) return select + j;
+                                            --i;
+                                        }
+                                    }
+                                }
+                                i -= popcnt;
+                                select += 64;
+                                byteCounter = 0;
+                            }
+                        }
+                    }
+                    byteCounter = 0;
+                    while(true) {
+                        popcnt = popcntLUT[this->alignedBuffer[byteCounter]];
+                        if (popcnt >= i) break;
+                        i -= popcnt;
+                        select += 8;
+                        ++byteCounter;
+                    }
+                    for (unsigned int j = 0; j < 8; ++j) {
+                        if ((this->alignedBuffer[byteCounter] & masks[j]) > 0) {
+                            if (i == 1) return select + j;
+                            --i;
+                        }
+                    }
+                    break;
+                default:
+                    for (unsigned int j = 64; j < selectDiff; j += 64) {
+                        popcnt = __builtin_popcountll(*((unsigned long long*)this->pointer));
+                        if (popcnt >= i) break;
+                        i -= popcnt;
+                        select += 64;
+                        this->pointer += 8;
+                    }
+                    while(true) {
+                        popcnt = popcntLUT[*this->pointer];
+                        if (popcnt >= i) break;
+                        i -= popcnt;
+                        select += 8;
+                        ++this->pointer;
+                    }
+                    for (unsigned int j = 0; j < 8; ++j) {
+                        if ((this->pointer[0] & masks[j]) > 0) {
+                            if (i == 1) return select + j;
+                            --i;
+                        }
+                    }
+            }
+            return 0;
+        }
+
+public:
+	unsigned int *selects;
+        unsigned int *alignedSelects;
+        unsigned int selectsLen;
+        unsigned char *bits;
+        unsigned char *alignedBits;
+        unsigned int bitsLen;
+        unsigned int textLen;
+        unsigned char *pointer;
+        unsigned char *pointerBits2;
+        unsigned char *pointerData;
+        unsigned int *pointer2;
+        
+        unsigned char *buffer;
+        unsigned char *alignedBuffer;
+        
+        const static unsigned int SUPERBLOCKLEN = 16;
+        const static unsigned int INTSINSUPERBLOCK = 25;
+        const static unsigned int PAIRS0THR = 9;
+        const static unsigned int PAIRS255THR = 9;
+        /*
+        INTSINSUPERBLOCK = SUPERBLOCKLEN + 1 + (SUPERBLOCKLEN - 1) / 2;
+        if ((SUPERBLOCKLEN - 1) % 2 == 1) ++INTSINSUPERBLOCK;
+        */
+
+        const unsigned int popcntLUT[256] = {0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7, 4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8};
+        const unsigned char masks[8] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
+
+	SelectMPE() {
+		if (L >= THRESHOLD) {
+                    cout << "Error: not valid L and THRESHOLD values (THRESHOLD should be greater than L)" << endl;
+                    exit(1);
+                }
+                switch(T) {
+                    case SelectMPEType::V1:
+                        if ((L - 1) * 4 > (32767 / (SUPERBLOCKLEN - 1)) || (THRESHOLD - 1) > (8 * (32767 / (SUPERBLOCKLEN - 1)))) {
+                            cout << "Error: not valid L and THRESHOLD values" << endl;
+                            exit(1);
+                        }
+                        break;
+                    default:
+                        if ((L - 1) * 4 > (16383 / (SUPERBLOCKLEN - 1)) || (THRESHOLD - 1) > (8 * (16383 / (SUPERBLOCKLEN - 1)))) {
+                            cout << "Error: not valid L and THRESHOLD values" << endl;
+                            exit(1);
+                        }
+                }
+		this->initialize();
+	}
+
+	~SelectMPE() {
+		this->freeMemory();
+	}
+
+        void build(unsigned char *text, unsigned int textLen) {
+            switch(T) {
+                case SelectMPEType::V1:
+                    this->build_v1(text, textLen);
+                    break;
+                default:
+                    this->build_v2(text, textLen);
+                    break;      
+            }
+        }
+        
+        unsigned int getSelect(unsigned int i) {
+                switch(T) {
+                case SelectMPEType::V1:
+                        return this->getSelect_v1(i);
+                        break;
+                default:
+                        return this->getSelect_v2(i);
+                        break;
+                }
+        } 
+           
+	void save(FILE *outFile) {
+            fwrite(&this->textLen, (size_t)sizeof(unsigned int), (size_t)1, outFile);
+            fwrite(&this->selectsLen, (size_t)sizeof(unsigned int), (size_t)1, outFile);
+            if (this->selectsLen > 0) fwrite(this->alignedSelects, (size_t)sizeof(unsigned int), (size_t)this->selectsLen, outFile);
+            fwrite(&this->bitsLen, (size_t)sizeof(unsigned int), (size_t)1, outFile);
+            if (this->bitsLen > 0) fwrite(this->alignedBits, (size_t)sizeof(unsigned char), (size_t)this->bitsLen, outFile);
+        }
+	
+        void load(FILE *inFile) {
+            this->free();
+            size_t result;
+            result = fread(&this->textLen, (size_t)sizeof(unsigned int), (size_t)1, inFile);
+            if (result != 1) {
+                    cout << "Error loading select" << endl;
+                    exit(1);
+            }
+            result = fread(&this->selectsLen, (size_t)sizeof(unsigned int), (size_t)1, inFile);
+            if (result != 1) {
+                    cout << "Error loading select" << endl;
+                    exit(1);
+            }
+            if (this->selectsLen > 0) {
+                    this->selects = new unsigned int[this->selectsLen + 32];
+                    this->alignedSelects = this->selects;
+                    while ((unsigned long long)(this->alignedSelects) % 128) ++(this->alignedSelects);
+                    result = fread(this->alignedSelects, (size_t)sizeof(unsigned int), (size_t)this->selectsLen, inFile);
+                    if (result != this->selectsLen) {
+                            cout << "Error loading select" << endl;
+                            exit(1);
+                    }
+            }
+            result = fread(&this->bitsLen, (size_t)sizeof(unsigned int), (size_t)1, inFile);
+            if (result != 1) {
+                    cout << "Error loading select" << endl;
+                    exit(1);
+            }
+            if (this->bitsLen > 0) {
+                    this->bits = new unsigned char[this->bitsLen + 128];
+                    this->alignedBits = this->bits;
+                    while ((unsigned long long)(this->alignedBits) % 128) ++(this->alignedBits);
+                    result = fread(this->alignedBits, (size_t)sizeof(unsigned char), (size_t)this->bitsLen, inFile);
+                    if (result != this->bitsLen) {
+                            cout << "Error loading select" << endl;
+                            exit(1);
+                    }
+            }
+        }
+        
+	void free() {
+            this->freeMemory();
+            this->initialize();
+        }
+	
+        unsigned int getSelectSize() {
+            unsigned int size = sizeof(this->selectsLen) + sizeof(this->bitsLen) + sizeof(this->textLen) + sizeof(this->pointer) + sizeof(this->pointer2) + sizeof(this->pointerData) + sizeof(this->pointerBits2);
+            size += (8 + 128) * sizeof(unsigned char);
+            if (this->selectsLen > 0) size += (this->selectsLen + 32) * sizeof(unsigned int);
+            if (this->bitsLen > 0) size += (this->bitsLen + 128) * sizeof(unsigned char);
+            return size;
+        }
+        
+        unsigned int getTextSize() {
+            return this->textLen * sizeof(unsigned char);
+        }
+        
+        void testSelect(unsigned char* text, unsigned int textLen) {
+            unsigned int selectTest = 0;
+
+            for (unsigned int i = 0; i < textLen; ++i) {
+                for (unsigned int j = 0; j < 8; ++j) {
+                    if (((text[i] >> (7 - j)) & 1) == 1) {
+                        ++selectTest;
+                        if ((8 * i + j) != this->getSelect(selectTest)) {
+                            cout << selectTest << " " << (8 * i + j) << " " << this->getSelect(selectTest);
+                            cin.ignore();
+                        }
+                    }
+                }
+            }
+        }
+};
+
 }
 
 #endif	/* SELECT_HPP */

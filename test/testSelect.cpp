@@ -17,6 +17,9 @@ void selectBasic_128_4096(const char *fileName, const char *queriesNum);
 void selectBasic_1024_8192(const char *fileName, const char *queriesNum);
 void selectBch_128_4096(const char *fileName, const char *queriesNum);
 void selectBch_1024_8192(const char *fileName, const char *queriesNum);
+void selectMpe1_128_4096(const char *fileName, const char *queriesNum);
+void selectMpe2_128_4096(const char *fileName, const char *queriesNum);
+void selectMpe3_128_4096(const char *fileName, const char *queriesNum);
 
 void getUsage(char **argv) {
 	cout << "Choose select you want to test:" << endl;
@@ -41,6 +44,9 @@ int main(int argc, char *argv[]) {
 	if (string(argv[1]) == "basic-1024-8192") selectBasic_1024_8192(argv[2], argv[3]);
 	if (string(argv[1]) == "bch-128-4096") selectBch_128_4096(argv[2], argv[3]);
 	if (string(argv[1]) == "bch-1024-8192") selectBch_1024_8192(argv[2], argv[3]);
+	if (string(argv[1]) == "mpe1-128-4096") selectMpe1_128_4096(argv[2], argv[3]);
+	if (string(argv[1]) == "mpe2-128-4096") selectMpe2_128_4096(argv[2], argv[3]);
+	if (string(argv[1]) == "mpe3-128-4096") selectMpe3_128_4096(argv[2], argv[3]);
 	
 	getUsage(argv);
 	exit(1);
@@ -240,6 +246,135 @@ void selectBch_1024_8192(const char *fileName, const char *queriesNum) {
 	double size = (double)select->getSelectSize() / (double)select->getTextSize();
 	cout << "select-bch-1024-8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
 	resultFile << "bch 1024 8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile.close();
+
+    delete[] text;
+    delete[] patterns;
+    delete[] resSelect;
+    delete select;
+    exit(0);
+}
+
+void selectMpe1_128_4096(const char *fileName, const char *queriesNum) {
+	SelectMPE<SelectMPEType::V1, 128, 4096> *select = new SelectMPE<SelectMPEType::V1, 128, 4096>();
+	string selectFileNameString = (string)fileName + "-mpe1-128-4096.select";
+	const char *selectFileName = selectFileNameString.c_str();
+	unsigned int textLen;
+	unsigned char* text = readText(fileName, textLen, 0);
+
+	if (fileExists(selectFileName)) {
+		FILE *inFile;
+		inFile = fopen(selectFileName, "rb");
+		select->load(inFile);
+		fclose(inFile);
+	} else {
+		select->build(text, textLen);
+		FILE *outFile;
+		outFile = fopen(selectFileName, "w");
+		select->save(outFile);
+		fclose(outFile);
+	}
+	//select->testSelect(text, textLen);
+    
+    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+	unsigned int queriesNumInt = atoi(queriesNum);
+    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    
+    timer.startTimer();
+    for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->getSelect(patterns[i]);
+    timer.stopTimer();
+	
+	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
+	double size = (double)select->getSelectSize() / (double)select->getTextSize();
+	cout << "select-mpe1-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << "mpe1 128 4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile.close();
+
+    delete[] text;
+    delete[] patterns;
+    delete[] resSelect;
+    delete select;
+    exit(0);
+}
+
+void selectMpe2_128_4096(const char *fileName, const char *queriesNum) {
+	SelectMPE<SelectMPEType::V2, 128, 4096> *select = new SelectMPE<SelectMPEType::V2, 128, 4096>();
+	string selectFileNameString = (string)fileName + "-mpe2-128-4096.select";
+	const char *selectFileName = selectFileNameString.c_str();
+	unsigned int textLen;
+	unsigned char* text = readText(fileName, textLen, 0);
+
+	if (fileExists(selectFileName)) {
+		FILE *inFile;
+		inFile = fopen(selectFileName, "rb");
+		select->load(inFile);
+		fclose(inFile);
+	} else {
+		select->build(text, textLen);
+		FILE *outFile;
+		outFile = fopen(selectFileName, "w");
+		select->save(outFile);
+		fclose(outFile);
+	}
+	//select->testSelect(text, textLen);
+    
+    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+	unsigned int queriesNumInt = atoi(queriesNum);
+    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    
+    timer.startTimer();
+    for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->getSelect(patterns[i]);
+    timer.stopTimer();
+	
+	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
+	double size = (double)select->getSelectSize() / (double)select->getTextSize();
+	cout << "select-mpe2-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << "mpe2 128 4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile.close();
+
+    delete[] text;
+    delete[] patterns;
+    delete[] resSelect;
+    delete select;
+    exit(0);
+}
+
+void selectMpe3_128_4096(const char *fileName, const char *queriesNum) {
+	SelectMPE<SelectMPEType::V3, 128, 4096> *select = new SelectMPE<SelectMPEType::V3, 128, 4096>();
+	string selectFileNameString = (string)fileName + "-mpe3-128-4096.select";
+	const char *selectFileName = selectFileNameString.c_str();
+	unsigned int textLen;
+	unsigned char* text = readText(fileName, textLen, 0);
+
+	if (fileExists(selectFileName)) {
+		FILE *inFile;
+		inFile = fopen(selectFileName, "rb");
+		select->load(inFile);
+		fclose(inFile);
+	} else {
+		select->build(text, textLen);
+		FILE *outFile;
+		outFile = fopen(selectFileName, "w");
+		select->save(outFile);
+		fclose(outFile);
+	}
+	//select->testSelect(text, textLen);
+    
+    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+	unsigned int queriesNumInt = atoi(queriesNum);
+    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    
+    timer.startTimer();
+    for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->getSelect(patterns[i]);
+    timer.stopTimer();
+	
+	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
+	double size = (double)select->getSelectSize() / (double)select->getTextSize();
+	cout << "select-mpe3-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << "mpe3 128 4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
