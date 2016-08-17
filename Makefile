@@ -19,7 +19,7 @@ testSelect: test/testSelect.cpp libshared.a libs/$(ASMLIB)
 
 libshared.a: shared/common.h shared/common.cpp shared/patterns.h shared/patterns.cpp shared/sais.h shared/sais.c shared/timer.h shared/rank.hpp shared/select.hpp
 	$(CXX) $(CFLAGS) -c shared/common.cpp shared/patterns.cpp shared/sais.c shared/timer.cpp
-	ar rcs libshared.a common.o patterns.o sais.o timer.o
+	ar rcs libshared.a common.o patterns.o sais.o timer.o shared/rank.hpp shared/select.hpp
 	make cleanObjects
 
 cleanObjects:

@@ -102,7 +102,7 @@ Parameters:
 
 Limitations: 
 - THRESHOLD > L
-- L <= 1093 and THRESHOLD <= 34953 (for SelectBasicType::WITH_COMPRESSED_HEADERS)
+- L < 1094 and THRESHOLD < 34954 (for SelectBasicType::WITH_COMPRESSED_HEADERS)
 
 Constructors:
 ```
@@ -121,8 +121,8 @@ Parameters:
 
 Limitations: 
 - THRESHOLD > L
-- L <= 547 and THRESHOLD <= 17473 (for SelectMPEType::V1)
-- L <= 274 and THRESHOLD <= 8769 (for SelectMPEType::V2 and SelectMPEType::V3)
+- L < 548 and THRESHOLD < 17474 (for SelectMPEType::V1)
+- L < 275 and THRESHOLD < 8770 (for SelectMPEType::V2 and SelectMPEType::V3)
 
 Constructors:
 ```
