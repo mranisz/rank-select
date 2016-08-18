@@ -116,7 +116,7 @@ void selectBasic_128_4096(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-basic-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "basic 128 4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " basic 128 4096 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -159,7 +159,7 @@ void selectBasic_1024_8192(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-basic-1024-8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "basic 1024 8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " basic 1024 8192 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -202,7 +202,7 @@ void selectBch_128_4096(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-bch-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "bch 128 4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " bch 128 4096 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -245,7 +245,7 @@ void selectBch_1024_8192(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-bch-1024-8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "bch 1024 8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " bch 1024 8192 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -288,7 +288,7 @@ void selectMpe1_128_4096(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe1-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "mpe1 128 4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " mpe1 128 4096 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -331,7 +331,7 @@ void selectMpe2_128_4096(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe2-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "mpe2 128 4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " mpe2 128 4096 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -374,7 +374,7 @@ void selectMpe3_128_4096(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe3-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "mpe3 128 4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " mpe3 128 4096 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;

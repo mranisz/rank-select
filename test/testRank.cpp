@@ -111,7 +111,7 @@ void rankBasic(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-basic " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "basic " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " basic " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -154,7 +154,7 @@ void rankBch(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-bch " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "bch " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " bch " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -197,7 +197,7 @@ void rankCF(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-cf " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "cf " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " cf " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -240,7 +240,7 @@ void rankMPE1(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe1 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "mpe1 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " mpe1 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -283,7 +283,7 @@ void rankMPE2(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe2 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "mpe2 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " mpe2 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -326,7 +326,7 @@ void rankMPE3(const char *fileName, const char *queriesNum) {
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe3 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << "mpe3 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " mpe3 " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
