@@ -84,7 +84,7 @@ unsigned int *getPatternsForSelect(const char *fileName, const char *queriesNum,
 }
 
 void selectBasic_128_4096(const char *fileName, const char *queriesNum) {
-	SelectBasic<SelectBasicType::STANDARD, 128, 4096> *select = new SelectBasic<SelectBasicType::STANDARD, 128, 4096>();
+	SelectBasic<SelectBasicType::SELECT_STANDARD, 128, 4096> *select = new SelectBasic<SelectBasicType::SELECT_STANDARD, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-basic-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
 	unsigned int textLen;
@@ -127,7 +127,7 @@ void selectBasic_128_4096(const char *fileName, const char *queriesNum) {
 }
 
 void selectBasic_1024_8192(const char *fileName, const char *queriesNum) {
-	SelectBasic<SelectBasicType::STANDARD, 1024, 8192> *select = new SelectBasic<SelectBasicType::STANDARD, 1024, 8192>();
+	SelectBasic<SelectBasicType::SELECT_STANDARD, 1024, 8192> *select = new SelectBasic<SelectBasicType::SELECT_STANDARD, 1024, 8192>();
 	string selectFileNameString = (string)fileName + "-basic-1024-8192.select";
 	const char *selectFileName = selectFileNameString.c_str();
 	unsigned int textLen;
@@ -170,7 +170,7 @@ void selectBasic_1024_8192(const char *fileName, const char *queriesNum) {
 }
 
 void selectBch_128_4096(const char *fileName, const char *queriesNum) {
-	SelectBasic<SelectBasicType::WITH_COMPRESSED_HEADERS, 128, 4096> *select = new SelectBasic<SelectBasicType::WITH_COMPRESSED_HEADERS, 128, 4096>();
+	SelectBasic<SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS, 128, 4096> *select = new SelectBasic<SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-bch-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
 	unsigned int textLen;
@@ -213,7 +213,7 @@ void selectBch_128_4096(const char *fileName, const char *queriesNum) {
 }
 
 void selectBch_1024_8192(const char *fileName, const char *queriesNum) {
-	SelectBasic<SelectBasicType::WITH_COMPRESSED_HEADERS, 1024, 8192> *select = new SelectBasic<SelectBasicType::WITH_COMPRESSED_HEADERS, 1024, 8192>();
+	SelectBasic<SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS, 1024, 8192> *select = new SelectBasic<SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS, 1024, 8192>();
 	string selectFileNameString = (string)fileName + "-bch-1024-8192.select";
 	const char *selectFileName = selectFileNameString.c_str();
 	unsigned int textLen;
@@ -256,7 +256,7 @@ void selectBch_1024_8192(const char *fileName, const char *queriesNum) {
 }
 
 void selectMpe1_128_4096(const char *fileName, const char *queriesNum) {
-	SelectMPE<SelectMPEType::V1, 128, 4096> *select = new SelectMPE<SelectMPEType::V1, 128, 4096>();
+	SelectMPE<SelectMPEType::SELECT_V1, 128, 4096> *select = new SelectMPE<SelectMPEType::SELECT_V1, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-mpe1-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
 	unsigned int textLen;
@@ -299,7 +299,7 @@ void selectMpe1_128_4096(const char *fileName, const char *queriesNum) {
 }
 
 void selectMpe2_128_4096(const char *fileName, const char *queriesNum) {
-	SelectMPE<SelectMPEType::V2, 128, 4096> *select = new SelectMPE<SelectMPEType::V2, 128, 4096>();
+	SelectMPE<SelectMPEType::SELECT_V2, 128, 4096> *select = new SelectMPE<SelectMPEType::SELECT_V2, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-mpe2-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
 	unsigned int textLen;
@@ -342,7 +342,7 @@ void selectMpe2_128_4096(const char *fileName, const char *queriesNum) {
 }
 
 void selectMpe3_128_4096(const char *fileName, const char *queriesNum) {
-	SelectMPE<SelectMPEType::V3, 128, 4096> *select = new SelectMPE<SelectMPEType::V3, 128, 4096>();
+	SelectMPE<SelectMPEType::SELECT_V3, 128, 4096> *select = new SelectMPE<SelectMPEType::SELECT_V3, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-mpe3-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
 	unsigned int textLen;

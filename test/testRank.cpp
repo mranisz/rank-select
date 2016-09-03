@@ -7,6 +7,7 @@
 #include "../shared/patterns.h"
 #include "../shared/timer.h"
 #include "../shared/rank.hpp"
+#include "../shared/wt.hpp"
 
 using namespace std;
 using namespace shared;
@@ -38,6 +39,7 @@ int main(int argc, char *argv[]) {
 		getUsage(argv);
 		exit(1);
 	}
+	
 	if (string(argv[1]) == "basic") rankBasic(argv[2], argv[3]);
 	if (string(argv[1]) == "bch") rankBch(argv[2], argv[3]);
 	if (string(argv[1]) == "cf") rankCF(argv[2], argv[3]);
@@ -79,7 +81,7 @@ unsigned int *getPatternsForRank(const char *fileName, const char *queriesNum, u
 }
 
 void rankBasic(const char *fileName, const char *queriesNum) {
-	RankBasic<RankBasicType::STANDARD> *rank = new RankBasic<RankBasicType::STANDARD>();
+	RankBasic<RankBasicType::RANK_STANDARD> *rank = new RankBasic<RankBasicType::RANK_STANDARD>();
 	string rankFileNameString = (string)fileName + "-basic.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;
@@ -122,7 +124,7 @@ void rankBasic(const char *fileName, const char *queriesNum) {
 }
 
 void rankBch(const char *fileName, const char *queriesNum) {
-	RankBasic<RankBasicType::WITH_COMPRESSED_HEADERS> *rank = new RankBasic<RankBasicType::WITH_COMPRESSED_HEADERS>();
+	RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS> *rank = new RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>();
 	string rankFileNameString = (string)fileName + "-bch.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;
@@ -208,7 +210,7 @@ void rankCF(const char *fileName, const char *queriesNum) {
 }
 
 void rankMPE1(const char *fileName, const char *queriesNum) {
-	RankMPE<RankMPEType::V1> *rank = new RankMPE<RankMPEType::V1>();
+	RankMPE<RankMPEType::RANK_V1> *rank = new RankMPE<RankMPEType::RANK_V1>();
 	string rankFileNameString = (string)fileName + "-mpe1.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;
@@ -251,7 +253,7 @@ void rankMPE1(const char *fileName, const char *queriesNum) {
 }
 
 void rankMPE2(const char *fileName, const char *queriesNum) {
-	RankMPE<RankMPEType::V2> *rank = new RankMPE<RankMPEType::V2>();
+	RankMPE<RankMPEType::RANK_V2> *rank = new RankMPE<RankMPEType::RANK_V2>();
 	string rankFileNameString = (string)fileName + "-mpe2.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;
@@ -294,7 +296,7 @@ void rankMPE2(const char *fileName, const char *queriesNum) {
 }
 
 void rankMPE3(const char *fileName, const char *queriesNum) {
-	RankMPE<RankMPEType::V3> *rank = new RankMPE<RankMPEType::V3>();
+	RankMPE<RankMPEType::RANK_V3> *rank = new RankMPE<RankMPEType::RANK_V3>();
 	string rankFileNameString = (string)fileName + "-mpe3.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;

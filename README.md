@@ -24,8 +24,7 @@ To use the Rank&Select library:
   - rank-select/libs/libaelf64.a (linux) or samsami/libs/libacof64.lib (windows)
 - use "shared" namespace
 
-##API
-There are several functions you can call on each of the rank or select object:
+##API for rank and select
 - **build** the rank or select using text and textLen:
 ```
 void build(unsigned char *text, unsigned int textLen);
@@ -59,12 +58,46 @@ unsigned int rank(unsigned int i);
 unsigned int select(unsigned int i);
 ```
 
+##API for FMHWT index
+- **build** the index using text file called textFileName:
+```
+void build(const char *textFileName);
+```
+- **save** the index to file called fileName:
+```
+void save(const char *fileName);
+```
+- **load** the index from file called fileName:
+```
+void load(const char *fileName);
+```
+- **free** memory occupied by index:
+```
+void free();
+```
+- get the **index size** in bytes (size in memory):
+```
+unsigned int getIndexSize();
+```
+- get the size in bytes of the text used to build the index:
+```
+unsigned int getTextSize();
+```
+- get the result of **count** query:
+```
+unsigned int count(unsigned char *pattern, unsigned int patternLen);
+```
+- set **verbose** mode:
+```
+void setVerbose(bool verbose);
+```
+
 ##RankBasic\<RankBasicType T\>
 
 Parameters:
 - T:
-      - RankBasicType::STANDARD
-      - RankBasicType::WITH_COMPRESSED_HEADERS
+      - RankBasicType::RANK_STANDARD
+      - RankBasicType::RANK_WITH_COMPRESSED_HEADERS
 
 Constructors:
 ```
@@ -82,9 +115,9 @@ RankCF<RankBasicType T>();
 
 Parameters:
 - T:
-      - RankMPEType::V1
-      - RankMPEType::V2
-      - RankMPEType::V3
+      - RankMPEType::RANK_V1
+      - RankMPEType::RANK_V2
+      - RankMPEType::RANK_V3
 
 Constructors:
 ```
@@ -95,8 +128,8 @@ RankMPE<RankMPEType T>();
 
 Parameters:
 - T:
-      - SelectBasicType::STANDARD
-      - SelectBasicType::WITH_COMPRESSED_HEADERS
+      - SelectBasicType::SELECT_STANDARD
+      - SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS
 - L - ...
 - THRESHOLD - ...
 
@@ -113,9 +146,9 @@ SelectBasic<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 
 Parameters:
 - T:
-      - SelectMPEType::V1
-      - SelectMPEType::V2
-      - SelectMPEType::V3
+      - SelectMPEType::SELECT_V1
+      - SelectMPEType::SELECT_V2
+      - SelectMPEType::SELECT_V3
 - L - ...
 - THRESHOLD - ...
 
@@ -127,6 +160,48 @@ Limitations:
 Constructors:
 ```
 SelectMPE<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
+```
+
+##WT\<class RANK\>
+WT is a class representing wavelet tree structure
+
+Parameters:
+- RANK class:
+      - RankBasic<RankBasicType T>
+      - RankCF
+      - RankMPE<RankMPEType T>
+
+Constructors:
+```
+WT<class RANK>();
+```
+
+##FMHWT\<class WT\>
+
+Parameters:
+- WT class
+
+Constructors:
+```
+FMHWT<class WT>();
+```
+
+##FMHWTHash\<class WT\>
+FMHWTHash is FMHWT with hashed k-symbol prefixes of suffixes from suffix array to speed up searches (k ≥ 2). This variant is particularly efficient in speed for short patterns (not much longer than k).
+
+Parameters:
+- WT class
+- k - length of prefixes of suffixes from suffix array
+- loadFactor - hash table load factor
+
+Limitations: 
+- pattern length ≥ k (patterns shorter than k are handled by standard variant of FMHWT index)
+- k ≥ 2
+- 0.0 < loadFactor < 1.0
+
+Constructors:
+```
+FMHWTHash<class WT>();
 ```
 
 ##Rank usage example
@@ -142,7 +217,7 @@ using namespace shared;
 
 int main(int argc, char *argv[]) {
 
-	RankBasic<RankBasicType::WITH_COMPRESSED_HEADERS> *rank = new RankBasic<RankBasicType::WITH_COMPRESSED_HEADERS>();
+	RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS> *rank = new RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>();
         const char *textFileName = "english.200MB";
 	const char *rankFileName = "english.200MB-bch.rank";
 
@@ -185,7 +260,7 @@ using namespace shared;
 
 int main(int argc, char *argv[]) {
 
-	SelectMPE<SelectMPEType::V2, 128, 4096> *select = new SelectMPE<SelectMPEType::V2, 128, 4096>();
+	SelectMPE<SelectMPEType::SELECT_V2, 128, 4096> *select = new SelectMPE<SelectMPEType::SELECT_V2, 128, 4096>();
         const char *textFileName = "english.200MB";
 	const char *selectFileName = "english.200MB-bch.select";
 
@@ -214,6 +289,49 @@ int main(int argc, char *argv[]) {
 }
 ```
 Using other types of selects is analogous.
+
+##FMHWT usage example
+```
+#include <iostream>
+#include <stdlib.h>
+#include <fstream>
+#include "rank-select/shared/patterns.h"
+#include "rank-select/shared/fm.hpp"
+
+using namespace std;
+using namespace shared;
+
+int main(int argc, char *argv[]) {
+
+	unsigned int queriesNum = 1000000;
+	unsigned int patternLen = 20;
+	FMHWT<WT<RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>>> *fm = new FMHWT<WT<RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>>>();
+	const char *textFileName = "dna";
+	const char *indexFileName = "dna-FMHWT.idx";
+
+	if (fileExists(indexFileName)) {
+		fm->load(indexFileName);
+	} else {
+		fm->setVerbose(true);
+		fm->build(textFileName);
+		fm->save(indexFileName);
+	}
+
+	double indexSize = (double)fm->getIndexSize();
+	cout << "Index size: " << indexSize << "B (" << (indexSize / (double)fm->getTextSize()) << "n)" << endl << endl;
+
+	Patterns *P = new Patterns(textFileName, queriesNum, patternLen);
+	unsigned char **patterns = P->getPatterns();
+
+	for (unsigned int i = 0; i < queriesNum; ++i) {
+		cout << "Pattern |" << patterns[i] << "| occurs " << fm->count(patterns[i], patternLen) << " times." << endl;
+	}
+
+	delete fm;
+	delete P;
+}
+```
+Using other types of FMHWT indexes is analogous.
 
 ##External resources used in Rank&Select project
 - Suffix array building by Yuta Mori (sais)
