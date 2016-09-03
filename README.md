@@ -24,7 +24,7 @@ To use the Rank&Select library:
   - rank-select/libs/libaelf64.a (linux) or samsami/libs/libacof64.lib (windows)
 - use "shared" namespace
 
-##API for rank and select
+##Rank and select API
 - **build** the rank or select using text and textLen:
 ```
 void build(unsigned char *text, unsigned int textLen);
@@ -56,40 +56,6 @@ unsigned int rank(unsigned int i);
 - get the result of **select** query:
 ```
 unsigned int select(unsigned int i);
-```
-
-##API for FMHWT index
-- **build** the index using text file called textFileName:
-```
-void build(const char *textFileName);
-```
-- **save** the index to file called fileName:
-```
-void save(const char *fileName);
-```
-- **load** the index from file called fileName:
-```
-void load(const char *fileName);
-```
-- **free** memory occupied by index:
-```
-void free();
-```
-- get the **index size** in bytes (size in memory):
-```
-unsigned int getIndexSize();
-```
-- get the size in bytes of the text used to build the index:
-```
-unsigned int getTextSize();
-```
-- get the result of **count** query:
-```
-unsigned int count(unsigned char *pattern, unsigned int patternLen);
-```
-- set **verbose** mode:
-```
-void setVerbose(bool verbose);
 ```
 
 ##RankBasic\<RankBasicType T\>
@@ -160,48 +126,6 @@ Limitations:
 Constructors:
 ```
 SelectMPE<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
-```
-
-##WT\<class RANK\>
-WT is a class representing wavelet tree structure
-
-Parameters:
-- RANK class:
-      - RankBasic<RankBasicType T>
-      - RankCF
-      - RankMPE<RankMPEType T>
-
-Constructors:
-```
-WT<class RANK>();
-```
-
-##FMHWT\<class WT\>
-
-Parameters:
-- WT class
-
-Constructors:
-```
-FMHWT<class WT>();
-```
-
-##FMHWTHash\<class WT\>
-FMHWTHash is FMHWT with hashed k-symbol prefixes of suffixes from suffix array to speed up searches (k ≥ 2). This variant is particularly efficient in speed for short patterns (not much longer than k).
-
-Parameters:
-- WT class
-- k - length of prefixes of suffixes from suffix array
-- loadFactor - hash table load factor
-
-Limitations: 
-- pattern length ≥ k (patterns shorter than k are handled by standard variant of FMHWT index)
-- k ≥ 2
-- 0.0 < loadFactor < 1.0
-
-Constructors:
-```
-FMHWTHash<class WT>();
 ```
 
 ##Rank usage example
@@ -289,6 +213,82 @@ int main(int argc, char *argv[]) {
 }
 ```
 Using other types of selects is analogous.
+
+##FMHWT index API
+- **build** the index using text file called textFileName:
+```
+void build(const char *textFileName);
+```
+- **save** the index to file called fileName:
+```
+void save(const char *fileName);
+```
+- **load** the index from file called fileName:
+```
+void load(const char *fileName);
+```
+- **free** memory occupied by index:
+```
+void free();
+```
+- get the **index size** in bytes (size in memory):
+```
+unsigned int getIndexSize();
+```
+- get the size in bytes of the text used to build the index:
+```
+unsigned int getTextSize();
+```
+- get the result of **count** query:
+```
+unsigned int count(unsigned char *pattern, unsigned int patternLen);
+```
+- set **verbose** mode:
+```
+void setVerbose(bool verbose);
+```
+
+##WT\<class RANK\>
+WT is a class representing wavelet tree structure.
+
+Parameters:
+- RANK class:
+      - RankBasic\<RankBasicType T\>
+      - RankCF
+      - RankMPE\<RankMPEType T\>
+
+Constructors:
+```
+WT<class RANK>();
+```
+
+##FMHWT\<class WT\>
+
+Parameters:
+- WT class
+
+Constructors:
+```
+FMHWT<class WT>();
+```
+
+##FMHWTHash\<class WT\>
+FMHWTHash is FMHWT with hashed k-symbol prefixes of suffixes from suffix array to speed up searches (k ≥ 2). This variant is particularly efficient in speed for short patterns (not much longer than k).
+
+Parameters:
+- WT class
+- k - length of prefixes of suffixes from suffix array
+- loadFactor - hash table load factor
+
+Limitations: 
+- pattern length ≥ k (patterns shorter than k are handled by standard variant of FMHWT index)
+- k ≥ 2
+- 0.0 < loadFactor < 1.0
+
+Constructors:
+```
+FMHWTHash<class WT>();
+```
 
 ##FMHWT usage example
 ```
