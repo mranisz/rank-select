@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 }
 
 void fmHWTBasic(const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWT<WT<RankBasic<RankBasicType::RANK_STANDARD>>> *fm = new FMHWT<WT<RankBasic<RankBasicType::RANK_STANDARD>>>();
+	FMHWT<WT<RankBasic<RANK_BASIC_STANDARD>>> *fm = new FMHWT<WT<RankBasic<RANK_BASIC_STANDARD>>>();
 	string indexFileNameString = "FMHWT-" + (string)textFileName + "-basic.idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -117,7 +117,7 @@ void fmHWTBasic(const char *textFileName, unsigned int queriesNum, unsigned int 
 }
 
 void fmHWTBch(const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWT<WT<RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>>> *fm = new FMHWT<WT<RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>>>();
+	FMHWT<WT<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>> *fm = new FMHWT<WT<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>>();
 	string indexFileNameString = "FMHWT-" + (string)textFileName + "-bch.idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -215,7 +215,7 @@ void fmHWTCF(const char *textFileName, unsigned int queriesNum, unsigned int m) 
 }
 
 void fmHWTMPE1(const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWT<WT<RankMPE<RankMPEType::RANK_V1>>> *fm = new FMHWT<WT<RankMPE<RankMPEType::RANK_V1>>>();
+	FMHWT<WT<RankMPE<RANK_MPE1>>> *fm = new FMHWT<WT<RankMPE<RANK_MPE1>>>();
 	string indexFileNameString = "FMHWT-" + (string)textFileName + "-mpe1.idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -264,7 +264,7 @@ void fmHWTMPE1(const char *textFileName, unsigned int queriesNum, unsigned int m
 }
 
 void fmHWTMPE2(const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWT<WT<RankMPE<RankMPEType::RANK_V2>>> *fm = new FMHWT<WT<RankMPE<RankMPEType::RANK_V2>>>();
+	FMHWT<WT<RankMPE<RANK_MPE2>>> *fm = new FMHWT<WT<RankMPE<RANK_MPE2>>>();
 	string indexFileNameString = "FMHWT-" + (string)textFileName + "-mpe2.idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -313,7 +313,7 @@ void fmHWTMPE2(const char *textFileName, unsigned int queriesNum, unsigned int m
 }
 
 void fmHWTMPE3(const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWT<WT<RankMPE<RankMPEType::RANK_V3>>> *fm = new FMHWT<WT<RankMPE<RankMPEType::RANK_V3>>>();
+	FMHWT<WT<RankMPE<RANK_MPE3>>> *fm = new FMHWT<WT<RankMPE<RANK_MPE3>>>();
 	string indexFileNameString = "FMHWT-" + (string)textFileName + "-mpe3.idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -362,7 +362,7 @@ void fmHWTMPE3(const char *textFileName, unsigned int queriesNum, unsigned int m
 }
 
 void fmHWTHashBasic(string k, string loadFactor, const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWTHash<WT<RankBasic<RankBasicType::RANK_STANDARD>>> *fm = new FMHWTHash<WT<RankBasic<RankBasicType::RANK_STANDARD>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
+	FMHWTHash<WT<RankBasic<RANK_BASIC_STANDARD>>> *fm = new FMHWTHash<WT<RankBasic<RANK_BASIC_STANDARD>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
 	string indexFileNameString = "FMHWT-hash-basic-" + (string)textFileName + "-" +  k + "-" + loadFactor + ".idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -411,7 +411,7 @@ void fmHWTHashBasic(string k, string loadFactor, const char *textFileName, unsig
 }
 
 void fmHWTHashBch(string k, string loadFactor, const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWTHash<WT<RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>>> *fm = new FMHWTHash<WT<RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
+	FMHWTHash<WT<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>> *fm = new FMHWTHash<WT<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
 	string indexFileNameString = "FMHWT-hash-bch-" + (string)textFileName + "-" +  k + "-" + loadFactor + ".idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -509,7 +509,7 @@ void fmHWTHashCF(string k, string loadFactor, const char *textFileName, unsigned
 }
 
 void fmHWTHashMPE1(string k, string loadFactor, const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWTHash<WT<RankMPE<RankMPEType::RANK_V1>>> *fm = new FMHWTHash<WT<RankMPE<RankMPEType::RANK_V1>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
+	FMHWTHash<WT<RankMPE<RANK_MPE1>>> *fm = new FMHWTHash<WT<RankMPE<RANK_MPE1>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
 	string indexFileNameString = "FMHWT-hash-mpe1-" + (string)textFileName + "-" +  k + "-" + loadFactor + ".idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -558,7 +558,7 @@ void fmHWTHashMPE1(string k, string loadFactor, const char *textFileName, unsign
 }
 
 void fmHWTHashMPE2(string k, string loadFactor, const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWTHash<WT<RankMPE<RankMPEType::RANK_V2>>> *fm = new FMHWTHash<WT<RankMPE<RankMPEType::RANK_V2>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
+	FMHWTHash<WT<RankMPE<RANK_MPE2>>> *fm = new FMHWTHash<WT<RankMPE<RANK_MPE2>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
 	string indexFileNameString = "FMHWT-hash-mpe2-" + (string)textFileName + "-" +  k + "-" + loadFactor + ".idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 
@@ -607,7 +607,7 @@ void fmHWTHashMPE2(string k, string loadFactor, const char *textFileName, unsign
 }
 
 void fmHWTHashMPE3(string k, string loadFactor, const char *textFileName, unsigned int queriesNum, unsigned int m) {
-	FMHWTHash<WT<RankMPE<RankMPEType::RANK_V3>>> *fm = new FMHWTHash<WT<RankMPE<RankMPEType::RANK_V3>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
+	FMHWTHash<WT<RankMPE<RANK_MPE3>>> *fm = new FMHWTHash<WT<RankMPE<RANK_MPE3>>>(atoi(k.c_str()), atof(loadFactor.c_str()));
 	string indexFileNameString = "FMHWT-hash-mpe3-" + (string)textFileName + "-" +  k + "-" + loadFactor + ".idx";
 	char *indexFileName = (char *)indexFileNameString.c_str();
 

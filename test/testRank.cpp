@@ -81,7 +81,7 @@ unsigned int *getPatternsForRank(const char *fileName, const char *queriesNum, u
 }
 
 void rankBasic(const char *fileName, const char *queriesNum) {
-	RankBasic<RankBasicType::RANK_STANDARD> *rank = new RankBasic<RankBasicType::RANK_STANDARD>();
+	RankBasic<RANK_BASIC_STANDARD> *rank = new RankBasic<RANK_BASIC_STANDARD>();
 	string rankFileNameString = (string)fileName + "-basic.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;
@@ -124,7 +124,7 @@ void rankBasic(const char *fileName, const char *queriesNum) {
 }
 
 void rankBch(const char *fileName, const char *queriesNum) {
-	RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS> *rank = new RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>();
+	RankBasic<RANK_BASIC_COMPRESSED_HEADERS> *rank = new RankBasic<RANK_BASIC_COMPRESSED_HEADERS>();
 	string rankFileNameString = (string)fileName + "-bch.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;
@@ -210,7 +210,7 @@ void rankCF(const char *fileName, const char *queriesNum) {
 }
 
 void rankMPE1(const char *fileName, const char *queriesNum) {
-	RankMPE<RankMPEType::RANK_V1> *rank = new RankMPE<RankMPEType::RANK_V1>();
+	RankMPE<RANK_MPE1> *rank = new RankMPE<RANK_MPE1>();
 	string rankFileNameString = (string)fileName + "-mpe1.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;
@@ -253,7 +253,7 @@ void rankMPE1(const char *fileName, const char *queriesNum) {
 }
 
 void rankMPE2(const char *fileName, const char *queriesNum) {
-	RankMPE<RankMPEType::RANK_V2> *rank = new RankMPE<RankMPEType::RANK_V2>();
+	RankMPE<RANK_MPE2> *rank = new RankMPE<RANK_MPE2>();
 	string rankFileNameString = (string)fileName + "-mpe2.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;
@@ -296,7 +296,7 @@ void rankMPE2(const char *fileName, const char *queriesNum) {
 }
 
 void rankMPE3(const char *fileName, const char *queriesNum) {
-	RankMPE<RankMPEType::RANK_V3> *rank = new RankMPE<RankMPEType::RANK_V3>();
+	RankMPE<RANK_MPE3> *rank = new RankMPE<RANK_MPE3>();
 	string rankFileNameString = (string)fileName + "-mpe3.rank";
 	const char *rankFileName = rankFileNameString.c_str();
 	unsigned int textLen;

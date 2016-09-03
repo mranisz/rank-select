@@ -62,8 +62,8 @@ unsigned int select(unsigned int i);
 
 Parameters:
 - T:
-      - RankBasicType::RANK_STANDARD
-      - RankBasicType::RANK_WITH_COMPRESSED_HEADERS
+      - RANK_BASIC_STANDARD
+      - RANK_BASIC_COMPRESSED_HEADERS
 
 Constructors:
 ```
@@ -81,9 +81,9 @@ RankCF<RankBasicType T>();
 
 Parameters:
 - T:
-      - RankMPEType::RANK_V1
-      - RankMPEType::RANK_V2
-      - RankMPEType::RANK_V3
+      - RANK_MPE1
+      - RANK_MPE2
+      - RANK_MPE3
 
 Constructors:
 ```
@@ -94,8 +94,8 @@ RankMPE<RankMPEType T>();
 
 Parameters:
 - T:
-      - SelectBasicType::SELECT_STANDARD
-      - SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS
+      - SELECT_BASIC_STANDARD
+      - SELECT_BASIC_COMPRESSED_HEADERS
 - L - ...
 - THRESHOLD - ...
 
@@ -112,9 +112,9 @@ SelectBasic<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 
 Parameters:
 - T:
-      - SelectMPEType::SELECT_V1
-      - SelectMPEType::SELECT_V2
-      - SelectMPEType::SELECT_V3
+      - SELECT_MPE1
+      - SELECT_MPE2
+      - SELECT_MPE3
 - L - ...
 - THRESHOLD - ...
 
@@ -141,7 +141,7 @@ using namespace shared;
 
 int main(int argc, char *argv[]) {
 
-	RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS> *rank = new RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>();
+	RankBasic<RANK_BASIC_COMPRESSED_HEADERS> *rank = new RankBasic<RANK_BASIC_COMPRESSED_HEADERS>();
         const char *textFileName = "english.200MB";
 	const char *rankFileName = "english.200MB-bch.rank";
 
@@ -184,7 +184,7 @@ using namespace shared;
 
 int main(int argc, char *argv[]) {
 
-	SelectMPE<SelectMPEType::SELECT_V2, 128, 4096> *select = new SelectMPE<SelectMPEType::SELECT_V2, 128, 4096>();
+	SelectMPE<SELECT_MPE2, 128, 4096> *select = new SelectMPE<SELECT_MPE2, 128, 4096>();
         const char *textFileName = "english.200MB";
 	const char *selectFileName = "english.200MB-bch.select";
 
@@ -305,7 +305,7 @@ int main(int argc, char *argv[]) {
 
 	unsigned int queriesNum = 1000000;
 	unsigned int patternLen = 20;
-	FMHWT<WT<RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>>> *fm = new FMHWT<WT<RankBasic<RankBasicType::RANK_WITH_COMPRESSED_HEADERS>>>();
+	FMHWT<WT<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>> *fm = new FMHWT<WT<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>>();
 	const char *textFileName = "dna";
 	const char *indexFileName = "dna-FMHWT.idx";
 
@@ -331,7 +331,7 @@ int main(int argc, char *argv[]) {
 	delete P;
 }
 ```
-Using other types of FMHWT indexes is analogous.
+Using other types of FMHWT index is analogous.
 
 ##External resources used in Rank&Select project
 - Suffix array building by Yuta Mori (sais)

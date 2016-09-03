@@ -8,8 +8,8 @@ using namespace std;
 namespace shared {
     
 enum RankBasicType {
-        RANK_STANDARD = 1,
-        RANK_WITH_COMPRESSED_HEADERS = 2
+        RANK_BASIC_STANDARD = 1,
+        RANK_BASIC_COMPRESSED_HEADERS = 2
 };
 
 template<RankBasicType T> class RankBasic {
@@ -413,7 +413,7 @@ public:
             for (unsigned int i = 0; i < extendedTextLen / BLOCK_LEN; ++i) if (!emptyBlock[i]) ++notEmptyBlocks;
 
             switch(T) {
-                case RankBasicType::RANK_WITH_COMPRESSED_HEADERS:
+                case RankBasicType::RANK_BASIC_COMPRESSED_HEADERS:
                     this->build_bch(text, extendedTextLen, emptyBlock, notEmptyBlocks);
                     break;
                 default:
@@ -426,7 +426,7 @@ public:
         
         unsigned int rank(unsigned int i) {
                 switch(T) {
-                case RankBasicType::RANK_WITH_COMPRESSED_HEADERS:
+                case RankBasicType::RANK_BASIC_COMPRESSED_HEADERS:
                         return this->getRank_bch(i);
                         break;
                 default:
@@ -873,9 +873,9 @@ public:
 };
 
 enum RankMPEType {
-        RANK_V1 = 1,
-        RANK_V2 = 2,
-        RANK_V3 = 3
+        RANK_MPE1 = 1,
+        RANK_MPE2 = 2,
+        RANK_MPE3 = 3
 };
 
 template<RankMPEType T> class RankMPE {
@@ -1140,7 +1140,7 @@ private:
                     if ((bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255)) ++pairs255ToRemoveInBlock;
                 }
                 switch(T) {
-                    case RankMPEType::RANK_V2:
+                    case RankMPEType::RANK_MPE2:
                         if (pairs0ToRemoveInBlock > 2 && pairs255ToRemoveInBlock > 2) {
                             pairsToRemove += (pairs0ToRemoveInBlock + pairs255ToRemoveInBlock);
                             ++compressedBlocks;
@@ -1674,7 +1674,7 @@ public:
 
         void build(unsigned char *text, unsigned int textLen) {
             switch(T) {
-                case RankMPEType::RANK_V1:
+                case RankMPEType::RANK_MPE1:
                     this->build_v1(text, textLen);
                     break;
                 default:
@@ -1685,7 +1685,7 @@ public:
         
         unsigned int rank(unsigned int i) {
                 switch(T) {
-                case RankMPEType::RANK_V1:
+                case RankMPEType::RANK_MPE1:
                         return this->getRank_v1(i);
                         break;
                 default:

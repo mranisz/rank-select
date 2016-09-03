@@ -8,8 +8,8 @@ using namespace std;
 namespace shared {
     
 enum SelectBasicType {
-        SELECT_STANDARD = 1,
-        SELECT_WITH_COMPRESSED_HEADERS = 2
+        SELECT_BASIC_STANDARD = 1,
+        SELECT_BASIC_COMPRESSED_HEADERS = 2
 };
     
 template<SelectBasicType T, unsigned int L, unsigned int THRESHOLD> class SelectBasic {
@@ -446,7 +446,7 @@ public:
                 cout << "Error: not valid L and THRESHOLD values (THRESHOLD should be greater than L)" << endl;
                 exit(1);
             }
-            if (T == SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS) {
+            if (T == SelectBasicType::SELECT_BASIC_COMPRESSED_HEADERS) {
                 if ((L - 1) * 4 > (65535 / (SUPERBLOCKLEN - 1)) || (THRESHOLD - 1) > (8 * (65535 / (SUPERBLOCKLEN - 1)))) {
                     cout << "Error: not valid L and THRESHOLD values" << endl;
                     exit(1);
@@ -461,7 +461,7 @@ public:
 
         void build(unsigned char *text, unsigned int textLen) {
             switch(T) {
-                case SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS:
+                case SelectBasicType::SELECT_BASIC_COMPRESSED_HEADERS:
                     this->build_bch(text, textLen);
                     break;
                 default:
@@ -472,7 +472,7 @@ public:
         
         unsigned int select(unsigned int i) {
             switch(T) {
-            case SelectBasicType::SELECT_WITH_COMPRESSED_HEADERS:
+            case SelectBasicType::SELECT_BASIC_COMPRESSED_HEADERS:
                 return this->getSelect_bch(i);
                 break;
             default:
@@ -563,9 +563,9 @@ public:
 };
 
 enum SelectMPEType {
-        SELECT_V1 = 1,
-        SELECT_V2 = 2,
-        SELECT_V3 = 3
+        SELECT_MPE1 = 1,
+        SELECT_MPE2 = 2,
+        SELECT_MPE3 = 3
 };
 
 template<SelectMPEType T, unsigned int L, unsigned int THRESHOLD> class SelectMPE {
@@ -1002,7 +1002,7 @@ private:
                             }
                             bitTableLen = (((blockLenInBits - 1) / 128) + 1);
                             switch(T) {
-                                case SelectMPEType::SELECT_V2:
+                                case SelectMPEType::SELECT_MPE2:
                                     if (2 * pairs0ToRemoveInBlock > bitTableLen && 2 * pairs255ToRemoveInBlock > bitTableLen) {
                                             pairsToRemove += (pairs0ToRemoveInBlock + pairs255ToRemoveInBlock);
                                             addedBitTablesInBytes += (2 * bitTableLen);
@@ -1728,7 +1728,7 @@ public:
                     exit(1);
                 }
                 switch(T) {
-                    case SelectMPEType::SELECT_V1:
+                    case SelectMPEType::SELECT_MPE1:
                         if ((L - 1) * 4 > (32767 / (SUPERBLOCKLEN - 1)) || (THRESHOLD - 1) > (8 * (32767 / (SUPERBLOCKLEN - 1)))) {
                             cout << "Error: not valid L and THRESHOLD values" << endl;
                             exit(1);
@@ -1749,7 +1749,7 @@ public:
 
         void build(unsigned char *text, unsigned int textLen) {
             switch(T) {
-                case SelectMPEType::SELECT_V1:
+                case SelectMPEType::SELECT_MPE1:
                     this->build_v1(text, textLen);
                     break;
                 default:
@@ -1760,7 +1760,7 @@ public:
         
         unsigned int select(unsigned int i) {
                 switch(T) {
-                case SelectMPEType::SELECT_V1:
+                case SelectMPEType::SELECT_MPE1:
                         return this->getSelect_v1(i);
                         break;
                 default:
