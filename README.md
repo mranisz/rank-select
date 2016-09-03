@@ -24,7 +24,7 @@ To use the Rank&Select library:
   - rank-select/libs/libaelf64.a (linux) or samsami/libs/libacof64.lib (windows)
 - use "shared" namespace
 
-##Rank and select API
+##API (rank and select)
 - **build** the rank or select using text and textLen:
 ```
 void build(unsigned char *text, unsigned int textLen);
@@ -214,7 +214,7 @@ int main(int argc, char *argv[]) {
 ```
 Using other types of selects is analogous.
 
-##FMHWT index API
+##API (FMHWT index)
 - **build** the index using text file called textFileName:
 ```
 void build(const char *textFileName);
