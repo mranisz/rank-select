@@ -101,7 +101,7 @@ Parameters:
 
 Limitations: 
 - THRESHOLD > L
-- L < 1094 and THRESHOLD < 34954 (for SelectBasicType::WITH_COMPRESSED_HEADERS)
+- L < 1094 and THRESHOLD < 34954 (for SELECT_BASIC_COMPRESSED_HEADERS)
 
 Constructors:
 ```
@@ -120,8 +120,8 @@ Parameters:
 
 Limitations: 
 - THRESHOLD > L
-- L < 548 and THRESHOLD < 17474 (for SelectMPEType::V1)
-- L < 275 and THRESHOLD < 8770 (for SelectMPEType::V2 and SelectMPEType::V3)
+- L < 548 and THRESHOLD < 17474 (for SELECT_MPE1)
+- L < 275 and THRESHOLD < 8770 (for SELECT_MPE2 or SELECT_MPE3)
 
 Constructors:
 ```
@@ -142,7 +142,7 @@ using namespace shared;
 int main(int argc, char *argv[]) {
 
 	RankBasic<RANK_BASIC_COMPRESSED_HEADERS> *rank = new RankBasic<RANK_BASIC_COMPRESSED_HEADERS>();
-        const char *textFileName = "english.200MB";
+	const char *textFileName = "english.200MB";
 	const char *rankFileName = "english.200MB-bch.rank";
 
 	if (fileExists(rankFileName)) {
@@ -152,9 +152,9 @@ int main(int argc, char *argv[]) {
 		fclose(inFile);
 	} else {
 		unsigned int textLen;
-                unsigned char* text = readText(textFileName, textLen, 0);
+		unsigned char* text = readText(textFileName, textLen, 0);
 		rank->build(text, textLen);
-                delete[] text;
+		delete[] text;
 		FILE *outFile;
 		outFile = fopen(rankFileName, "w");
 		rank->save(outFile);
@@ -185,7 +185,7 @@ using namespace shared;
 int main(int argc, char *argv[]) {
 
 	SelectMPE<SELECT_MPE2, 128, 4096> *select = new SelectMPE<SELECT_MPE2, 128, 4096>();
-        const char *textFileName = "english.200MB";
+	const char *textFileName = "english.200MB";
 	const char *selectFileName = "english.200MB-bch.select";
 
 	if (fileExists(selectFileName)) {
@@ -195,9 +195,9 @@ int main(int argc, char *argv[]) {
 		fclose(inFile);
 	} else {
 		unsigned int textLen;
-                unsigned char* text = readText(textFileName, textLen, 0);
+		unsigned char* text = readText(textFileName, textLen, 0);
 		select->build(text, textLen);
-                delete[] text;
+		delete[] text;
 		FILE *outFile;
 		outFile = fopen(selectFileName, "w");
 		select->save(outFile);
