@@ -145,67 +145,67 @@ void checkNullChar(unsigned char *text, unsigned int textLen) {
 	}
 }
 
-unsigned int *getSA(unsigned char *text, unsigned int textLen, unsigned int &saLen, unsigned int addLen, bool verbose) {
+unsigned int *getSA(unsigned char *text, unsigned int textLen, unsigned int &saLen, unsigned int addLen) {
 	saLen = textLen + 1;
-	if (verbose) cout << "Building SA ... " << flush;
+	cout << "Building SA ... " << flush;
 	unsigned int *sa = new unsigned int[saLen + addLen];
 	sa[0] = textLen;
 	++sa;
 	sais(text, (int *)sa, textLen);
 	--sa;
-	if (verbose) cout << "Done" << endl;
+	cout << "Done" << endl;
 	return sa;
 }
 
-unsigned int *getSA(const char *textFileName, unsigned int &saLen, unsigned int addLen, bool verbose) {
-        stringstream ss;
+unsigned int *getSA(const char *textFileName, unsigned int &saLen, unsigned int addLen) {
+	stringstream ss;
 	ss << "SA-" << textFileName << ".dat";
 	string s = ss.str();
 	char *saFileName = (char *)(s.c_str());
-        unsigned int *sa;
-        if (!fileExists(saFileName)) {
-                unsigned int textLen;
-		unsigned char *text = readFileChar(textFileName, textLen, 0);
-                sa = getSA(text, textLen, saLen, addLen, verbose);
-                delete[] text;
-                if (verbose) cout << "Saving SA in " << saFileName << " ... " << flush;
-                FILE *outFile;
-                outFile = fopen(saFileName, "w");
-                fwrite(sa, (size_t)(sizeof(unsigned int)), (size_t)saLen, outFile);
-                fclose(outFile);
-        } 
-        else {
-                if (verbose) cout << "Loading SA from " << saFileName << " ... " << flush;
-                sa = readFileInt(saFileName, saLen, addLen);
-        }
-        if (verbose) cout << "Done" << endl;
-        return sa;
+	unsigned int *sa;
+	if (!fileExists(saFileName)) {
+			unsigned int textLen;
+	unsigned char *text = readFileChar(textFileName, textLen, 0);
+			sa = getSA(text, textLen, saLen, addLen);
+			delete[] text;
+			cout << "Saving SA in " << saFileName << " ... " << flush;
+			FILE *outFile;
+			outFile = fopen(saFileName, "w");
+			fwrite(sa, (size_t)(sizeof(unsigned int)), (size_t)saLen, outFile);
+			fclose(outFile);
+	} 
+	else {
+			cout << "Loading SA from " << saFileName << " ... " << flush;
+			sa = readFileInt(saFileName, saLen, addLen);
+	}
+	cout << "Done" << endl;
+	return sa;
 }
 
-unsigned int *getSA(const char *textFileName, unsigned char *text, unsigned int textLen, unsigned int &saLen, unsigned int addLen, bool verbose) {
-        stringstream ss;
+unsigned int *getSA(const char *textFileName, unsigned char *text, unsigned int textLen, unsigned int &saLen, unsigned int addLen) {
+	stringstream ss;
 	ss << "SA-" << textFileName << ".dat";
 	string s = ss.str();
 	char *saFileName = (char *)(s.c_str());
-        unsigned int *sa;
-        if (!fileExists(saFileName)) {
-                sa = getSA(text, textLen, saLen, addLen, verbose);
-                if (verbose) cout << "Saving SA in " << saFileName << " ... " << flush;
-                FILE *outFile;
-                outFile = fopen(saFileName, "w");
-                fwrite(sa, (size_t)(sizeof(unsigned int)), (size_t)saLen, outFile);
-                fclose(outFile);
-        } 
-        else {
-                if (verbose) cout << "Loading SA from " << saFileName << " ... " << flush;
-                sa = readFileInt(saFileName, saLen, addLen);
-        }
-        if (verbose) cout << "Done" << endl;
-        return sa;
+	unsigned int *sa;
+	if (!fileExists(saFileName)) {
+			sa = getSA(text, textLen, saLen, addLen);
+			cout << "Saving SA in " << saFileName << " ... " << flush;
+			FILE *outFile;
+			outFile = fopen(saFileName, "w");
+			fwrite(sa, (size_t)(sizeof(unsigned int)), (size_t)saLen, outFile);
+			fclose(outFile);
+	} 
+	else {
+			cout << "Loading SA from " << saFileName << " ... " << flush;
+			sa = readFileInt(saFileName, saLen, addLen);
+	}
+	cout << "Done" << endl;
+	return sa;
 }
 
-unsigned char *getBWT(unsigned char *text, unsigned int textLen, unsigned int *sa, unsigned int saLen, unsigned int &bwtLen, unsigned int addLen, bool verbose) {
-	if (verbose) cout << "Building BWT ... " << flush;
+unsigned char *getBWT(unsigned char *text, unsigned int textLen, unsigned int *sa, unsigned int saLen, unsigned int &bwtLen, unsigned int addLen) {
+	cout << "Building BWT ... " << flush;
 	bwtLen = textLen + 1;
 	unsigned char *bwt = new unsigned char[bwtLen + 1 + addLen];
 	bwt[bwtLen + addLen] = '\0';
@@ -214,28 +214,28 @@ unsigned char *getBWT(unsigned char *text, unsigned int textLen, unsigned int *s
 		if (sa[i] == 0) bwt[i] = '\0';
 		else bwt[i] = text[sa[i] - 1];
 	}
-	if (verbose) cout << "Done" << endl;
+	cout << "Done" << endl;
 	return bwt;
 }
 
-unsigned char *getBWT(unsigned char *text, unsigned int textLen, unsigned int &bwtLen, unsigned int addLen, bool verbose) {
+unsigned char *getBWT(unsigned char *text, unsigned int textLen, unsigned int &bwtLen, unsigned int addLen) {
 	unsigned int saLen;
-	unsigned int *sa = getSA(text, textLen, saLen, 0, verbose);
-	unsigned char *bwt = getBWT(text, textLen, sa, saLen, bwtLen, addLen, verbose);
+	unsigned int *sa = getSA(text, textLen, saLen, 0);
+	unsigned char *bwt = getBWT(text, textLen, sa, saLen, bwtLen, addLen);
 	delete[] sa;
 	return bwt;
 }
 
-unsigned char *getBWT(const char *textFileName, unsigned char *text, unsigned int textLen, unsigned int &bwtLen, unsigned int addLen, bool verbose) {
+unsigned char *getBWT(const char *textFileName, unsigned char *text, unsigned int textLen, unsigned int &bwtLen, unsigned int addLen) {
 	unsigned int saLen;
-	unsigned int *sa = getSA(textFileName, text, textLen, saLen, 0, verbose);
-	unsigned char *bwt = getBWT(text, textLen, sa, saLen, bwtLen, addLen, verbose);
+	unsigned int *sa = getSA(textFileName, text, textLen, saLen, 0);
+	unsigned char *bwt = getBWT(text, textLen, sa, saLen, bwtLen, addLen);
 	delete[] sa;
 	return bwt;
 }
 
-void fillArrayC(unsigned char *text, unsigned int textLen, unsigned int* C, bool verbose) {
-	if (verbose) cout << "Building array C ... " << flush;
+void fillArrayC(unsigned char *text, unsigned int textLen, unsigned int* C) {
+	cout << "Building array C ... " << flush;
 	for (int i = 0; i < 257; ++i) C[i] = 0;
 	for (unsigned int i = 0; i < textLen; ++i) {
 		++C[text[i] + 1];
@@ -244,7 +244,7 @@ void fillArrayC(unsigned char *text, unsigned int textLen, unsigned int* C, bool
 	for (int i = 0; i < 256; ++i) {
 		C[i + 1] += C[i];
 	}
-	if (verbose) cout << "Done" << endl;
+	cout << "Done" << endl;
 }
 
 string getStringFromSelectedChars(vector<unsigned char> selectedChars, string separator) {

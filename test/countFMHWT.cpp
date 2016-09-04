@@ -75,7 +75,6 @@ void fmHWTBasic(const char *textFileName, unsigned int queriesNum, unsigned int 
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -124,7 +123,6 @@ void fmHWTBch(const char *textFileName, unsigned int queriesNum, unsigned int m)
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -173,7 +171,6 @@ void fmHWTCF(const char *textFileName, unsigned int queriesNum, unsigned int m) 
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -222,7 +219,6 @@ void fmHWTMPE1(const char *textFileName, unsigned int queriesNum, unsigned int m
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -271,7 +267,6 @@ void fmHWTMPE2(const char *textFileName, unsigned int queriesNum, unsigned int m
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -320,7 +315,6 @@ void fmHWTMPE3(const char *textFileName, unsigned int queriesNum, unsigned int m
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -369,7 +363,6 @@ void fmHWTHashBasic(string k, string loadFactor, const char *textFileName, unsig
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -418,7 +411,6 @@ void fmHWTHashBch(string k, string loadFactor, const char *textFileName, unsigne
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -467,7 +459,6 @@ void fmHWTHashCF(string k, string loadFactor, const char *textFileName, unsigned
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -516,7 +507,6 @@ void fmHWTHashMPE1(string k, string loadFactor, const char *textFileName, unsign
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -565,7 +555,6 @@ void fmHWTHashMPE2(string k, string loadFactor, const char *textFileName, unsign
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
@@ -614,7 +603,6 @@ void fmHWTHashMPE3(string k, string loadFactor, const char *textFileName, unsign
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}

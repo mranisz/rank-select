@@ -7,7 +7,7 @@
 
 namespace shared {
 
-template<class WT> class FMHWT : public Index {
+template<class WT> class FMHWT {
 protected:
 	WT *wt;
 	alignas(128) unsigned long long code[256];
@@ -58,23 +58,22 @@ public:
             unsigned char *text = readText(textFileName, this->textLen, 0);
             checkNullChar(text, this->textLen);
             unsigned int bwtLen;
-            unsigned char *bwt = getBWT(textFileName, text, this->textLen, bwtLen, 0, this->verbose);
-            if (this->verbose) cout << "Huffman encoding ... " << flush;
+            unsigned char *bwt = getBWT(textFileName, text, this->textLen, bwtLen, 0);
+            cout << "Huffman encoding ... " << flush;
             encodeHuffFromText(2, bwt, bwtLen, this->code, this->codeLen);
-            if (this->verbose) cout << "Done" << endl;
-            if (this->verbose) cout << "Building WT ... " << flush;
+            cout << "Done" << endl;
+            cout << "Building WT ... " << flush;
             this->wt = WT::createHWT(bwt, bwtLen, 0, this->code, this->codeLen);
             delete[] bwt;
-            if (this->verbose) cout << "Done" << endl;
-            fillArrayC(text, this->textLen, this->c, verbose);
+            cout << "Done" << endl;
+            fillArrayC(text, this->textLen, this->c);
             delete[] text;
-            if (this->verbose) cout << "Index successfully built" << endl;
+            cout << "Index successfully built" << endl;
         }
         
         void save(FILE *outFile) {
             bool nullPointer = false;
             bool notNullPointer = true;
-            fwrite(&this->verbose, (size_t)sizeof(bool), (size_t)1, outFile);
             fwrite(&this->textLen, (size_t)sizeof(unsigned int), (size_t)1, outFile);
             fwrite(this->c, (size_t)sizeof(unsigned int), (size_t)257, outFile);
             fwrite(this->code, (size_t)sizeof(unsigned long long), (size_t)256, outFile);
@@ -87,24 +86,17 @@ public:
         }
         
 	void save(const char *fileName) {
-            if (this->verbose) cout << "Saving index in " << fileName << " ... " << flush;
-            FILE *outFile;
-            outFile = fopen(fileName, "w");
+            cout << "Saving index in " << fileName << " ... " << flush;
+            FILE *outFile = fopen(fileName, "w");
             this->save(outFile);
             fclose(outFile);
-            if (this->verbose) cout << "Done" << endl;
+            cout << "Done" << endl;
         }
         
 	void load(FILE *inFile) {
             this->free();
             bool isNotNullPointer;
-            size_t result;
-            result = fread(&this->verbose, (size_t)sizeof(bool), (size_t)1, inFile);
-            if (result != 1) {
-                    cout << "Error loading index" << endl;
-                    exit(1);
-            }
-            result = fread(&this->textLen, (size_t)sizeof(unsigned int), (size_t)1, inFile);
+            size_t result = fread(&this->textLen, (size_t)sizeof(unsigned int), (size_t)1, inFile);
             if (result != 1) {
                     cout << "Error loading index" << endl;
                     exit(1);
@@ -136,19 +128,11 @@ public:
         }
         
         void load(const char *fileName) {
-            FILE *inFile;
-            inFile = fopen(fileName, "rb");
-            size_t result;
-            result = fread(&this->verbose, (size_t)sizeof(bool), (size_t)1, inFile);
-            if (result != 1) {
-                    cout << "Error loading index" << endl;
-                    exit(1);
-            }
-            if (this->verbose) cout << "Loading index from " << fileName << " ... " << flush;
-            rewind(inFile);
+            FILE *inFile = fopen(fileName, "rb");
+            cout << "Loading index from " << fileName << " ... " << flush;
             this->load(inFile);
             fclose(inFile);
-            if (this->verbose) cout << "Done" << endl;
+            cout << "Done" << endl;
         }
         
 	void free() {
@@ -199,22 +183,22 @@ public:
             checkNullChar(text, this->textLen);
             unsigned int bwtLen;
             unsigned int saLen;
-            unsigned int *sa = getSA(textFileName, text, this->textLen, saLen, 0, this->verbose);
-            if (this->verbose) cout << "Building hash table ... " << flush;
+            unsigned int *sa = getSA(textFileName, text, this->textLen, saLen, 0);
+            cout << "Building hash table ... " << flush;
             this->ht->build(text, this->textLen, sa, saLen);
-            if (this->verbose) cout << "Done" << endl;
-            unsigned char *bwt = getBWT(text, this->textLen, sa, saLen, bwtLen, 0, this->verbose);
+            cout << "Done" << endl;
+            unsigned char *bwt = getBWT(text, this->textLen, sa, saLen, bwtLen, 0);
             delete[] sa;
-            if (this->verbose) cout << "Huffman encoding ... " << flush;
+            cout << "Huffman encoding ... " << flush;
             encodeHuffFromText(2, bwt, bwtLen, this->code, this->codeLen);
-            if (this->verbose) cout << "Done" << endl;
-            if (this->verbose) cout << "Building WT ... " << flush;
+            cout << "Done" << endl;
+            cout << "Building WT ... " << flush;
             this->wt = WT::createHWT(bwt, bwtLen, 0, this->code, this->codeLen);
             delete[] bwt;
-            if (this->verbose) cout << "Done" << endl;
-            fillArrayC(text, this->textLen, this->c, this->verbose);
+            cout << "Done" << endl;
+            fillArrayC(text, this->textLen, this->c);
             delete[] text;
-            if (this->verbose) cout << "Index successfully built" << endl;
+            cout << "Index successfully built" << endl;
         }
         
 	void save(FILE *outFile) {
@@ -223,12 +207,11 @@ public:
         }
         
         void save(const char *fileName) {
-            if (this->verbose) cout << "Saving index in " << fileName << " ... " << flush;
-            FILE *outFile;
-            outFile = fopen(fileName, "w");
+            cout << "Saving index in " << fileName << " ... " << flush;
+            FILE *outFile = fopen(fileName, "w");
             this->save(outFile);
             fclose(outFile);
-            if (this->verbose) cout << "Done" << endl;
+            cout << "Done" << endl;
         }
         
 	void load(FILE *inFile) {
@@ -239,19 +222,11 @@ public:
         }
         
         void load(const char *fileName) {
-            FILE *inFile;
-            inFile = fopen(fileName, "rb");
-            size_t result;
-            result = fread(&this->verbose, (size_t)sizeof(bool), (size_t)1, inFile);
-            if (result != 1) {
-                    cout << "Error loading index" << endl;
-                    exit(1);
-            }
-            if (this->verbose) cout << "Loading index from " << fileName << " ... " << flush;
-            rewind(inFile);
+            FILE *inFile = fopen(fileName, "rb");
+            cout << "Loading index from " << fileName << " ... " << flush;
             this->load(inFile);
             fclose(inFile);
-            if (this->verbose) cout << "Done" << endl;
+            cout << "Done" << endl;
         }
         
 	void free() {

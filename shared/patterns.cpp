@@ -7,7 +7,7 @@
 #include <algorithm>
 #include "common.h"
 #include "patterns.h"
-    
+
 namespace shared {
     
 void Patterns::setQueriesNum(unsigned int queriesNum) {
@@ -105,7 +105,7 @@ void Patterns::initializePatterns() {
 }
 
 void Patterns::initializeSACounts() {
-        if (this->patterns == NULL) this->initializePatterns();
+	if (this->patterns == NULL) this->initializePatterns();
 	stringstream ss;
 	ss << "counts-" << this->textFileName << "-" << this->m << "-" << this->queriesNum << "-" << getStringFromSelectedChars(this->selectedChars, ".") << ".dat";
 	string s = ss.str();
@@ -115,7 +115,7 @@ void Patterns::initializeSACounts() {
                 unsigned int textLen;
 		unsigned char *text = readFileChar(this->textFileName, textLen, 0);
                 unsigned int saLen;
-		unsigned int *sa = getSA(this->textFileName, text, textLen, saLen, 0, true);
+		unsigned int *sa = getSA(this->textFileName, text, textLen, saLen, 0);
 
 		cout << "Getting counts from SA ... " << flush;
 		this->counts = new unsigned int[this->queriesNum];
@@ -141,7 +141,7 @@ void Patterns::initializeSACounts() {
 }
 
 void Patterns::initializeSALocates() {
-        if (this->patterns == NULL) this->initializePatterns();
+	if (this->patterns == NULL) this->initializePatterns();
 	stringstream ss;
 	ss << "locates-" << this->textFileName << "-" << this->m << "-" << this->queriesNum << "-" << getStringFromSelectedChars(this->selectedChars, ".") << ".dat";
 	string s = ss.str();
@@ -151,7 +151,7 @@ void Patterns::initializeSALocates() {
                 unsigned int textLen;
 		unsigned char *text = readFileChar(this->textFileName, textLen, 0);
 		unsigned int saLen;
-		unsigned int *sa = getSA(this->textFileName, text, textLen, saLen, 0, true);
+		unsigned int *sa = getSA(this->textFileName, text, textLen, saLen, 0);
                 
                 unsigned long long counter = 0;
 		cout << "Getting locates from SA ... " << flush;
@@ -289,8 +289,8 @@ void NegativePatterns::initializePatterns() {
 	char *patternFileName = (char *)(s.c_str());
 
 	if (!fileExists(patternFileName)) {
-                unsigned int saLen;
-		unsigned int *sa = getSA(this->textFileName, text, textLen, saLen, 0, true);
+		unsigned int saLen;
+		unsigned int *sa = getSA(this->textFileName, text, textLen, saLen, 0);
             
 		cout << "Generating " << this->queriesNum << " negative patterns of length " << this->m << " from " << this->textFileName << " ... " << flush;
 
@@ -435,7 +435,7 @@ void MaliciousPatterns::initializePatterns() {
 
 	if (!fileExists(patternFileName)) {
                 unsigned int saLen;
-                unsigned int *sa = getSA(this->textFileName, text, textLen, saLen, 0, true);
+                unsigned int *sa = getSA(this->textFileName, text, textLen, saLen, 0);
 
                 cout << "Getting malicious patterns of length " << this->m << " from " << this->textFileName;
                 if (this->selectedChars.size() != 0) {

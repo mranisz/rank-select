@@ -146,8 +146,7 @@ int main(int argc, char *argv[]) {
 	const char *rankFileName = "english.200MB-bch.rank";
 
 	if (fileExists(rankFileName)) {
-		FILE *inFile;
-		inFile = fopen(rankFileName, "rb");
+		FILE *inFile = fopen(rankFileName, "rb");
 		rank->load(inFile);
 		fclose(inFile);
 	} else {
@@ -155,8 +154,7 @@ int main(int argc, char *argv[]) {
 		unsigned char* text = readText(textFileName, textLen, 0);
 		rank->build(text, textLen);
 		delete[] text;
-		FILE *outFile;
-		outFile = fopen(rankFileName, "w");
+		FILE *outFile = fopen(rankFileName, "w");
 		rank->save(outFile);
 		fclose(outFile);
 	}
@@ -189,8 +187,7 @@ int main(int argc, char *argv[]) {
 	const char *selectFileName = "english.200MB-bch.select";
 
 	if (fileExists(selectFileName)) {
-		FILE *inFile;
-		inFile = fopen(selectFileName, "rb");
+		FILE *inFile = fopen(selectFileName, "rb");
 		select->load(inFile);
 		fclose(inFile);
 	} else {
@@ -198,8 +195,7 @@ int main(int argc, char *argv[]) {
 		unsigned char* text = readText(textFileName, textLen, 0);
 		select->build(text, textLen);
 		delete[] text;
-		FILE *outFile;
-		outFile = fopen(selectFileName, "w");
+		FILE *outFile = fopen(selectFileName, "w");
 		select->save(outFile);
 		fclose(outFile);
 	}
@@ -242,10 +238,6 @@ unsigned int getTextSize();
 - get the result of **count** query:
 ```
 unsigned int count(unsigned char *pattern, unsigned int patternLen);
-```
-- set **verbose** mode:
-```
-void setVerbose(bool verbose);
 ```
 
 ##WT\<class RANK\>
@@ -312,7 +304,6 @@ int main(int argc, char *argv[]) {
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);
 	} else {
-		fm->setVerbose(true);
 		fm->build(textFileName);
 		fm->save(indexFileName);
 	}
