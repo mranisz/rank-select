@@ -14,8 +14,8 @@ using namespace std;
 namespace shared {
     
 enum HTType {
-    STANDARD = 1,
-    DENSE = 2
+    HT_STANDARD = 1,
+    HT_DENSE = 2
 };
 
 unsigned int getUniqueSuffixNum(unsigned int k, unsigned char *text, unsigned int textLen, unsigned int *sa, unsigned int saLen, vector<unsigned char> selectedChars);
@@ -361,7 +361,7 @@ public:
             unsigned int uniqueSuffixNum = getUniqueSuffixNum(this->k, text, textLen, sa, saLen);
             this->bucketsNum = (double)uniqueSuffixNum * (1.0 / this->loadFactor);
             switch(T) {
-                case HTType::DENSE:
+                case HTType::HT_DENSE:
                     this->fillDenseHTData(text, textLen, sa, saLen);
                     break;
                 default:
@@ -372,7 +372,7 @@ public:
         
         void getBoundaries(unsigned char *pattern, unsigned char *text, unsigned int *sa, unsigned int &leftBoundary, unsigned int &rightBoundary) {
             switch (T) {
-                case HTType::DENSE:
+                case HTType::HT_DENSE:
                     return this->getDenseHTBoundaries(pattern, text, sa, leftBoundary, rightBoundary);
                     break;
                 default:
@@ -708,7 +708,7 @@ public:
             unsigned int uniqueSuffixNum = getUniqueSuffixNum(this->k, text, textLen, sa, saLen, selectedChars);
             this->bucketsNum = (double)uniqueSuffixNum * (1.0 / this->loadFactor);
             switch(T) {
-            case HTType::DENSE:
+            case HTType::HT_DENSE:
                             this->fillDenseHTData(text, textLen, sa, saLen, selectedChars);
                 break;
             default:
@@ -719,7 +719,7 @@ public:
         
         void getBoundaries(unsigned char *pattern, unsigned int &leftBoundary, unsigned int &rightBoundary) {
             switch(T) {
-                case HTType::DENSE:
+                case HTType::HT_DENSE:
                     return this->getDenseHTBoundaries(pattern, leftBoundary, rightBoundary);
                     break;
                 default:

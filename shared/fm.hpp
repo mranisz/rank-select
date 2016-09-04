@@ -174,7 +174,7 @@ public:
 
 template<class WT> class FMHWTHash : public FMHWT<WT> {
 private:
-	HTExt<HTType::STANDARD> *ht = NULL;
+	HTExt<HTType::HT_STANDARD> *ht = NULL;
         
 	void freeMemory() {
             FMHWT<WT>::freeMemory();
@@ -185,7 +185,7 @@ public:
 
 	FMHWTHash(unsigned int k, double loadFactor) {
             this->initialize();
-            this->ht = new HTExt<HTType::STANDARD>(k, loadFactor);
+            this->ht = new HTExt<HTType::HT_STANDARD>(k, loadFactor);
 	}
 
 	~FMHWTHash() {
@@ -234,7 +234,7 @@ public:
 	void load(FILE *inFile) {
             FMHWT<WT>::load(inFile);
             delete this->ht;
-            this->ht = new HTExt<HTType::STANDARD>();
+            this->ht = new HTExt<HTType::HT_STANDARD>();
             this->ht->load(inFile);
         }
         
