@@ -29,18 +29,20 @@ protected:
             this->textLen = 0;
         }
         
-	unsigned int countHWT(unsigned char *pattern, int i, unsigned int *C, WT *wt, unsigned int firstVal, unsigned int lastVal, unsigned long long *code, unsigned int *codeLen) {
+        unsigned int countHWT(unsigned char *pattern, int i, unsigned int *C, WT *wt, unsigned int firstVal, unsigned int lastVal, unsigned long long *code, unsigned int *codeLen) {
             unsigned char c;
             --i;
 
             while (firstVal <= lastVal && i >= 0) {
                     c = pattern[i--];
                     if (codeLen[c] == 0) return 0;
-                    firstVal = C[c] + wt->getRankHWT(code[c], codeLen[c], firstVal - 1, 0) + 1;
-                    lastVal = C[c] + wt->getRankHWT(code[c], codeLen[c], lastVal, 0);
+                    tie(firstVal, lastVal) = WT::getRankHWT(wt, code[c], codeLen[c], firstVal - 1, lastVal);
+                    firstVal += C[c] + 1;
+                    lastVal += C[c];
             }
 
-            return (lastVal + 1) - firstVal;
+            if (firstVal > lastVal) return 0;
+            else return lastVal - firstVal + 1;
         }
 
 public:

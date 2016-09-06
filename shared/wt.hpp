@@ -1,6 +1,7 @@
 #ifndef WT_HPP
 #define	WT_HPP
 
+#include <tuple>
 #include "rank.hpp"
 
 namespace shared {
@@ -79,15 +80,6 @@ public:
             }
         }
         
-        unsigned int getRankHWT(unsigned long long code, unsigned int codeLen, unsigned int i, unsigned int wtLevel) {
-            int nextNode = (code >> wtLevel) & 1;
-            unsigned int rank = this->rank->rank(i);
-            if (nextNode == 0) rank = i - rank;
-
-            if (codeLen == (wtLevel + 1)) return rank;
-            return this->nodes[nextNode]->getRankHWT(code, codeLen, rank, wtLevel + 1);
-        }
-        
 	void free() {
             this->freeMemory();
             this->initialize();
@@ -129,6 +121,25 @@ public:
             node->rank->build(bitsInNode, nodeBitLen);
             delete[] bitsInNode;
             return node;
+        }
+        
+        static pair<unsigned int, unsigned int> getRankHWT(WT<RANK> *wt, unsigned long long code, unsigned int codeLen, unsigned int iFirst, unsigned int iLast) {
+            unsigned int rank;
+            for (unsigned int wtLevel = 0; wtLevel < codeLen; ++wtLevel) {
+                int nextNode = (code >> wtLevel) & 1;
+                
+                rank = wt->rank->rank(iFirst);
+                if (nextNode == 0) rank = iFirst - rank;
+                iFirst = rank;
+                
+                rank = wt->rank->rank(iLast);
+                if (nextNode == 0) rank = iLast - rank;
+                iLast = rank;
+
+                wt = wt->nodes[nextNode];
+            }
+            
+            return make_pair(iFirst, iLast);
         }
 };
 
