@@ -20,7 +20,7 @@ protected:
         }
         
 	void initialize() {
-            this->wt = NULL;
+            this->wt = new WT();
             for (int i = 0; i < 256; ++i) {
                     this->code[i] = 0;
                     this->codeLen[i] = 0;
@@ -65,7 +65,7 @@ public:
             encodeHuffFromText(2, bwt, bwtLen, this->code, this->codeLen);
             cout << "Done" << endl;
             cout << "Building WT ... " << flush;
-            this->wt = WT::createHWT(bwt, bwtLen, 0, this->code, this->codeLen);
+            this->wt->createHWT(bwt, bwtLen, this->code, this->codeLen);
             delete[] bwt;
             cout << "Done" << endl;
             fillArrayC(text, this->textLen, this->c);
@@ -74,17 +74,11 @@ public:
         }
         
         void save(FILE *outFile) {
-            bool nullPointer = false;
-            bool notNullPointer = true;
             fwrite(&this->textLen, (size_t)sizeof(unsigned int), (size_t)1, outFile);
             fwrite(this->c, (size_t)sizeof(unsigned int), (size_t)257, outFile);
             fwrite(this->code, (size_t)sizeof(unsigned long long), (size_t)256, outFile);
             fwrite(this->codeLen, (size_t)sizeof(unsigned int), (size_t)256, outFile);
-            if (this->wt == NULL) fwrite(&nullPointer, (size_t)sizeof(bool), (size_t)1, outFile);
-            else {
-                    fwrite(&notNullPointer, (size_t)sizeof(bool), (size_t)1, outFile);
-                    this->wt->save(outFile);
-            }
+            this->wt->save(outFile);
         }
         
 	void save(const char *fileName) {
@@ -97,7 +91,6 @@ public:
         
 	void load(FILE *inFile) {
             this->free();
-            bool isNotNullPointer;
             size_t result = fread(&this->textLen, (size_t)sizeof(unsigned int), (size_t)1, inFile);
             if (result != 1) {
                     cout << "Error loading index" << endl;
@@ -118,15 +111,7 @@ public:
                     cout << "Error loading index" << endl;
                     exit(1);
             }
-            result = fread(&isNotNullPointer, (size_t)sizeof(bool), (size_t)1, inFile);
-            if (result != 1) {
-                    cout << "Error loading index" << endl;
-                    exit(1);
-            }
-            if (isNotNullPointer) {
-                    this->wt = new WT();
-                    this->wt->load(inFile);
-            }
+            this->wt->load(inFile);
         }
         
         void load(const char *fileName) {
@@ -195,7 +180,7 @@ public:
             encodeHuffFromText(2, bwt, bwtLen, this->code, this->codeLen);
             cout << "Done" << endl;
             cout << "Building WT ... " << flush;
-            this->wt = WT::createHWT(bwt, bwtLen, 0, this->code, this->codeLen);
+            this->wt->createHWT(bwt, bwtLen, this->code, this->codeLen);
             delete[] bwt;
             cout << "Done" << endl;
             fillArrayC(text, this->textLen, this->c);
