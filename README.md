@@ -7,7 +7,7 @@ The Rank&Select library is ...
 The Rank&Select library require:
 - C++11 ready compiler such as g++ version 4.7 or higher
 - a 64-bit operating system
-- text size is limited to 512MB (4GB of bits)
+- text size is limited to 512MB (4GB of bits) for 32bit versions of rank, select, WT and FMHWT
 
 ##Installation
 To download and build the library use the following commands:
@@ -24,7 +24,7 @@ To use the Rank&Select library:
   - rank-select/libs/libaelf64.a (linux) or samsami/libs/libacof64.lib (windows)
 - use "shared" namespace
 
-##API (rank and select)
+##API (32bit rank and 32bit select)
 - **build** the rank or select using text and textLen:
 ```
 void build(unsigned char *text, unsigned int textLen);
@@ -58,7 +58,41 @@ unsigned int rank(unsigned int i);
 unsigned int select(unsigned int i);
 ```
 
-##RankBasic\<RankBasicType T\>
+##API (64bit rank and 64bit select)
+- **build** the rank or select using text and textLen:
+```
+void build(unsigned char *text, unsigned long long textLen);
+```
+- **save** the rank or select to FILE object:
+```
+void save(FILE *outFile);
+```
+- **load** the rank or select from FILE object:
+```
+void load(FILE *inFile);
+```
+- **free** memory occupied by rank or select:
+```
+void free();
+```
+- get the **size** in bytes (size in memory):
+```
+unsigned long long getSize();
+```
+- get the size in bytes of the text used to build the rank or select:
+```
+unsigned long long getTextSize();
+```
+- get the result of **rank** query:
+```
+unsigned long long rank(unsigned long long i);
+```
+- get the result of **select** query:
+```
+unsigned long long select(unsigned long long i);
+```
+
+##RankBasic32\<RankBasicType T\>
 
 Parameters:
 - T:
@@ -67,17 +101,17 @@ Parameters:
 
 Constructors:
 ```
-RankBasic<RankBasicType T>();
+RankBasic32<RankBasicType T>();
 ```
 
-##RankCF
+##RankCF32
 
 Constructors:
 ```
-RankCF<RankBasicType T>();
+RankCF32<RankBasicType T>();
 ```
 
-##RankMPE\<RankMPEType T\>
+##RankMPE32\<RankMPEType T\>
 
 Parameters:
 - T:
@@ -87,10 +121,10 @@ Parameters:
 
 Constructors:
 ```
-RankMPE<RankMPEType T>();
+RankMPE32<RankMPEType T>();
 ```
 
-##SelectBasic\<SelectBasicType T, unsigned int L, unsigned int THRESHOLD\>
+##SelectBasic32\<SelectBasicType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -105,10 +139,10 @@ Limitations:
 
 Constructors:
 ```
-SelectBasic<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
+SelectBasic32<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
-##SelectMPE\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
+##SelectMPE32\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -125,7 +159,77 @@ Limitations:
 
 Constructors:
 ```
-SelectMPE<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
+SelectMPE32<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
+```
+
+##RankBasic64\<RankBasicType T\>
+
+Parameters:
+- T:
+      - RANK_BASIC_STANDARD
+      - RANK_BASIC_COMPRESSED_HEADERS
+
+Constructors:
+```
+RankBasic64<RankBasicType T>();
+```
+
+##RankCF64
+
+Constructors:
+```
+RankCF64<RankBasicType T>();
+```
+
+##RankMPE64\<RankMPEType T\>
+
+Parameters:
+- T:
+      - RANK_MPE1
+      - RANK_MPE2
+      - RANK_MPE3
+
+Constructors:
+```
+RankMPE64<RankMPEType T>();
+```
+
+##SelectBasic64\<SelectBasicType T, unsigned long long L, unsigned long long THRESHOLD\>
+
+Parameters:
+- T:
+      - SELECT_BASIC_STANDARD
+      - SELECT_BASIC_COMPRESSED_HEADERS
+- L - ...
+- THRESHOLD - ...
+
+Limitations: 
+- THRESHOLD > L
+- L < 547 and THRESHOLD < 34954 (for SELECT_BASIC_COMPRESSED_HEADERS)
+
+Constructors:
+```
+SelectBasic64<SelectBasicType T, unsigned long long L, unsigned long long THRESHOLD>();
+```
+
+##SelectMPE64\<SelectMPEType T, unsigned long long L, unsigned long long THRESHOLD\>
+
+Parameters:
+- T:
+      - SELECT_MPE1
+      - SELECT_MPE2
+      - SELECT_MPE3
+- L - ...
+- THRESHOLD - ...
+
+Limitations: 
+- THRESHOLD > L
+- L < 275 and THRESHOLD < 17474 (for SELECT_MPE1)
+- L < 138 and THRESHOLD < 8770 (for SELECT_MPE2 or SELECT_MPE3)
+
+Constructors:
+```
+SelectMPE64<SelectMPEType T, unsigned long long L, unsigned long long THRESHOLD>();
 ```
 
 ##Rank usage example
@@ -141,9 +245,9 @@ using namespace shared;
 
 int main(int argc, char *argv[]) {
 
-	RankBasic<RANK_BASIC_COMPRESSED_HEADERS> *rank = new RankBasic<RANK_BASIC_COMPRESSED_HEADERS>();
+	RankBasic32<RANK_BASIC_COMPRESSED_HEADERS> *rank = new RankBasic32<RANK_BASIC_COMPRESSED_HEADERS>();
 	const char *textFileName = "english.200MB";
-	const char *rankFileName = "english.200MB-bch.rank";
+	const char *rankFileName = "english.200MB-bch-32.rank";
 
 	if (fileExists(rankFileName)) {
 		FILE *inFile = fopen(rankFileName, "rb");
@@ -167,7 +271,7 @@ int main(int argc, char *argv[]) {
 	delete rank;
 }
 ```
-Using other types of ranks is analogous.
+Using other types of rank is analogous.
 
 ##Select usage example
 ```
@@ -182,9 +286,9 @@ using namespace shared;
 
 int main(int argc, char *argv[]) {
 
-	SelectMPE<SELECT_MPE2, 128, 4096> *select = new SelectMPE<SELECT_MPE2, 128, 4096>();
+	SelectMPE32<SELECT_MPE2, 128, 4096> *select = new SelectMPE32<SELECT_MPE2, 128, 4096>();
 	const char *textFileName = "english.200MB";
-	const char *selectFileName = "english.200MB-bch.select";
+	const char *selectFileName = "english.200MB-bch-32.select";
 
 	if (fileExists(selectFileName)) {
 		FILE *inFile = fopen(selectFileName, "rb");
@@ -208,9 +312,9 @@ int main(int argc, char *argv[]) {
 	delete select;
 }
 ```
-Using other types of selects is analogous.
+Using other types of select is analogous.
 
-##API (FMHWT index)
+##API (32bit FMHWT index)
 - **build** the index using text file called textFileName:
 ```
 void build(const char *textFileName);
@@ -240,35 +344,57 @@ unsigned int getTextSize();
 unsigned int count(unsigned char *pattern, unsigned int patternLen);
 ```
 
-##WT\<class RANK\>
-WT is a class representing wavelet tree structure.
+##API (64bit FMHWT index)
+- **build** the index using text file called textFileName:
+```
+void build(const char *textFileName);
+```
+- **save** the index to file called fileName:
+```
+void save(const char *fileName);
+```
+- **load** the index from file called fileName:
+```
+void load(const char *fileName);
+```
+- **free** memory occupied by index:
+```
+void free();
+```
+- get the **index size** in bytes (size in memory):
+```
+unsigned long long getIndexSize();
+```
+- get the size in bytes of the text used to build the index:
+```
+unsigned long long getTextSize();
+```
+- get the result of **count** query:
+```
+unsigned long long count(unsigned char *pattern, unsigned int patternLen);
+```
+
+##FMHWT32\<class RANK32\>
 
 Parameters:
-- RANK class:
-      - RankBasic\<RankBasicType T\>
-      - RankCF
-      - RankMPE\<RankMPEType T\>
+- RANK32 class:
+      - RankBasic32\<RankBasicType T\>
+      - RankCF32
+      - RankMPE32\<RankMPEType T\>
 
 Constructors:
 ```
-WT<class RANK>();
+FMHWT32<class RANK32>();
 ```
 
-##FMHWT\<class WT\>
+##FMHWT32Hash\<class RANK32\>
+FMHWT32Hash is FMHWT32 with hashed k-symbol prefixes of suffixes from suffix array to speed up searches (k ≥ 2). This variant is particularly efficient in speed for short patterns (not much longer than k).
 
 Parameters:
-- WT class
-
-Constructors:
-```
-FMHWT<class WT>();
-```
-
-##FMHWTHash\<class WT\>
-FMHWTHash is FMHWT with hashed k-symbol prefixes of suffixes from suffix array to speed up searches (k ≥ 2). This variant is particularly efficient in speed for short patterns (not much longer than k).
-
-Parameters:
-- WT class
+- RANK32 class:
+      - RankBasic32\<RankBasicType T\>
+      - RankCF32
+      - RankMPE32\<RankMPEType T\>
 - k - length of prefixes of suffixes from suffix array
 - loadFactor - hash table load factor
 
@@ -279,7 +405,41 @@ Limitations:
 
 Constructors:
 ```
-FMHWTHash<class WT>();
+FMHWT32Hash<class RANK32>();
+```
+
+##FMHWT64\<class RANK64\>
+
+Parameters:
+- RANK64 class:
+      - RankBasic64\<RankBasicType T\>
+      - RankCF64
+      - RankMPE64\<RankMPEType T\>
+
+Constructors:
+```
+FMHWT64<class RANK64>();
+```
+
+##FMHWT64Hash\<class RANK64\>
+FMHWT64Hash is FMHWT64 with hashed k-symbol prefixes of suffixes from suffix array to speed up searches (k ≥ 2). This variant is particularly efficient in speed for short patterns (not much longer than k).
+
+Parameters:
+- RANK64 class:
+      - RankBasic64\<RankBasicType T\>
+      - RankCF64
+      - RankMPE64\<RankMPEType T\>
+- k - length of prefixes of suffixes from suffix array
+- loadFactor - hash table load factor
+
+Limitations: 
+- pattern length ≥ k (patterns shorter than k are handled by standard variant of FMHWT index)
+- k ≥ 2
+- 0.0 < loadFactor < 1.0
+
+Constructors:
+```
+FMHWT64Hash<class RANK64>();
 ```
 
 ##FMHWT usage example
@@ -297,9 +457,9 @@ int main(int argc, char *argv[]) {
 
 	unsigned int queriesNum = 1000000;
 	unsigned int patternLen = 20;
-	FMHWT<WT<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>> *fm = new FMHWT<WT<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>>();
+	FMHWT32<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>> *fm = new FMHWT32<RankBasic<RANK_BASIC_COMPRESSED_HEADERS>>();
 	const char *textFileName = "dna";
-	const char *indexFileName = "dna-FMHWT.idx";
+	const char *indexFileName = "dna-FMHWT-32.idx";
 
 	if (fileExists(indexFileName)) {
 		fm->load(indexFileName);

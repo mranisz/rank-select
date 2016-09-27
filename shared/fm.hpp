@@ -7,7 +7,7 @@
 
 namespace shared {
 
-template<class WT> class FMHWT {
+template<class WT, typename DATATYPE> class FMHWT {
 protected:
 	WT *wt;
 	alignas(128) unsigned long long code[256];
@@ -21,15 +21,15 @@ protected:
         
 	void initialize() {
             this->wt = new WT();
-            for (int i = 0; i < 256; ++i) {
+            for (unsigned int i = 0; i < 256; ++i) {
                     this->code[i] = 0;
                     this->codeLen[i] = 0;
             }
-            for (int i = 0; i < 257; ++i) this->c[i] = 0;
+            for (unsigned int i = 0; i < 257; ++i) this->c[i] = 0;
             this->textLen = 0;
         }
         
-        unsigned int countHWT(unsigned char *pattern, int i, unsigned int *C, WT *wt, unsigned int firstVal, unsigned int lastVal, unsigned long long *code, unsigned int *codeLen) {
+        DATATYPE countHWT(unsigned char *pattern, int i, unsigned int *C, WT *wt, DATATYPE firstVal, DATATYPE lastVal, unsigned long long *code, unsigned int *codeLen) {
             unsigned char c;
             --i;
 
@@ -127,28 +127,31 @@ public:
             this->initialize();
         }
         
-	unsigned int getIndexSize() {
-            unsigned int size = sizeof(this->wt);
+	DATATYPE getIndexSize() {
+            DATATYPE size = sizeof(this->wt) + sizeof(this->textLen);
             size += (257 * sizeof(unsigned int) + 256 * sizeof(unsigned int) + 256 * sizeof(unsigned long long));
             if (this->wt != NULL) size += this->wt->getWTSize();
             return size;
         }
         
-	unsigned int getTextSize() {
+	DATATYPE getTextSize() {
             return this->textLen * sizeof(unsigned char);
         }
 
-	unsigned int count(unsigned char *pattern, unsigned int patternLen) {
+	DATATYPE count(unsigned char *pattern, unsigned int patternLen) {
             return this->countHWT(pattern, patternLen - 1, this->c, this->wt, this->c[pattern[patternLen - 1]] + 1, this->c[pattern[patternLen - 1] + 1], this->code, this->codeLen);
         }
 };
 
-template<class WT> class FMHWTHash : public FMHWT<WT> {
+template <class RANK32> using FMHWT32 = FMHWT<WT32<RANK32>, unsigned int>;
+template <class RANK64> using FMHWT64 = FMHWT<WT64<RANK64>, unsigned long long>;
+
+template<class WT, typename DATATYPE> class FMHWTHash : public FMHWT<WT,DATATYPE> {
 private:
 	HTExt<HTType::HT_STANDARD> *ht = NULL;
         
 	void freeMemory() {
-            FMHWT<WT>::freeMemory();
+            FMHWT<WT,DATATYPE>::freeMemory();
             if (this->ht != NULL) this->ht->free();
         }
 
@@ -189,7 +192,7 @@ public:
         }
         
 	void save(FILE *outFile) {
-            FMHWT<WT>::save(outFile);
+            FMHWT<WT,DATATYPE>::save(outFile);
             this->ht->save(outFile);
         }
         
@@ -202,7 +205,7 @@ public:
         }
         
 	void load(FILE *inFile) {
-            FMHWT<WT>::load(inFile);
+            FMHWT<WT,DATATYPE>::load(inFile);
             delete this->ht;
             this->ht = new HTExt<HTType::HT_STANDARD>();
             this->ht->load(inFile);
@@ -222,16 +225,19 @@ public:
         }
         
 	unsigned int getIndexSize() {
-            return FMHWT<WT>::getIndexSize() + sizeof(this->ht) + this->ht->getHTSize();
+            return FMHWT<WT,DATATYPE>::getIndexSize() + sizeof(this->ht) + this->ht->getHTSize();
         }
 
 	unsigned int count(unsigned char *pattern, unsigned int patternLen) {
-            if (patternLen < this->ht->k) return FMHWT<WT>::count(pattern, patternLen);
+            if (patternLen < this->ht->k) return FMHWT<WT,DATATYPE>::count(pattern, patternLen);
             unsigned int leftBoundary, rightBoundary;
             this->ht->getBoundaries(pattern + (patternLen - this->ht->k), leftBoundary, rightBoundary);
             return this->countHWT(pattern, patternLen - this->ht->k, this->c, this->wt, leftBoundary + 1, rightBoundary, this->code, this->codeLen);
         }
 };
+
+template <class RANK32> using FMHWTHash32 = FMHWTHash<WT32<RANK32>, unsigned int>;
+template <class RANK64> using FMHWTHash64 = FMHWTHash<WT64<RANK64>, unsigned long long>;
 
 }
 
