@@ -7,7 +7,7 @@ The Rank&Select library is ...
 The Rank&Select library require:
 - C++11 ready compiler such as g++ version 4.7 or higher
 - a 64-bit operating system
-- text size is limited to 512MB (4GB of bits) for 32bit versions of rank, select, WT and FMHWT
+- text size is limited to 512MB (4GB of bits) for 32bit versions of rank, select and FMHWT
 
 ##Installation
 To download and build the library use the following commands:
@@ -194,7 +194,7 @@ Constructors:
 RankMPE64<RankMPEType T>();
 ```
 
-##SelectBasic64\<SelectBasicType T, unsigned long long L, unsigned long long THRESHOLD\>
+##SelectBasic64\<SelectBasicType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -209,10 +209,10 @@ Limitations:
 
 Constructors:
 ```
-SelectBasic64<SelectBasicType T, unsigned long long L, unsigned long long THRESHOLD>();
+SelectBasic64<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
-##SelectMPE64\<SelectMPEType T, unsigned long long L, unsigned long long THRESHOLD\>
+##SelectMPE64\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -229,7 +229,7 @@ Limitations:
 
 Constructors:
 ```
-SelectMPE64<SelectMPEType T, unsigned long long L, unsigned long long THRESHOLD>();
+SelectMPE64<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
 ##Rank usage example

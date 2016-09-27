@@ -562,7 +562,7 @@ public:
         }
 };
 
-template<SelectBasicType T, unsigned long long L, unsigned long long THRESHOLD> class SelectBasic64 {
+template<SelectBasicType T, unsigned int L, unsigned int THRESHOLD> class SelectBasic64 {
 private:
 	void freeMemory() {
             if (this->selects != NULL) delete[] this->selects;
@@ -2429,7 +2429,7 @@ public:
         }
 };
 
-template<SelectMPEType T, unsigned long long L, unsigned long long THRESHOLD> class SelectMPE64 {
+template<SelectMPEType T, unsigned int L, unsigned int THRESHOLD> class SelectMPE64 {
 private:
 	void freeMemory() {
             if (this->selects != NULL) delete[] this->selects;
