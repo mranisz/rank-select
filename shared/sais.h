@@ -34,7 +34,12 @@ extern "C" {
 /* find the suffix array SA of T[0..n-1]
    use a working space (excluding T and SA) of at most 2n+O(lg n) */
 int
-sais(const unsigned char *T, int *SA, int n);
+sais(const unsigned char *T, unsigned int *SA, unsigned int n);
+
+/* find the suffix array SA of T[0..n-1]
+   use a working space (excluding T and SA) of at most 2n+O(lg n) */
+int
+sais64(const unsigned char *T, unsigned long long *SA, unsigned long long n);
 
 /* find the suffix array SA of T[0..n-1] in {0..k-1}^n
    use a working space (excluding T and SA) of at most MAX(4k,2n) */

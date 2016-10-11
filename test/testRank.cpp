@@ -3,11 +3,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <random>
-#include "../shared/common.h"
-#include "../shared/patterns.h"
-#include "../shared/timer.h"
+#include "../shared/common.hpp"
+#include "../shared/patterns.hpp"
+#include "../shared/timer.hpp"
 #include "../shared/rank.hpp"
-#include "../shared/wt.hpp"
 
 using namespace std;
 using namespace shared;

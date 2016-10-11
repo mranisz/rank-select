@@ -2,8 +2,9 @@
 #include <fstream>
 #include <string>
 #include <stdlib.h>
-#include "../shared/patterns.h"
-#include "../shared/timer.h"
+#include "../shared/common.hpp"
+#include "../shared/patterns.hpp"
+#include "../shared/timer.hpp"
 #include "../shared/fm.hpp"
 
 using namespace std;
@@ -128,9 +129,9 @@ void fmHWT32Basic(const char *textFileName, unsigned int queriesNum, unsigned in
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -176,9 +177,9 @@ void fmHWT32Bch(const char *textFileName, unsigned int queriesNum, unsigned int 
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -224,9 +225,9 @@ void fmHWT32CF(const char *textFileName, unsigned int queriesNum, unsigned int m
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -272,9 +273,9 @@ void fmHWT32MPE1(const char *textFileName, unsigned int queriesNum, unsigned int
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -320,9 +321,9 @@ void fmHWT32MPE2(const char *textFileName, unsigned int queriesNum, unsigned int
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -368,9 +369,9 @@ void fmHWT32MPE3(const char *textFileName, unsigned int queriesNum, unsigned int
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -416,9 +417,9 @@ void fmHWT32HashBasic(string k, string loadFactor, const char *textFileName, uns
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -464,9 +465,9 @@ void fmHWT32HashBch(string k, string loadFactor, const char *textFileName, unsig
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -512,9 +513,9 @@ void fmHWT32HashCF(string k, string loadFactor, const char *textFileName, unsign
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -560,9 +561,9 @@ void fmHWT32HashMPE1(string k, string loadFactor, const char *textFileName, unsi
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -608,9 +609,9 @@ void fmHWT32HashMPE2(string k, string loadFactor, const char *textFileName, unsi
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -656,9 +657,9 @@ void fmHWT32HashMPE3(string k, string loadFactor, const char *textFileName, unsi
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, m);
+	//NegativePatterns32 *P = new NegativePatterns32(textFileName, queriesNum, m);
+	/*MaliciousPatterns32 *P = new MaliciousPatterns32(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
@@ -704,13 +705,13 @@ void fmHWT64Basic(const char *textFileName, unsigned int queriesNum, unsigned in
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -752,13 +753,13 @@ void fmHWT64Bch(const char *textFileName, unsigned int queriesNum, unsigned int 
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -800,13 +801,13 @@ void fmHWT64CF(const char *textFileName, unsigned int queriesNum, unsigned int m
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -848,13 +849,13 @@ void fmHWT64MPE1(const char *textFileName, unsigned int queriesNum, unsigned int
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -896,13 +897,13 @@ void fmHWT64MPE2(const char *textFileName, unsigned int queriesNum, unsigned int
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -944,13 +945,13 @@ void fmHWT64MPE3(const char *textFileName, unsigned int queriesNum, unsigned int
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -992,13 +993,13 @@ void fmHWT64HashBasic(string k, string loadFactor, const char *textFileName, uns
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -1040,13 +1041,13 @@ void fmHWT64HashBch(string k, string loadFactor, const char *textFileName, unsig
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -1088,13 +1089,13 @@ void fmHWT64HashCF(string k, string loadFactor, const char *textFileName, unsign
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -1136,13 +1137,13 @@ void fmHWT64HashMPE1(string k, string loadFactor, const char *textFileName, unsi
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -1184,13 +1185,13 @@ void fmHWT64HashMPE2(string k, string loadFactor, const char *textFileName, unsi
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {
@@ -1232,13 +1233,13 @@ void fmHWT64HashMPE3(string k, string loadFactor, const char *textFileName, unsi
 		fm->save(indexFileName);
 	}
 
-	Patterns *P = new Patterns(textFileName, queriesNum, m);
-	//NegativePatterns *P = new NegativePatterns(textFileName, queriesNum, m);
-	/*MaliciousPatterns *P = new MaliciousPatterns(textFileName, m);
+	Patterns64 *P = new Patterns64(textFileName, queriesNum, m);
+	//NegativePatterns64 *P = new NegativePatterns64(textFileName, queriesNum, m);
+	/*MaliciousPatterns64 *P = new MaliciousPatterns64(textFileName, m);
 	queriesNum = P->getQueriesNum();
 	if (queriesNum == 0) exit(1);*/
 	unsigned char **patterns = P->getPatterns();
-	unsigned int *indexCounts = new unsigned int[queriesNum];
+	unsigned long long *indexCounts = new unsigned long long[queriesNum];
 
 	timer.startTimer();
 	for (unsigned int i = 0; i < queriesNum; ++i) {

@@ -237,7 +237,7 @@ SelectMPE64<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
-#include "rank-select/shared/common.h"
+#include "rank-select/shared/common.hpp"
 #include "rank-select/shared/rank.hpp"
 
 using namespace std;
@@ -278,7 +278,7 @@ Using other types of rank is analogous.
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
-#include "rank-select/shared/common.h"
+#include "rank-select/shared/common.hpp"
 #include "rank-select/shared/select.hpp"
 
 using namespace std;
@@ -447,7 +447,7 @@ FMHWT64Hash<class RANK64>();
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
-#include "rank-select/shared/patterns.h"
+#include "rank-select/shared/patterns.hpp"
 #include "rank-select/shared/fm.hpp"
 
 using namespace std;
@@ -471,7 +471,7 @@ int main(int argc, char *argv[]) {
 	double indexSize = (double)fm->getIndexSize();
 	cout << "Index size: " << indexSize << "B (" << (indexSize / (double)fm->getTextSize()) << "n)" << endl << endl;
 
-	Patterns *P = new Patterns(textFileName, queriesNum, patternLen);
+	Patterns32 *P = new Patterns32(textFileName, queriesNum, patternLen);
 	unsigned char **patterns = P->getPatterns();
 
 	for (unsigned int i = 0; i < queriesNum; ++i) {

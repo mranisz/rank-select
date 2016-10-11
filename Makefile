@@ -20,9 +20,9 @@ testSelect: test/testSelect.cpp libshared.a libs/$(ASMLIB)
 countFMHWT: test/countFMHWT.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/countFMHWT.cpp libshared.a libs/$(ASMLIB) -o test/countFMHWT
 
-libshared.a: shared/common.h shared/common.cpp shared/patterns.h shared/patterns.cpp shared/sais.h shared/sais.c shared/timer.h shared/timer.cpp shared/xxhash.h shared/xxhash.c shared/rank.hpp shared/select.hpp shared/wt.hpp shared/hash.hpp shared/huff.h shared/huff.cpp shared/fm.hpp
-	$(CXX) $(CFLAGS) -c shared/common.cpp shared/patterns.cpp shared/sais.c shared/timer.cpp shared/xxhash.c shared/huff.cpp
-	ar rcs libshared.a common.o patterns.o sais.o xxhash.o timer.o huff.o shared/rank.hpp shared/select.hpp shared/wt.hpp shared/hash.hpp shared/fm.hpp
+libshared.a: shared/common.hpp shared/patterns.hpp shared/sais.h shared/sais.c shared/xxhash.h shared/xxhash.c shared/timer.hpp shared/rank.hpp shared/select.hpp shared/wt.hpp shared/hash.hpp shared/huff.hpp shared/fm.hpp
+	$(CXX) $(CFLAGS) -c shared/sais.c shared/xxhash.c
+	ar rcs libshared.a sais.o xxhash.o shared/common.hpp shared/patterns.hpp shared/rank.hpp shared/select.hpp shared/wt.hpp shared/hash.hpp shared/fm.hpp shared/huff.hpp shared/timer.hpp
 	make cleanObjects
 
 cleanObjects:
