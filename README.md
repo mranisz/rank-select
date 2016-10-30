@@ -7,7 +7,7 @@ The Rank&Select library is ...
 The Rank&Select library require:
 - C++11 ready compiler such as g++ version 4.7 or higher
 - a 64-bit operating system
-- text size is limited to 512MB (4GB of bits) for 32bit versions of rank, select and FMHWT
+- text size < 512MB (4GB of bits) for 32bit versions of rank, select and FMHWT
 
 ##Installation
 To download and build the library use the following commands:
@@ -43,7 +43,7 @@ void free();
 ```
 - get the **size** in bytes (size in memory):
 ```
-unsigned int getSize();
+unsigned long long getSize();
 ```
 - get the size in bytes of the text used to build the rank or select:
 ```
@@ -333,7 +333,7 @@ void free();
 ```
 - get the **index size** in bytes (size in memory):
 ```
-unsigned int getIndexSize();
+unsigned long long getIndexSize();
 ```
 - get the size in bytes of the text used to build the index:
 ```

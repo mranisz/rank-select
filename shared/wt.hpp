@@ -33,8 +33,8 @@ public:
             this->free();
 	}
 
-	DATATYPE getWTNodeSize() {
-            DATATYPE size = 2 * sizeof(WTNode *) + sizeof(this->offset) + sizeof(this->offsetRank);
+	unsigned long long getWTNodeSize() {
+            unsigned long long size = 2 * sizeof(WTNode *) + sizeof(this->offset) + sizeof(this->offsetRank);
             if (this->nodes[0] != NULL) size += this->nodes[0]->getWTNodeSize();
             if (this->nodes[1] != NULL) size += this->nodes[1]->getWTNodeSize();
             return size;
@@ -120,7 +120,7 @@ public:
             this->free();
 	}
 
-	DATATYPE getWTSize() {
+	unsigned long long getWTSize() {
             return sizeof(this->offsetNode) + this->rank->getSize();
         }
         

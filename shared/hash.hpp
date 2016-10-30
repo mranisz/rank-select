@@ -118,8 +118,8 @@ public:
             return XXH64(str, strLen, 0);
         }
         
-	unsigned int getHTSize() {
-            unsigned int size = sizeof(this->loadFactor) + sizeof(this->k) + sizeof(this->prefixLength) + sizeof(this->bucketsNum) + 256 * 256 * 2 * sizeof(DATATYPE) + sizeof(this->alignedBoundariesHT) + sizeof(this->alignedDenseBoundariesHT) + sizeof(this->boundariesHTLen) + sizeof(this->denseBoundariesHTLen);
+	unsigned long long getHTSize() {
+            unsigned long long size = sizeof(this->loadFactor) + sizeof(this->k) + sizeof(this->prefixLength) + sizeof(this->bucketsNum) + 256 * 256 * 2 * sizeof(DATATYPE) + sizeof(this->alignedBoundariesHT) + sizeof(this->alignedDenseBoundariesHT) + sizeof(this->boundariesHTLen) + sizeof(this->denseBoundariesHTLen);
             if (this->boundariesHTLen > 0) size += (this->boundariesHTLen + (128 / sizeof(DATATYPE))) * sizeof(DATATYPE);
             if (this->denseBoundariesHTLen > 0) size += (this->denseBoundariesHTLen + (128 / sizeof(DATATYPE))) * sizeof(DATATYPE);
             return size;
@@ -744,8 +744,8 @@ public:
 		this->free();
 	}
 
-	unsigned int getHTSize() {
-            unsigned int size = sizeof(this->loadFactor) + sizeof(this->k) + sizeof(this->prefixLength) + sizeof(this->bucketsNum) + 256 * 256 * 2 * sizeof(DATATYPE) + sizeof(this->alignedBoundariesHT) + sizeof(this->alignedDenseBoundariesHT) + sizeof(this->alignedEntriesHT) + sizeof(this->boundariesHTLen) + sizeof(this->denseBoundariesHTLen) + sizeof(this->entriesHTLen);
+	unsigned long long getHTSize() {
+            unsigned long long size = sizeof(this->loadFactor) + sizeof(this->k) + sizeof(this->prefixLength) + sizeof(this->bucketsNum) + 256 * 256 * 2 * sizeof(DATATYPE) + sizeof(this->alignedBoundariesHT) + sizeof(this->alignedDenseBoundariesHT) + sizeof(this->alignedEntriesHT) + sizeof(this->boundariesHTLen) + sizeof(this->denseBoundariesHTLen) + sizeof(this->entriesHTLen);
             if (this->boundariesHTLen > 0) size += (this->boundariesHTLen + (128 / sizeof(DATATYPE))) * sizeof(DATATYPE);
             if (this->denseBoundariesHTLen > 0) size += (this->denseBoundariesHTLen + (128 / sizeof(DATATYPE))) * sizeof(DATATYPE);
             if (this->entriesHTLen > 0) size += (this->entriesHTLen + 128) * sizeof(unsigned char);

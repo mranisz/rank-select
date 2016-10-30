@@ -127,8 +127,8 @@ public:
             this->initialize();
         }
         
-	DATATYPE getIndexSize() {
-            DATATYPE size = sizeof(this->wt) + sizeof(this->textLen);
+	unsigned long long getIndexSize() {
+            unsigned long long size = sizeof(this->wt) + sizeof(this->textLen);
             size += (257 * sizeof(DATATYPE) + 256 * sizeof(unsigned int) + 256 * sizeof(unsigned long long));
             if (this->wt != NULL) size += this->wt->getWTSize();
             return size;
@@ -228,7 +228,7 @@ public:
             this->initialize();
         }
         
-	unsigned int getIndexSize() {
+	unsigned long long getIndexSize() {
             return FMHWT<WT,DATATYPE>::getIndexSize() + sizeof(this->ht) + this->ht->getHTSize();
         }
 

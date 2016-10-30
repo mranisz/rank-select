@@ -488,8 +488,8 @@ public:
             this->initialize();
         }
 	
-        unsigned int getSize() {
-            unsigned int size = sizeof(this->ranksLen) + sizeof(this->bitsLen) + sizeof(this->pointer) + sizeof(this->pointer2);
+        unsigned long long getSize() {
+            unsigned long long size = sizeof(this->ranksLen) + sizeof(this->bitsLen) + sizeof(this->pointer) + sizeof(this->pointer2);
             if (this->ranksLen > 0) size += (this->ranksLen + 32) * sizeof(unsigned int);
             if (this->bitsLen > 0) size += (this->bitsLen + 16) * sizeof(unsigned long long);
             return size;
@@ -2587,8 +2587,8 @@ public:
             this->initialize();
         }
 	
-        unsigned int getSize() {
-            unsigned int size = sizeof(this->ranksLen) + sizeof(this->bitsLen) + sizeof(this->textLen) + sizeof(this->pointer) + sizeof(this->pointer2);
+        unsigned long long getSize() {
+            unsigned long long size = sizeof(this->ranksLen) + sizeof(this->bitsLen) + sizeof(this->textLen) + sizeof(this->pointer) + sizeof(this->pointer2);
             if (this->ranksLen > 0) size += (this->ranksLen + 32) * sizeof(unsigned int);
             if (this->bitsLen > 0) size += (this->bitsLen + 128) * sizeof(unsigned char);
             return size;
