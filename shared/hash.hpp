@@ -309,7 +309,7 @@ private:
                             if (this->alignedBoundariesHT[hash] == HT::emptyValueHT) {
                                     beg = this->lut2[pattern[0]][pattern[1]][0];
                                     end = this->lut2[pattern[0]][pattern[1]][1];
-                                    step = (DATATYPE)ceil(((double)end + 1 - beg) / ((1ULL << (sizeof(DATATYPE) * 4)) - 1));
+                                    step = (DATATYPE)ceil(((double)end - beg) / ((1ULL << (sizeof(DATATYPE) * 4)) - 1));
                                     this->alignedBoundariesHT[hash] = i;
                                     break;
                             }
@@ -363,7 +363,7 @@ private:
                 while (true) {
                     leftBoundary = this->alignedBoundariesHT[hash];
                     if (leftBoundary >= leftBoundaryLUT2 && leftBoundary < rightBoundaryLUT2 && strncmp((const char *)pattern + 2, (const char *)(text + sa[leftBoundary] + 2), this->prefixLength) == 0) {
-                            step = (DATATYPE)ceil(((double)rightBoundaryLUT2 + 1 - leftBoundaryLUT2) / ((1ULL << (sizeof(DATATYPE) * 4)) - 1));
+                            step = (DATATYPE)ceil(((double)rightBoundaryLUT2 - leftBoundaryLUT2) / ((1ULL << (sizeof(DATATYPE) * 4)) - 1));
                             if ((hash & 1) == 0) rightBoundary = (this->alignedDenseBoundariesHT[hash / 2] >> (sizeof(DATATYPE) * 4)) * step + leftBoundaryLUT2;
                             else rightBoundary = (this->alignedDenseBoundariesHT[hash / 2] & ((1ULL << (sizeof(DATATYPE) * 4)) - 1)) * step + leftBoundaryLUT2;
                             break;
@@ -631,7 +631,7 @@ private:
                             if (this->alignedBoundariesHT[hash] == HTExt::emptyValueHT) {
                                     beg = this->lut2[pattern[0]][pattern[1]][0];
                                     end = this->lut2[pattern[0]][pattern[1]][1];
-                                    step = (DATATYPE)ceil(((double)end + 1 - beg) / ((1ULL << (sizeof(DATATYPE) * 4)) - 1));
+                                    step = (DATATYPE)ceil(((double)end - beg) / ((1ULL << (sizeof(DATATYPE) * 4)) - 1));
                                     this->alignedBoundariesHT[hash] = i;
                                     for (unsigned int j = 0; j < this->prefixLength; ++j) this->alignedEntriesHT[hash * this->prefixLength + j] = pattern[j + 2];
                                     break;
@@ -686,7 +686,7 @@ private:
                     while (true) {
                             leftBoundary = this->alignedBoundariesHT[hash];
                             if (leftBoundary >= leftBoundaryLUT2 && leftBoundary < rightBoundaryLUT2 && strncmp((const char *)pattern + 2, (const char *)&(this->alignedEntriesHT[hash * this->prefixLength]), this->prefixLength) == 0) {
-                                    step = (DATATYPE)ceil(((double)rightBoundaryLUT2 + 1 - leftBoundaryLUT2) / ((1ULL << (sizeof(DATATYPE) * 4)) - 1));
+                                    step = (DATATYPE)ceil(((double)rightBoundaryLUT2 - leftBoundaryLUT2) / ((1ULL << (sizeof(DATATYPE) * 4)) - 1));
                                     if ((hash & 1) == 0) rightBoundary = (this->alignedDenseBoundariesHT[hash / 2] >> (sizeof(DATATYPE) * 4)) * step + leftBoundaryLUT2;
                                     else rightBoundary = (this->alignedDenseBoundariesHT[hash / 2] & ((1ULL << (sizeof(DATATYPE) * 4)) - 1)) * step + leftBoundaryLUT2;
                                     break;
