@@ -902,7 +902,7 @@ public:
             }
 
             unsigned long long notEmptyBlocks = 0;
-            for (unsigned int i = 0; i < extendedTextLen / BLOCK_LEN; ++i) if (!emptyBlock[i]) ++notEmptyBlocks;
+            for (unsigned long long i = 0; i < extendedTextLen / BLOCK_LEN; ++i) if (!emptyBlock[i]) ++notEmptyBlocks;
 
             switch(T) {
                 case RankBasicType::RANK_BASIC_COMPRESSED_HEADERS:
