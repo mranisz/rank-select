@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
 	exit(1);
 }
 
-unsigned int *getPatternsForSelect(const char *fileName, const char *queriesNum, unsigned char *text, unsigned int textLen) {
+unsigned int *getPatternsForSelect32(const char *fileName, const char *queriesNum, unsigned char *text, unsigned int textLen) {
 	string selectsFileNameString = "selects-" + string(fileName) + "-" + string(queriesNum) + ".dat";
     const char *selectsFileName = selectsFileNameString.c_str();
     
@@ -98,15 +98,46 @@ unsigned int *getPatternsForSelect(const char *fileName, const char *queriesNum,
 		}
 		fclose(inFile);
     } else {
-		unsigned numberOfOnes = 0;
+		unsigned int numberOfOnes = 0;
         for (unsigned int i = 0; i < textLen; ++i) numberOfOnes += __builtin_popcount(text[i]);
 		random_device rd;
         mt19937 gen(rd());
         uniform_int_distribution<unsigned int> dis(1, numberOfOnes);
-        for (unsigned long long i = 0; i < (unsigned long long)atoi(queriesNum); ++i) patSelects[i] = dis(gen);
+        for (unsigned int i = 0; i < (unsigned int)atoi(queriesNum); ++i) patSelects[i] = dis(gen);
         FILE *outFile;
 		outFile = fopen(selectsFileName, "w");
 		fwrite(patSelects, (size_t)sizeof(unsigned int), (size_t)atoi(queriesNum), outFile);
+        fclose(outFile);
+    }
+	return patSelects;
+}
+
+unsigned long long *getPatternsForSelect64(const char *fileName, const char *queriesNum, unsigned char *text, unsigned int textLen) {
+	string selectsFileNameString = "selects-64-" + string(fileName) + "-" + string(queriesNum) + ".dat";
+    const char *selectsFileName = selectsFileNameString.c_str();
+    
+    unsigned long long *patSelects = new unsigned long long[atoi(queriesNum)];
+    
+    if (fileExists(selectsFileName)) {
+		FILE *inFile;
+		inFile = fopen(selectsFileName, "rb");
+		size_t result;
+		result = fread(patSelects, (size_t)sizeof(unsigned long long), (size_t)atoi(queriesNum), inFile);
+		if (result != (unsigned int)atoi(queriesNum)) {
+			cout << "Error loading data from " << selectsFileName << endl;
+			exit(1);
+		}
+		fclose(inFile);
+    } else {
+		unsigned long long numberOfOnes = 0;
+        for (unsigned int i = 0; i < textLen; ++i) numberOfOnes += __builtin_popcount(text[i]);
+		random_device rd;
+        mt19937 gen(rd());
+        uniform_int_distribution<unsigned long long> dis(1, numberOfOnes);
+        for (unsigned int i = 0; i < (unsigned int)atoi(queriesNum); ++i) patSelects[i] = dis(gen);
+        FILE *outFile;
+		outFile = fopen(selectsFileName, "w");
+		fwrite(patSelects, (size_t)sizeof(unsigned long long), (size_t)atoi(queriesNum), outFile);
         fclose(outFile);
     }
 	return patSelects;
@@ -133,7 +164,7 @@ void selectBasic_32_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned int *patterns = getPatternsForSelect32(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resSelect = new unsigned int[queriesNumInt];
     
@@ -176,7 +207,7 @@ void selectBasic_32_512_8192(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned int *patterns = getPatternsForSelect32(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resSelect = new unsigned int[queriesNumInt];
     
@@ -219,7 +250,7 @@ void selectBch_32_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned int *patterns = getPatternsForSelect32(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resSelect = new unsigned int[queriesNumInt];
     
@@ -262,7 +293,7 @@ void selectBch_32_512_8192(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned int *patterns = getPatternsForSelect32(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resSelect = new unsigned int[queriesNumInt];
     
@@ -305,7 +336,7 @@ void selectMpe1_32_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned int *patterns = getPatternsForSelect32(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resSelect = new unsigned int[queriesNumInt];
     
@@ -348,7 +379,7 @@ void selectMpe2_32_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned int *patterns = getPatternsForSelect32(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resSelect = new unsigned int[queriesNumInt];
     
@@ -391,7 +422,7 @@ void selectMpe3_32_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned int *patterns = getPatternsForSelect32(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resSelect = new unsigned int[queriesNumInt];
     
@@ -434,9 +465,9 @@ void selectBasic_64_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned long long *patterns = getPatternsForSelect64(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    unsigned long long *resSelect = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
@@ -477,9 +508,9 @@ void selectBasic_64_512_8192(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned long long *patterns = getPatternsForSelect64(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    unsigned long long *resSelect = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
@@ -520,9 +551,9 @@ void selectBch_64_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned long long *patterns = getPatternsForSelect64(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    unsigned long long *resSelect = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
@@ -563,9 +594,9 @@ void selectBch_64_512_8192(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned long long *patterns = getPatternsForSelect64(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    unsigned long long *resSelect = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
@@ -606,9 +637,9 @@ void selectMpe1_64_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned long long *patterns = getPatternsForSelect64(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    unsigned long long *resSelect = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
@@ -649,9 +680,9 @@ void selectMpe2_64_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned long long *patterns = getPatternsForSelect64(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    unsigned long long *resSelect = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
@@ -692,9 +723,9 @@ void selectMpe3_64_128_4096(const char *fileName, const char *queriesNum) {
 	}
 	//select->testSelect(text, textLen);
     
-    unsigned int *patterns = getPatternsForSelect(fileName, queriesNum, text, textLen);
+    unsigned long long *patterns = getPatternsForSelect64(fileName, queriesNum, text, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resSelect = new unsigned int[queriesNumInt];
+    unsigned long long *resSelect = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);

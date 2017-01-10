@@ -1812,7 +1812,7 @@ private:
                 for (unsigned int j = 0; j < BLOCK_LEN; j += 2) {
                     if ((bitsTemp[offset + j] == 0 && bitsTemp[offset + j + 1] == 0) || (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255)) ++pairsToRemoveInBlock;
                 }
-                if (pairsToRemoveInBlock > 4) {
+                if (pairsToRemoveInBlock > 8) {
                     pairsToRemove += pairsToRemoveInBlock;
                     ++compressedBlocks;
                     blockToCompress[i / BLOCK_LEN] = true;
@@ -1826,7 +1826,7 @@ private:
             this->alignedBits = this->bits;
             while ((unsigned long long)this->alignedBits % 128) ++this->alignedBits;
 
-            unsigned int bits1, bits2;
+            unsigned long long bits1, bits2;
             bitsCounter = 0;
             rankCounter = 1;
             offset = 0;
@@ -1838,13 +1838,13 @@ private:
                 if (blockToCompress[i / BLOCK_LEN]) {
                     bits1 = 0;
                     bits2 = 0;
-                    bitsCounter += 8;
+                    bitsCounter += 16;
                     for (unsigned int j = 0; j < BLOCK_LEN; j += 2) {
                         if (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255) {
-                            bits2 += (1 << (31 - (j / 2)));
+                            bits2 += (1ULL << (63 - (j / 2)));
                         }
                         if ((bitsTemp[offset + j] == 0 && bitsTemp[offset + j + 1] == 0) || (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255)) {
-                            bits1 += (1 << (31 - (j / 2)));
+                            bits1 += (1ULL << (63 - (j / 2)));
                         } else {
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j + 1];
@@ -1853,11 +1853,19 @@ private:
                     this->alignedBits[ranksTemp[rankCounter - 2]] = (bits1 & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 1] = ((bits1 >> 8) & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 2] = ((bits1 >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = (bits1 >> 24);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = (bits2 & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits2 >> 8) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits2 >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits2 >> 24);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = ((bits1 >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = ((bits1 >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits1 >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits1 >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits1 >> 56);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 8] = (bits2 & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 9] = ((bits2 >> 8) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 10] = ((bits2 >> 16) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 11] = ((bits2 >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 12] = ((bits2 >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 13] = ((bits2 >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 14] = ((bits2 >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 15] = (bits2 >> 56);
                 } else {
                     for (unsigned int j = 0; j < BLOCK_LEN; ++j) this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                 }
@@ -1982,15 +1990,15 @@ private:
                 }
                 switch(T) {
                     case RankMPEType::RANK_MPE2:
-                        if (pairs0ToRemoveInBlock > 2 && pairs255ToRemoveInBlock > 2) {
+                        if (pairs0ToRemoveInBlock > 4 && pairs255ToRemoveInBlock > 4) {
                             pairsToRemove += (pairs0ToRemoveInBlock + pairs255ToRemoveInBlock);
                             ++compressedBlocks;
                             blockToCompress[i / BLOCK_LEN] = 3;
-                        } else if (pairs0ToRemoveInBlock > 2 && pairs255ToRemoveInBlock <= 2) {
+                        } else if (pairs0ToRemoveInBlock > 4 && pairs255ToRemoveInBlock <= 4) {
                             pairsToRemove += pairs0ToRemoveInBlock;
                             ++compressed0Blocks;
                             blockToCompress[i / BLOCK_LEN] = 1;
-                        } else if (pairs0ToRemoveInBlock <= 2 && pairs255ToRemoveInBlock > 2) {
+                        } else if (pairs0ToRemoveInBlock <= 4 && pairs255ToRemoveInBlock > 4) {
                             pairsToRemove += pairs255ToRemoveInBlock;
                             ++compressed255Blocks;
                             blockToCompress[i / BLOCK_LEN] = 2;
@@ -2021,7 +2029,7 @@ private:
             this->alignedBits = this->bits;
             while ((unsigned long long)this->alignedBits % 128) ++this->alignedBits;
 
-            unsigned int bits1, bits2, bits;
+            unsigned long long bits1, bits2, bits;
             bitsCounter = 0;
             rankCounter = 1;
             offset = 0;
@@ -2033,13 +2041,13 @@ private:
                 if (blockToCompress[i / BLOCK_LEN] == 3) {
                     bits1 = 0;
                     bits2 = 0;
-                    bitsCounter += 8;
+                    bitsCounter += 16;
                     for (unsigned int j = 0; j < BLOCK_LEN; j += 2) {
                         if (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255) {
-                            bits2 += (1 << (31 - (j / 2)));
+                            bits2 += (1ULL << (63 - (j / 2)));
                         }
                         if ((bitsTemp[offset + j] == 0 && bitsTemp[offset + j + 1] == 0) || (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255)) {
-                            bits1 += (1 << (31 - (j / 2)));
+                            bits1 += (1ULL << (63 - (j / 2)));
                         } else {
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j + 1];
@@ -2048,17 +2056,25 @@ private:
                     this->alignedBits[ranksTemp[rankCounter - 2]] = (bits1 & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 1] = ((bits1 >> 8) & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 2] = ((bits1 >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = (bits1 >> 24);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = (bits2 & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits2 >> 8) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits2 >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits2 >> 24);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = ((bits1 >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = ((bits1 >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits1 >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits1 >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits1 >> 56);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 8] = (bits2 & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 9] = ((bits2 >> 8) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 10] = ((bits2 >> 16) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 11] = ((bits2 >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 12] = ((bits2 >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 13] = ((bits2 >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 14] = ((bits2 >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 15] = (bits2 >> 56);
                 } else if (blockToCompress[i / BLOCK_LEN] == 1) {
                     bits = 0;
-                    bitsCounter += 4;
+                    bitsCounter += 8;
                     for (unsigned int j = 0; j < BLOCK_LEN; j += 2) {
                         if (bitsTemp[offset + j] == 0 && bitsTemp[offset + j + 1] == 0) {
-                            bits += (1 << (31 - (j / 2)));
+                            bits += (1ULL << (63 - (j / 2)));
                         } else {
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j + 1];
@@ -2067,13 +2083,17 @@ private:
                     this->alignedBits[ranksTemp[rankCounter - 2]] = (bits & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 1] = ((bits >> 8) & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 2] = ((bits >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = (bits >> 24);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = ((bits >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = ((bits >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits >> 56);
                 } else if (blockToCompress[i / BLOCK_LEN] == 2) {
                     bits = 0;
-                    bitsCounter += 4;
+                    bitsCounter += 8;
                     for (unsigned int j = 0; j < BLOCK_LEN; j += 2) {
                         if (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255) {
-                            bits += (1 << (31 - (j / 2)));
+                            bits += (1ULL << (63 - (j / 2)));
                         } else {
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j + 1];
@@ -2082,7 +2102,11 @@ private:
                     this->alignedBits[ranksTemp[rankCounter - 2]] = (bits & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 1] = ((bits >> 8) & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 2] = ((bits >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = (bits >> 24);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = ((bits >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = ((bits >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits >> 56);
                 } else {
                     for (unsigned int j = 0; j < BLOCK_LEN; ++j) this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                 }
@@ -2143,7 +2167,7 @@ private:
                 if (rankNumInCL % 2 == 0) rank2 += (this->pointer2[(rankNumInCL + 2) / 2] & 0xFFFF);
                 else rank2 += (this->pointer2[(rankNumInCL + 2) / 2] >> 16);
             }
-            if (((rank2 - rank) & BLOCK_MASK) == 0) return rank + i * ((rank2 - rank) >> 9);
+            if (((rank2 - rank) & BLOCK_MASK) == 0) return rank + i * ((rank2 - rank) >> BLOCK_MASK_SHIFT);
             bool compressedBlock;
             if (rankNumInCL > 0) {
                 unsigned int offset = this->pointer2[OFFSETSTARTINSUPERBLOCK + (rankNumInCL + 1) / 2];
@@ -2162,17 +2186,125 @@ private:
             if (compressedBlock) {
                 unsigned int temp1 = i % 16;
                 unsigned int temp2 = i / 16;
-                unsigned int bits1 = *((unsigned int*)(this->pointer));
-                unsigned int bits2 = *((unsigned int*)(this->pointer + 4));
+                unsigned long long bits1 = *((unsigned long long*)(this->pointer));
+                unsigned long long bits2 = *((unsigned long long*)(this->pointer + 8));
                 if ((bits1 & masks2[temp2]) > 0) {
                     if ((bits2 & masks2[temp2]) > 0) rank += temp1;
                     i -= temp1;
                 }
-                i -= 16 * __builtin_popcount(bits1 & masks3[temp2]);
-                rank += 16 * __builtin_popcount(bits2 & masks3[temp2]);
-                (this->pointer) += 8;
+                i -= 16 * __builtin_popcountll(bits1 & masks3[temp2]);
+                rank += 16 * __builtin_popcountll(bits2 & masks3[temp2]);
+                (this->pointer) += 16;
             }
             switch (i / 64) {
+            case 15:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 104)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 112)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 120))) & masks[i - 960]);
+            case 14:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 104)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 112))) & masks[i - 896]);
+            case 13:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 104))) & masks[i - 832]);
+            case 12:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 96))) & masks[i - 768]);
+            case 11:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 88))) & masks[i - 704]);
+            case 10:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 80))) & masks[i - 640]);
+            case 9:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 72))) & masks[i - 576]);
+            case 8:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 64))) & masks[i - 512]);
             case 7:
                 rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
                 rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
@@ -2237,7 +2369,7 @@ private:
                 if (rankNumInCL % 2 == 0) rank2 += (this->pointer2[(rankNumInCL + 2) / 2] & 0xFFFF);
                 else rank2 += (this->pointer2[(rankNumInCL + 2) / 2] >> 16);
             }
-            if (((rank2 - rank) & BLOCK_MASK) == 0) return rank + i * ((rank2 - rank) >> 9);
+            if (((rank2 - rank) & BLOCK_MASK) == 0) return rank + i * ((rank2 - rank) >> BLOCK_MASK_SHIFT);
             unsigned int compressedBlock;
             if (rankNumInCL > 0) {
                 unsigned int offset = this->pointer2[OFFSETSTARTINSUPERBLOCK + (rankNumInCL + 1) / 2];
@@ -2253,44 +2385,153 @@ private:
                 compressedBlock = ((this->pointer2[OFFSETSTARTINSUPERBLOCK + 1] >> 28) & 3);
                 this->pointer = this->alignedBits + this->pointer2[OFFSETSTARTINSUPERBLOCK];
             }
-            unsigned int temp1, temp2, bits, tempBits;
+            unsigned int temp1, temp2, tempBits;
+            unsigned long long bits;
             switch (compressedBlock) {
                 case 1:
                     temp1 = i % 16;
                     temp2 = i / 16;
-                    bits = *((unsigned int*)(this->pointer));
+                    bits = *((unsigned long long*)(this->pointer));
                     if ((bits & masks2[temp2])> 0) i -= temp1;
-                    i -= 16 * __builtin_popcount(bits & masks3[temp2]);
-                    (this->pointer) += 4;
+                    i -= 16 * __builtin_popcountll(bits & masks3[temp2]);
+                    (this->pointer) += 8;
                     break;
                 case 2:
                     temp1 = i % 16;
                     temp2 = i / 16;
-                    bits = *((unsigned int*)(this->pointer));
+                    bits = *((unsigned long long*)(this->pointer));
                     if ((bits & masks2[temp2])> 0) {
                         rank += temp1;
                         i -= temp1;
                     }
-                    tempBits = 16 * __builtin_popcount(bits & masks3[temp2]);
+                    tempBits = 16 * __builtin_popcountll(bits & masks3[temp2]);
                     i -= tempBits;
                     rank += tempBits;
-                    (this->pointer) += 4;
+                    (this->pointer) += 8;
                     break;
                 case 3:
                     temp1 = i % 16;
                     temp2 = i / 16;
-                    unsigned int bits1 = *((unsigned int*)(this->pointer));
-                    unsigned int bits2 = *((unsigned int*)(this->pointer + 4));
+                    unsigned long long bits1 = *((unsigned long long*)(this->pointer));
+                    unsigned long long bits2 = *((unsigned long long*)(this->pointer + 8));
                     if ((bits1 & masks2[temp2])> 0) {
                         if ((bits2 & masks2[temp2])> 0) rank += temp1;
                         i -= temp1;
                     }
-                    i -= 16 * __builtin_popcount(bits1 & masks3[temp2]);
-                    rank += 16 * __builtin_popcount(bits2 & masks3[temp2]);
-                    (this->pointer) += 8;
+                    i -= 16 * __builtin_popcountll(bits1 & masks3[temp2]);
+                    rank += 16 * __builtin_popcountll(bits2 & masks3[temp2]);
+                    (this->pointer) += 16;
                     break;
             }
             switch (i / 64) {
+            case 15:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 104)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 112)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 120))) & masks[i - 960]);
+            case 14:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 104)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 112))) & masks[i - 896]);
+            case 13:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 104))) & masks[i - 832]);
+            case 12:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 96))) & masks[i - 768]);
+            case 11:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 88))) & masks[i - 704]);
+            case 10:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 80))) & masks[i - 640]);
+            case 9:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 72))) & masks[i - 576]);
+            case 8:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 64))) & masks[i - 512]);
             case 7:
                 rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
                 rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
@@ -2349,12 +2590,13 @@ public:
         unsigned char *pointer;
         unsigned int* pointer2;
         
-        const static unsigned int BLOCK_LEN = sizeof(unsigned long long) * 8;
+        const static unsigned int BLOCK_LEN = sizeof(unsigned long long) * 16;
         const static unsigned int BLOCK_IN_BITS = 8 * BLOCK_LEN;
         const static unsigned int PAIRS0THR = 9;
         const static unsigned int PAIRS255THR = 9;
 
-        const static unsigned int BLOCK_MASK = (1 << 9) - 1;
+        const static unsigned int BLOCK_MASK_SHIFT = 10;
+        const static unsigned int BLOCK_MASK = (1 << BLOCK_MASK_SHIFT) - 1;
 
         const static unsigned int SUPERBLOCKLEN = 16;
         const static unsigned int OFFSETSTARTINSUPERBLOCK = 9;
@@ -2434,74 +2676,138 @@ public:
             0xFEFFFFFFFFFFFFFFULL
         };
 
-        const unsigned int masks2[32] = {
-            0x80000000,
-            0x40000000,
-            0x20000000,
-            0x10000000,
-            0x08000000,
-            0x04000000,
-            0x02000000,
-            0x01000000,
-            0x00800000,
-            0x00400000,
-            0x00200000,
-            0x00100000,
-            0x00080000,
-            0x00040000,
-            0x00020000,
-            0x00010000,
-            0x00008000,
-            0x00004000,
-            0x00002000,
-            0x00001000,
-            0x00000800,
-            0x00000400,
-            0x00000200,
-            0x00000100,
-            0x00000080,
-            0x00000040,
-            0x00000020,
-            0x00000010,
-            0x00000008,
-            0x00000004,
-            0x00000002,
-            0x00000001
+        const unsigned long long masks2[64] = {
+            0x8000000000000000ULL,
+            0x4000000000000000ULL,
+            0x2000000000000000ULL,
+            0x1000000000000000ULL,
+            0x0800000000000000ULL,
+            0x0400000000000000ULL,
+            0x0200000000000000ULL,
+            0x0100000000000000ULL,
+            0x0080000000000000ULL,
+            0x0040000000000000ULL,
+            0x0020000000000000ULL,
+            0x0010000000000000ULL,
+            0x0008000000000000ULL,
+            0x0004000000000000ULL,
+            0x0002000000000000ULL,
+            0x0001000000000000ULL,
+            0x0000800000000000ULL,
+            0x0000400000000000ULL,
+            0x0000200000000000ULL,
+            0x0000100000000000ULL,
+            0x0000080000000000ULL,
+            0x0000040000000000ULL,
+            0x0000020000000000ULL,
+            0x0000010000000000ULL,
+            0x0000008000000000ULL,
+            0x0000004000000000ULL,
+            0x0000002000000000ULL,
+            0x0000001000000000ULL,
+            0x0000000800000000ULL,
+            0x0000000400000000ULL,
+            0x0000000200000000ULL,
+            0x0000000100000000ULL,
+            0x0000000080000000ULL,
+            0x0000000040000000ULL,
+            0x0000000020000000ULL,
+            0x0000000010000000ULL,
+            0x0000000008000000ULL,
+            0x0000000004000000ULL,
+            0x0000000002000000ULL,
+            0x0000000001000000ULL,
+            0x0000000000800000ULL,
+            0x0000000000400000ULL,
+            0x0000000000200000ULL,
+            0x0000000000100000ULL,
+            0x0000000000080000ULL,
+            0x0000000000040000ULL,
+            0x0000000000020000ULL,
+            0x0000000000010000ULL,
+            0x0000000000008000ULL,
+            0x0000000000004000ULL,
+            0x0000000000002000ULL,
+            0x0000000000001000ULL,
+            0x0000000000000800ULL,
+            0x0000000000000400ULL,
+            0x0000000000000200ULL,
+            0x0000000000000100ULL,
+            0x0000000000000080ULL,
+            0x0000000000000040ULL,
+            0x0000000000000020ULL,
+            0x0000000000000010ULL,
+            0x0000000000000008ULL,
+            0x0000000000000004ULL,
+            0x0000000000000002ULL,
+            0x0000000000000001ULL
         };
 
-        const unsigned int masks3[32] = {
-            0x00000000,
-            0x80000000,
-            0xC0000000,
-            0xE0000000,
-            0xF0000000,
-            0xF8000000,
-            0xFC000000,
-            0xFE000000,
-            0xFF000000,
-            0xFF800000,
-            0xFFC00000,
-            0xFFE00000,
-            0xFFF00000,
-            0xFFF80000,
-            0xFFFC0000,
-            0xFFFE0000,
-            0xFFFF0000,
-            0xFFFF8000,
-            0xFFFFC000,
-            0xFFFFE000,
-            0xFFFFF000,
-            0xFFFFF800,
-            0xFFFFFC00,
-            0xFFFFFE00,
-            0xFFFFFF00,
-            0xFFFFFF80,
-            0xFFFFFFC0,
-            0xFFFFFFE0,
-            0xFFFFFFF0,
-            0xFFFFFFF8,
-            0xFFFFFFFC,
-            0xFFFFFFFE
+        const unsigned long long masks3[64] = {
+            0x0000000000000000ULL,
+            0x8000000000000000ULL,
+            0xC000000000000000ULL,
+            0xE000000000000000ULL,
+            0xF000000000000000ULL,
+            0xF800000000000000ULL,
+            0xFC00000000000000ULL,
+            0xFE00000000000000ULL,
+            0xFF00000000000000ULL,
+            0xFF80000000000000ULL,
+            0xFFC0000000000000ULL,
+            0xFFE0000000000000ULL,
+            0xFFF0000000000000ULL,
+            0xFFF8000000000000ULL,
+            0xFFFC000000000000ULL,
+            0xFFFE000000000000ULL,
+            0xFFFF000000000000ULL,
+            0xFFFF800000000000ULL,
+            0xFFFFC00000000000ULL,
+            0xFFFFE00000000000ULL,
+            0xFFFFF00000000000ULL,
+            0xFFFFF80000000000ULL,
+            0xFFFFFC0000000000ULL,
+            0xFFFFFE0000000000ULL,
+            0xFFFFFF0000000000ULL,
+            0xFFFFFF8000000000ULL,
+            0xFFFFFFC000000000ULL,
+            0xFFFFFFE000000000ULL,
+            0xFFFFFFF000000000ULL,
+            0xFFFFFFF800000000ULL,
+            0xFFFFFFFC00000000ULL,
+            0xFFFFFFFE00000000ULL,
+            0xFFFFFFFF00000000ULL,
+            0xFFFFFFFF80000000ULL,
+            0xFFFFFFFFC0000000ULL,
+            0xFFFFFFFFE0000000ULL,
+            0xFFFFFFFFF0000000ULL,
+            0xFFFFFFFFF8000000ULL,
+            0xFFFFFFFFFC000000ULL,
+            0xFFFFFFFFFE000000ULL,
+            0xFFFFFFFFFF000000ULL,
+            0xFFFFFFFFFF800000ULL,
+            0xFFFFFFFFFFC00000ULL,
+            0xFFFFFFFFFFE00000ULL,
+            0xFFFFFFFFFFF00000ULL,
+            0xFFFFFFFFFFF80000ULL,
+            0xFFFFFFFFFFFC0000ULL,
+            0xFFFFFFFFFFFE0000ULL,
+            0xFFFFFFFFFFFF0000ULL,
+            0xFFFFFFFFFFFF8000ULL,
+            0xFFFFFFFFFFFFC000ULL,
+            0xFFFFFFFFFFFFE000ULL,
+            0xFFFFFFFFFFFFF000ULL,
+            0xFFFFFFFFFFFFF800ULL,
+            0xFFFFFFFFFFFFFC00ULL,
+            0xFFFFFFFFFFFFFE00ULL,
+            0xFFFFFFFFFFFFFF00ULL,
+            0xFFFFFFFFFFFFFF80ULL,
+            0xFFFFFFFFFFFFFFC0ULL,
+            0xFFFFFFFFFFFFFFE0ULL,
+            0xFFFFFFFFFFFFFFF0ULL,
+            0xFFFFFFFFFFFFFFF8ULL,
+            0xFFFFFFFFFFFFFFFCULL,
+            0xFFFFFFFFFFFFFFFEULL
         };
 
 	RankMPE32() {
@@ -2707,7 +3013,7 @@ private:
                 for (unsigned long long j = 0; j < BLOCK_LEN; j += 2) {
                     if ((bitsTemp[offset + j] == 0 && bitsTemp[offset + j + 1] == 0) || (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255)) ++pairsToRemoveInBlock;
                 }
-                if (pairsToRemoveInBlock > 4) {
+                if (pairsToRemoveInBlock > 8) {
                     pairsToRemove += pairsToRemoveInBlock;
                     ++compressedBlocks;
                     blockToCompress[i / BLOCK_LEN] = true;
@@ -2721,7 +3027,7 @@ private:
             this->alignedBits = this->bits;
             while ((unsigned long long)this->alignedBits % 128) ++this->alignedBits;
 
-            unsigned int bits1, bits2;
+            unsigned long long bits1, bits2;
             bitsCounter = 0;
             rankCounter = 1;
             offset = 0;
@@ -2733,13 +3039,13 @@ private:
                 if (blockToCompress[i / BLOCK_LEN]) {
                     bits1 = 0;
                     bits2 = 0;
-                    bitsCounter += 8;
+                    bitsCounter += 16;
                     for (unsigned long long j = 0; j < BLOCK_LEN; j += 2) {
                         if (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255) {
-                            bits2 += (1 << (31 - (j / 2)));
+                            bits2 += (1ULL << (63 - (j / 2)));
                         }
                         if ((bitsTemp[offset + j] == 0 && bitsTemp[offset + j + 1] == 0) || (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255)) {
-                            bits1 += (1 << (31 - (j / 2)));
+                            bits1 += (1ULL << (63 - (j / 2)));
                         } else {
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j + 1];
@@ -2748,11 +3054,19 @@ private:
                     this->alignedBits[ranksTemp[rankCounter - 2]] = (bits1 & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 1] = ((bits1 >> 8) & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 2] = ((bits1 >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = (bits1 >> 24);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = (bits2 & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits2 >> 8) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits2 >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits2 >> 24);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = ((bits1 >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = ((bits1 >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits1 >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits1 >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits1 >> 56);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 8] = (bits2 & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 9] = ((bits2 >> 8) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 10] = ((bits2 >> 16) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 11] = ((bits2 >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 12] = ((bits2 >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 13] = ((bits2 >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 14] = ((bits2 >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 15] = (bits2 >> 56);
                 } else {
                     for (unsigned long long j = 0; j < BLOCK_LEN; ++j) this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                 }
@@ -2877,15 +3191,15 @@ private:
                 }
                 switch(T) {
                     case RankMPEType::RANK_MPE2:
-                        if (pairs0ToRemoveInBlock > 2 && pairs255ToRemoveInBlock > 2) {
+                        if (pairs0ToRemoveInBlock > 4 && pairs255ToRemoveInBlock > 4) {
                             pairsToRemove += (pairs0ToRemoveInBlock + pairs255ToRemoveInBlock);
                             ++compressedBlocks;
                             blockToCompress[i / BLOCK_LEN] = 3;
-                        } else if (pairs0ToRemoveInBlock > 2 && pairs255ToRemoveInBlock <= 2) {
+                        } else if (pairs0ToRemoveInBlock > 4 && pairs255ToRemoveInBlock <= 4) {
                             pairsToRemove += pairs0ToRemoveInBlock;
                             ++compressed0Blocks;
                             blockToCompress[i / BLOCK_LEN] = 1;
-                        } else if (pairs0ToRemoveInBlock <= 2 && pairs255ToRemoveInBlock > 2) {
+                        } else if (pairs0ToRemoveInBlock <= 4 && pairs255ToRemoveInBlock > 4) {
                             pairsToRemove += pairs255ToRemoveInBlock;
                             ++compressed255Blocks;
                             blockToCompress[i / BLOCK_LEN] = 2;
@@ -2916,7 +3230,7 @@ private:
             this->alignedBits = this->bits;
             while ((unsigned long long)this->alignedBits % 128) ++this->alignedBits;
 
-            unsigned int bits1, bits2, bits;
+            unsigned long long bits1, bits2, bits;
             bitsCounter = 0;
             rankCounter = 1;
             offset = 0;
@@ -2928,13 +3242,13 @@ private:
                 if (blockToCompress[i / BLOCK_LEN] == 3) {
                     bits1 = 0;
                     bits2 = 0;
-                    bitsCounter += 8;
+                    bitsCounter += 16;
                     for (unsigned long long j = 0; j < BLOCK_LEN; j += 2) {
                         if (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255) {
-                            bits2 += (1 << (31 - (j / 2)));
+                            bits2 += (1ULL << (63 - (j / 2)));
                         }
                         if ((bitsTemp[offset + j] == 0 && bitsTemp[offset + j + 1] == 0) || (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255)) {
-                            bits1 += (1 << (31 - (j / 2)));
+                            bits1 += (1ULL << (63 - (j / 2)));
                         } else {
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j + 1];
@@ -2943,17 +3257,25 @@ private:
                     this->alignedBits[ranksTemp[rankCounter - 2]] = (bits1 & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 1] = ((bits1 >> 8) & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 2] = ((bits1 >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = (bits1 >> 24);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = (bits2 & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits2 >> 8) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits2 >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits2 >> 24);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = ((bits1 >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = ((bits1 >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits1 >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits1 >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits1 >> 56);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 8] = (bits2 & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 9] = ((bits2 >> 8) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 10] = ((bits2 >> 16) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 11] = ((bits2 >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 12] = ((bits2 >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 13] = ((bits2 >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 14] = ((bits2 >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 15] = (bits2 >> 56);
                 } else if (blockToCompress[i / BLOCK_LEN] == 1) {
                     bits = 0;
-                    bitsCounter += 4;
+                    bitsCounter += 8;
                     for (unsigned long long j = 0; j < BLOCK_LEN; j += 2) {
                         if (bitsTemp[offset + j] == 0 && bitsTemp[offset + j + 1] == 0) {
-                            bits += (1 << (31 - (j / 2)));
+                            bits += (1ULL << (63 - (j / 2)));
                         } else {
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j + 1];
@@ -2962,13 +3284,17 @@ private:
                     this->alignedBits[ranksTemp[rankCounter - 2]] = (bits & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 1] = ((bits >> 8) & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 2] = ((bits >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = (bits >> 24);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = ((bits >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = ((bits >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits >> 56);
                 } else if (blockToCompress[i / BLOCK_LEN] == 2) {
                     bits = 0;
-                    bitsCounter += 4;
+                    bitsCounter += 8;
                     for (unsigned long long j = 0; j < BLOCK_LEN; j += 2) {
                         if (bitsTemp[offset + j] == 255 && bitsTemp[offset + j + 1] == 255) {
-                            bits += (1 << (31 - (j / 2)));
+                            bits += (1ULL << (63 - (j / 2)));
                         } else {
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                             this->alignedBits[bitsCounter++] = bitsTemp[offset + j + 1];
@@ -2977,7 +3303,11 @@ private:
                     this->alignedBits[ranksTemp[rankCounter - 2]] = (bits & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 1] = ((bits >> 8) & 0xFF);
                     this->alignedBits[ranksTemp[rankCounter - 2] + 2] = ((bits >> 16) & 0xFF);
-                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = (bits >> 24);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 3] = ((bits >> 24) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 4] = ((bits >> 32) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 5] = ((bits >> 40) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 6] = ((bits >> 48) & 0xFF);
+                    this->alignedBits[ranksTemp[rankCounter - 2] + 7] = (bits >> 56);
                 } else {
                     for (unsigned long long j = 0; j < BLOCK_LEN; ++j) this->alignedBits[bitsCounter++] = bitsTemp[offset + j];
                 }
@@ -3062,7 +3392,7 @@ private:
                         break;
                 }
             }
-            if (((rank2 - rank) & BLOCK_MASK) == 0) return rank + i * ((rank2 - rank) >> 9);
+            if (((rank2 - rank) & BLOCK_MASK) == 0) return rank + i * ((rank2 - rank) >> BLOCK_MASK_SHIFT);
             bool compressedBlock;
             if (rankNumInCL > 0) {
                 unsigned long long offset = this->pointer2[OFFSETSTARTINSUPERBLOCK + (rankNumInCL + 3) / 4];
@@ -3092,17 +3422,125 @@ private:
             if (compressedBlock) {
                 unsigned int temp1 = i % 16;
                 unsigned int temp2 = i / 16;
-                unsigned int bits1 = *((unsigned int*)(this->pointer));
-                unsigned int bits2 = *((unsigned int*)(this->pointer + 4));
+                unsigned long long bits1 = *((unsigned long long*)(this->pointer));
+                unsigned long long bits2 = *((unsigned long long*)(this->pointer + 8));
                 if ((bits1 & masks2[temp2]) > 0) {
                     if ((bits2 & masks2[temp2]) > 0) rank += temp1;
                     i -= temp1;
                 }
-                i -= 16 * __builtin_popcount(bits1 & masks3[temp2]);
-                rank += 16 * __builtin_popcount(bits2 & masks3[temp2]);
-                (this->pointer) += 8;
+                i -= 16 * __builtin_popcountll(bits1 & masks3[temp2]);
+                rank += 16 * __builtin_popcountll(bits2 & masks3[temp2]);
+                (this->pointer) += 16;
             }
             switch (i / 64) {
+            case 15:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 104)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 112)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 120))) & masks[i - 960]);
+            case 14:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 104)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 112))) & masks[i - 896]);
+            case 13:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 104))) & masks[i - 832]);
+            case 12:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 96))) & masks[i - 768]);
+            case 11:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 88))) & masks[i - 704]);
+            case 10:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 80))) & masks[i - 640]);
+            case 9:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 72))) & masks[i - 576]);
+            case 8:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 64))) & masks[i - 512]);
             case 7:
                 rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
                 rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
@@ -3191,7 +3629,7 @@ private:
                         break;
                 }
             }
-            if (((rank2 - rank) & BLOCK_MASK) == 0) return rank + i * ((rank2 - rank) >> 9);
+            if (((rank2 - rank) & BLOCK_MASK) == 0) return rank + i * ((rank2 - rank) >> BLOCK_MASK_SHIFT);
             unsigned int compressedBlock;
             if (rankNumInCL > 0) {
                 unsigned long long offset = this->pointer2[OFFSETSTARTINSUPERBLOCK + (rankNumInCL + 3) / 4];
@@ -3218,44 +3656,153 @@ private:
                 compressedBlock = ((this->pointer2[OFFSETSTARTINSUPERBLOCK + 1] >> 60) & 3);
                 this->pointer = this->alignedBits + this->pointer2[OFFSETSTARTINSUPERBLOCK];
             }
-            unsigned int temp1, temp2, bits, tempBits;
+            unsigned int temp1, temp2, tempBits;
+            unsigned long long bits;
             switch (compressedBlock) {
                 case 1:
                     temp1 = i % 16;
                     temp2 = i / 16;
-                    bits = *((unsigned int*)(this->pointer));
+                    bits = *((unsigned long long*)(this->pointer));
                     if ((bits & masks2[temp2])> 0) i -= temp1;
-                    i -= 16 * __builtin_popcount(bits & masks3[temp2]);
-                    (this->pointer) += 4;
+                    i -= 16 * __builtin_popcountll(bits & masks3[temp2]);
+                    (this->pointer) += 8;
                     break;
                 case 2:
                     temp1 = i % 16;
                     temp2 = i / 16;
-                    bits = *((unsigned int*)(this->pointer));
+                    bits = *((unsigned long long*)(this->pointer));
                     if ((bits & masks2[temp2])> 0) {
                         rank += temp1;
                         i -= temp1;
                     }
-                    tempBits = 16 * __builtin_popcount(bits & masks3[temp2]);
+                    tempBits = 16 * __builtin_popcountll(bits & masks3[temp2]);
                     i -= tempBits;
                     rank += tempBits;
-                    (this->pointer) += 4;
+                    (this->pointer) += 8;
                     break;
                 case 3:
                     temp1 = i % 16;
                     temp2 = i / 16;
-                    unsigned int bits1 = *((unsigned int*)(this->pointer));
-                    unsigned int bits2 = *((unsigned int*)(this->pointer + 4));
+                    unsigned long long bits1 = *((unsigned long long*)(this->pointer));
+                    unsigned long long bits2 = *((unsigned long long*)(this->pointer + 8));
                     if ((bits1 & masks2[temp2])> 0) {
                         if ((bits2 & masks2[temp2])> 0) rank += temp1;
                         i -= temp1;
                     }
-                    i -= 16 * __builtin_popcount(bits1 & masks3[temp2]);
-                    rank += 16 * __builtin_popcount(bits2 & masks3[temp2]);
-                    (this->pointer) += 8;
+                    i -= 16 * __builtin_popcountll(bits1 & masks3[temp2]);
+                    rank += 16 * __builtin_popcountll(bits2 & masks3[temp2]);
+                    (this->pointer) += 16;
                     break;
             }
             switch (i / 64) {
+            case 15:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 104)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 112)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 120))) & masks[i - 960]);
+            case 14:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 104)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 112))) & masks[i - 896]);
+            case 13:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 96)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 104))) & masks[i - 832]);
+            case 12:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 88)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 96))) & masks[i - 768]);
+            case 11:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 80)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 88))) & masks[i - 704]);
+            case 10:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 72)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 80))) & masks[i - 640]);
+            case 9:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 64)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 72))) & masks[i - 576]);
+            case 8:
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 16)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 24)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 32)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 40)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 48)));
+                rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 56)));
+                return rank + __builtin_popcountll((*((unsigned long long*)(this->pointer + 64))) & masks[i - 512]);
             case 7:
                 rank += __builtin_popcountll(*((unsigned long long*)(this->pointer)));
                 rank += __builtin_popcountll(*((unsigned long long*)(this->pointer + 8)));
@@ -3314,12 +3861,13 @@ public:
         unsigned char *pointer;
         unsigned long long* pointer2;
         
-        const static unsigned long long BLOCK_LEN = sizeof(unsigned long long) * 8;
+        const static unsigned long long BLOCK_LEN = sizeof(unsigned long long) * 16;
         const static unsigned long long BLOCK_IN_BITS = 8 * BLOCK_LEN;
         const static unsigned long long PAIRS0THR = 9;
         const static unsigned long long PAIRS255THR = 9;
 
-        const static unsigned long long BLOCK_MASK = (1 << 9) - 1;
+        const static unsigned int BLOCK_MASK_SHIFT = 10;
+        const static unsigned long long BLOCK_MASK = (1 << BLOCK_MASK_SHIFT) - 1;
 
         const static unsigned long long SUPERBLOCKLEN = 16;
         const static unsigned long long OFFSETSTARTINSUPERBLOCK = 5;
@@ -3399,74 +3947,138 @@ public:
             0xFEFFFFFFFFFFFFFFULL
         };
 
-        const unsigned int masks2[32] = {
-            0x80000000,
-            0x40000000,
-            0x20000000,
-            0x10000000,
-            0x08000000,
-            0x04000000,
-            0x02000000,
-            0x01000000,
-            0x00800000,
-            0x00400000,
-            0x00200000,
-            0x00100000,
-            0x00080000,
-            0x00040000,
-            0x00020000,
-            0x00010000,
-            0x00008000,
-            0x00004000,
-            0x00002000,
-            0x00001000,
-            0x00000800,
-            0x00000400,
-            0x00000200,
-            0x00000100,
-            0x00000080,
-            0x00000040,
-            0x00000020,
-            0x00000010,
-            0x00000008,
-            0x00000004,
-            0x00000002,
-            0x00000001
+        const unsigned long long masks2[64] = {
+            0x8000000000000000ULL,
+            0x4000000000000000ULL,
+            0x2000000000000000ULL,
+            0x1000000000000000ULL,
+            0x0800000000000000ULL,
+            0x0400000000000000ULL,
+            0x0200000000000000ULL,
+            0x0100000000000000ULL,
+            0x0080000000000000ULL,
+            0x0040000000000000ULL,
+            0x0020000000000000ULL,
+            0x0010000000000000ULL,
+            0x0008000000000000ULL,
+            0x0004000000000000ULL,
+            0x0002000000000000ULL,
+            0x0001000000000000ULL,
+            0x0000800000000000ULL,
+            0x0000400000000000ULL,
+            0x0000200000000000ULL,
+            0x0000100000000000ULL,
+            0x0000080000000000ULL,
+            0x0000040000000000ULL,
+            0x0000020000000000ULL,
+            0x0000010000000000ULL,
+            0x0000008000000000ULL,
+            0x0000004000000000ULL,
+            0x0000002000000000ULL,
+            0x0000001000000000ULL,
+            0x0000000800000000ULL,
+            0x0000000400000000ULL,
+            0x0000000200000000ULL,
+            0x0000000100000000ULL,
+            0x0000000080000000ULL,
+            0x0000000040000000ULL,
+            0x0000000020000000ULL,
+            0x0000000010000000ULL,
+            0x0000000008000000ULL,
+            0x0000000004000000ULL,
+            0x0000000002000000ULL,
+            0x0000000001000000ULL,
+            0x0000000000800000ULL,
+            0x0000000000400000ULL,
+            0x0000000000200000ULL,
+            0x0000000000100000ULL,
+            0x0000000000080000ULL,
+            0x0000000000040000ULL,
+            0x0000000000020000ULL,
+            0x0000000000010000ULL,
+            0x0000000000008000ULL,
+            0x0000000000004000ULL,
+            0x0000000000002000ULL,
+            0x0000000000001000ULL,
+            0x0000000000000800ULL,
+            0x0000000000000400ULL,
+            0x0000000000000200ULL,
+            0x0000000000000100ULL,
+            0x0000000000000080ULL,
+            0x0000000000000040ULL,
+            0x0000000000000020ULL,
+            0x0000000000000010ULL,
+            0x0000000000000008ULL,
+            0x0000000000000004ULL,
+            0x0000000000000002ULL,
+            0x0000000000000001ULL
         };
 
-        const unsigned int masks3[32] = {
-            0x00000000,
-            0x80000000,
-            0xC0000000,
-            0xE0000000,
-            0xF0000000,
-            0xF8000000,
-            0xFC000000,
-            0xFE000000,
-            0xFF000000,
-            0xFF800000,
-            0xFFC00000,
-            0xFFE00000,
-            0xFFF00000,
-            0xFFF80000,
-            0xFFFC0000,
-            0xFFFE0000,
-            0xFFFF0000,
-            0xFFFF8000,
-            0xFFFFC000,
-            0xFFFFE000,
-            0xFFFFF000,
-            0xFFFFF800,
-            0xFFFFFC00,
-            0xFFFFFE00,
-            0xFFFFFF00,
-            0xFFFFFF80,
-            0xFFFFFFC0,
-            0xFFFFFFE0,
-            0xFFFFFFF0,
-            0xFFFFFFF8,
-            0xFFFFFFFC,
-            0xFFFFFFFE
+        const unsigned long long masks3[64] = {
+            0x0000000000000000ULL,
+            0x8000000000000000ULL,
+            0xC000000000000000ULL,
+            0xE000000000000000ULL,
+            0xF000000000000000ULL,
+            0xF800000000000000ULL,
+            0xFC00000000000000ULL,
+            0xFE00000000000000ULL,
+            0xFF00000000000000ULL,
+            0xFF80000000000000ULL,
+            0xFFC0000000000000ULL,
+            0xFFE0000000000000ULL,
+            0xFFF0000000000000ULL,
+            0xFFF8000000000000ULL,
+            0xFFFC000000000000ULL,
+            0xFFFE000000000000ULL,
+            0xFFFF000000000000ULL,
+            0xFFFF800000000000ULL,
+            0xFFFFC00000000000ULL,
+            0xFFFFE00000000000ULL,
+            0xFFFFF00000000000ULL,
+            0xFFFFF80000000000ULL,
+            0xFFFFFC0000000000ULL,
+            0xFFFFFE0000000000ULL,
+            0xFFFFFF0000000000ULL,
+            0xFFFFFF8000000000ULL,
+            0xFFFFFFC000000000ULL,
+            0xFFFFFFE000000000ULL,
+            0xFFFFFFF000000000ULL,
+            0xFFFFFFF800000000ULL,
+            0xFFFFFFFC00000000ULL,
+            0xFFFFFFFE00000000ULL,
+            0xFFFFFFFF00000000ULL,
+            0xFFFFFFFF80000000ULL,
+            0xFFFFFFFFC0000000ULL,
+            0xFFFFFFFFE0000000ULL,
+            0xFFFFFFFFF0000000ULL,
+            0xFFFFFFFFF8000000ULL,
+            0xFFFFFFFFFC000000ULL,
+            0xFFFFFFFFFE000000ULL,
+            0xFFFFFFFFFF000000ULL,
+            0xFFFFFFFFFF800000ULL,
+            0xFFFFFFFFFFC00000ULL,
+            0xFFFFFFFFFFE00000ULL,
+            0xFFFFFFFFFFF00000ULL,
+            0xFFFFFFFFFFF80000ULL,
+            0xFFFFFFFFFFFC0000ULL,
+            0xFFFFFFFFFFFE0000ULL,
+            0xFFFFFFFFFFFF0000ULL,
+            0xFFFFFFFFFFFF8000ULL,
+            0xFFFFFFFFFFFFC000ULL,
+            0xFFFFFFFFFFFFE000ULL,
+            0xFFFFFFFFFFFFF000ULL,
+            0xFFFFFFFFFFFFF800ULL,
+            0xFFFFFFFFFFFFFC00ULL,
+            0xFFFFFFFFFFFFFE00ULL,
+            0xFFFFFFFFFFFFFF00ULL,
+            0xFFFFFFFFFFFFFF80ULL,
+            0xFFFFFFFFFFFFFFC0ULL,
+            0xFFFFFFFFFFFFFFE0ULL,
+            0xFFFFFFFFFFFFFFF0ULL,
+            0xFFFFFFFFFFFFFFF8ULL,
+            0xFFFFFFFFFFFFFFFCULL,
+            0xFFFFFFFFFFFFFFFEULL
         };
 
 	RankMPE64() {

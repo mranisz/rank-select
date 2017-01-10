@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 	exit(1);
 }
 
-unsigned int *getPatternsForRank(const char *fileName, const char *queriesNum, unsigned int textLen) {
+unsigned int *getPatternsForRank32(const char *fileName, const char *queriesNum, unsigned int textLen) {
 	string ranksFileNameString = "ranks-" + string(fileName) + "-" + string(queriesNum) + ".dat";
     const char *ranksFileName = ranksFileNameString.c_str();
     
@@ -95,10 +95,39 @@ unsigned int *getPatternsForRank(const char *fileName, const char *queriesNum, u
 		random_device rd;
 		mt19937 gen(rd());
 		uniform_int_distribution<unsigned int> dis(1, 8 * textLen);
-		for (unsigned long long i = 0; i < (unsigned long long)atoi(queriesNum); ++i) patRanks[i] = dis(gen);
+		for (unsigned int i = 0; i < (unsigned int)atoi(queriesNum); ++i) patRanks[i] = dis(gen);
 		FILE *outFile;
 		outFile = fopen(ranksFileName, "w");
 		fwrite(patRanks, (size_t)sizeof(unsigned int), (size_t)atoi(queriesNum), outFile);
+        fclose(outFile);
+    }
+	return patRanks;
+}
+
+unsigned long long *getPatternsForRank64(const char *fileName, const char *queriesNum, unsigned int textLen) {
+	string ranksFileNameString = "ranks-64-" + string(fileName) + "-" + string(queriesNum) + ".dat";
+    const char *ranksFileName = ranksFileNameString.c_str();
+    
+    unsigned long long *patRanks = new unsigned long long[atoi(queriesNum)];
+    
+    if (fileExists(ranksFileName)) {
+		FILE *inFile;
+		inFile = fopen(ranksFileName, "rb");
+		size_t result;
+		result = fread(patRanks, (size_t)sizeof(unsigned long long), (size_t)atoi(queriesNum), inFile);
+		if (result != (unsigned int)atoi(queriesNum)) {
+			cout << "Error loading data from " << ranksFileName << endl;
+			exit(1);
+		}
+		fclose(inFile);
+    } else {
+		random_device rd;
+		mt19937 gen(rd());
+		uniform_int_distribution<unsigned long long> dis(1, 8 * (unsigned long long)textLen);
+		for (unsigned int i = 0; i < (unsigned int)atoi(queriesNum); ++i) patRanks[i] = dis(gen);
+		FILE *outFile;
+		outFile = fopen(ranksFileName, "w");
+		fwrite(patRanks, (size_t)sizeof(unsigned long long), (size_t)atoi(queriesNum), outFile);
         fclose(outFile);
     }
 	return patRanks;
@@ -125,7 +154,7 @@ void rankBasic_32(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned int *patterns = getPatternsForRank32(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resRank = new unsigned int[queriesNumInt];
     
@@ -168,7 +197,7 @@ void rankBch_32(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned int *patterns = getPatternsForRank32(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resRank = new unsigned int[queriesNumInt];
     
@@ -211,7 +240,7 @@ void rankCF_32(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned int *patterns = getPatternsForRank32(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resRank = new unsigned int[queriesNumInt];
     
@@ -254,7 +283,7 @@ void rankMPE1_32(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned int *patterns = getPatternsForRank32(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resRank = new unsigned int[queriesNumInt];
     
@@ -297,7 +326,7 @@ void rankMPE2_32(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned int *patterns = getPatternsForRank32(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resRank = new unsigned int[queriesNumInt];
     
@@ -340,7 +369,7 @@ void rankMPE3_32(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned int *patterns = getPatternsForRank32(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
     unsigned int *resRank = new unsigned int[queriesNumInt];
     
@@ -383,9 +412,9 @@ void rankBasic_64(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned long long *patterns = getPatternsForRank64(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resRank = new unsigned int[queriesNumInt];
+    unsigned long long *resRank = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
@@ -426,9 +455,9 @@ void rankBch_64(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned long long *patterns = getPatternsForRank64(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resRank = new unsigned int[queriesNumInt];
+    unsigned long long *resRank = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
@@ -469,9 +498,9 @@ void rankCF_64(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned long long *patterns = getPatternsForRank64(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resRank = new unsigned int[queriesNumInt];
+    unsigned long long *resRank = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
@@ -512,9 +541,9 @@ void rankMPE1_64(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned long long *patterns = getPatternsForRank64(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resRank = new unsigned int[queriesNumInt];
+    unsigned long long *resRank = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
@@ -555,9 +584,9 @@ void rankMPE2_64(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned long long *patterns = getPatternsForRank64(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resRank = new unsigned int[queriesNumInt];
+    unsigned long long *resRank = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
@@ -598,9 +627,9 @@ void rankMPE3_64(const char *fileName, const char *queriesNum) {
 	}
 	//rank->testRank(text, textLen);
     
-    unsigned int *patterns = getPatternsForRank(fileName, queriesNum, textLen);
+    unsigned long long *patterns = getPatternsForRank64(fileName, queriesNum, textLen);
 	unsigned int queriesNumInt = atoi(queriesNum);
-    unsigned int *resRank = new unsigned int[queriesNumInt];
+    unsigned long long *resRank = new unsigned long long[queriesNumInt];
     
     timer.startTimer();
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
