@@ -395,7 +395,7 @@ void rankBasic_64(const char *fileName, const char *queriesNum) {
 	RankBasic64<RANK_BASIC_STANDARD> *rank = new RankBasic64<RANK_BASIC_STANDARD>();
 	string rankFileNameString = (string)fileName + "-basic-64.rank";
 	const char *rankFileName = rankFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(rankFileName)) {
@@ -438,7 +438,7 @@ void rankBch_64(const char *fileName, const char *queriesNum) {
 	RankBasic64<RANK_BASIC_COMPRESSED_HEADERS> *rank = new RankBasic64<RANK_BASIC_COMPRESSED_HEADERS>();
 	string rankFileNameString = (string)fileName + "-bch-64.rank";
 	const char *rankFileName = rankFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(rankFileName)) {
@@ -481,7 +481,7 @@ void rankCF_64(const char *fileName, const char *queriesNum) {
 	RankCF64 *rank = new RankCF64();
 	string rankFileNameString = (string)fileName + "-cf-64.rank";
 	const char *rankFileName = rankFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(rankFileName)) {
@@ -524,7 +524,7 @@ void rankMPE1_64(const char *fileName, const char *queriesNum) {
 	RankMPE64<RANK_MPE1> *rank = new RankMPE64<RANK_MPE1>();
 	string rankFileNameString = (string)fileName + "-mpe1-64.rank";
 	const char *rankFileName = rankFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(rankFileName)) {
@@ -567,7 +567,7 @@ void rankMPE2_64(const char *fileName, const char *queriesNum) {
 	RankMPE64<RANK_MPE2> *rank = new RankMPE64<RANK_MPE2>();
 	string rankFileNameString = (string)fileName + "-mpe2-64.rank";
 	const char *rankFileName = rankFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(rankFileName)) {
@@ -610,7 +610,7 @@ void rankMPE3_64(const char *fileName, const char *queriesNum) {
 	RankMPE64<RANK_MPE3> *rank = new RankMPE64<RANK_MPE3>();
 	string rankFileNameString = (string)fileName + "-mpe3-64.rank";
 	const char *rankFileName = rankFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(rankFileName)) {

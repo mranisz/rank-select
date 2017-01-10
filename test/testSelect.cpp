@@ -448,7 +448,7 @@ void selectBasic_64_128_4096(const char *fileName, const char *queriesNum) {
 	SelectBasic64<SELECT_BASIC_STANDARD, 128, 4096> *select = new SelectBasic64<SELECT_BASIC_STANDARD, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-basic-64-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(selectFileName)) {
@@ -491,7 +491,7 @@ void selectBasic_64_512_8192(const char *fileName, const char *queriesNum) {
 	SelectBasic64<SELECT_BASIC_STANDARD, 512, 8192> *select = new SelectBasic64<SELECT_BASIC_STANDARD, 512, 8192>();
 	string selectFileNameString = (string)fileName + "-basic-64-512-8192.select";
 	const char *selectFileName = selectFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(selectFileName)) {
@@ -534,7 +534,7 @@ void selectBch_64_128_4096(const char *fileName, const char *queriesNum) {
 	SelectBasic64<SELECT_BASIC_COMPRESSED_HEADERS, 128, 4096> *select = new SelectBasic64<SELECT_BASIC_COMPRESSED_HEADERS, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-bch-64-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(selectFileName)) {
@@ -577,7 +577,7 @@ void selectBch_64_512_8192(const char *fileName, const char *queriesNum) {
 	SelectBasic64<SELECT_BASIC_COMPRESSED_HEADERS, 512, 8192> *select = new SelectBasic64<SELECT_BASIC_COMPRESSED_HEADERS, 512, 8192>();
 	string selectFileNameString = (string)fileName + "-bch-64-512-8192.select";
 	const char *selectFileName = selectFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(selectFileName)) {
@@ -620,7 +620,7 @@ void selectMpe1_64_128_4096(const char *fileName, const char *queriesNum) {
 	SelectMPE64<SELECT_MPE1, 128, 4096> *select = new SelectMPE64<SELECT_MPE1, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-mpe1-64-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(selectFileName)) {
@@ -663,7 +663,7 @@ void selectMpe2_64_128_4096(const char *fileName, const char *queriesNum) {
 	SelectMPE64<SELECT_MPE2, 128, 4096> *select = new SelectMPE64<SELECT_MPE2, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-mpe2-64-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(selectFileName)) {
@@ -706,7 +706,7 @@ void selectMpe3_64_128_4096(const char *fileName, const char *queriesNum) {
 	SelectMPE64<SELECT_MPE3, 128, 4096> *select = new SelectMPE64<SELECT_MPE3, 128, 4096>();
 	string selectFileNameString = (string)fileName + "-mpe3-64-128-4096.select";
 	const char *selectFileName = selectFileNameString.c_str();
-	unsigned int textLen;
+	unsigned long long textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 
 	if (fileExists(selectFileName)) {
