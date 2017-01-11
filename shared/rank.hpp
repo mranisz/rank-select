@@ -3032,7 +3032,7 @@ private:
             rankCounter = 1;
             offset = 0;
 
-            for (unsigned int i = 0; i < extendedTextLen; i += BLOCK_LEN) {
+            for (unsigned long long i = 0; i < extendedTextLen; i += BLOCK_LEN) {
                 ranksTemp[rankCounter] = bitsCounter;
                 rankCounter += 2;
                 if (emptyBlock[i / BLOCK_LEN]) continue;
