@@ -98,7 +98,7 @@ private:
             unsigned int bitsToWritePos = 7;
             //unsigned int currOnes = 0;
             unsigned int upToBitPos = this->alignedSelects[2];
-            blockLenInBits = this->alignedSelects[2] - this->alignedSelects[0];
+            blockLenInBits = this->alignedSelects[2] - this->alignedSelects[0] + 1;
             bool sparseBlock = false, monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
             else if (blockLenInBits == L) monoBlock = true;
@@ -241,7 +241,7 @@ private:
             unsigned int bitsToWritePos = 7;
             //unsigned int currOnes = 0;
             unsigned int upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             bool sparseBlock = false, monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
             else if (blockLenInBits == L) monoBlock = true;
@@ -648,7 +648,7 @@ private:
             unsigned int bitsToWritePos = 7;
             //unsigned int currOnes = 0;
             unsigned long long upToBitPos = this->alignedSelects[2];
-            blockLenInBits = this->alignedSelects[2] - this->alignedSelects[0];
+            blockLenInBits = this->alignedSelects[2] - this->alignedSelects[0] + 1;
             bool sparseBlock = false, monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
             else if (blockLenInBits == L) monoBlock = true;
@@ -799,7 +799,7 @@ private:
             unsigned int bitsToWritePos = 7;
             //unsigned int currOnes = 0;
             unsigned long long upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             bool sparseBlock = false, monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
             else if (blockLenInBits == L) monoBlock = true;
@@ -1243,7 +1243,7 @@ private:
             unsigned char bitsToWrite = 0;
             unsigned int bitsToWritePos = 7;
             unsigned int upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             bool sparseBlock = false, monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
             else if (blockLenInBits == L) monoBlock = true;
@@ -1326,7 +1326,7 @@ private:
             bitsToWrite = 0;
             bitsToWritePos = 7;
             upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             sparseBlock = false;
             monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
@@ -1545,7 +1545,7 @@ private:
             unsigned int bitsToWritePos = 7;
             unsigned int bitTableLen = 0;
             unsigned int upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             bool sparseBlock = false, monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
             else if (blockLenInBits == L) monoBlock = true;
@@ -1659,7 +1659,7 @@ private:
             bitsToWrite = 0;
             bitsToWritePos = 7;
             upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             sparseBlock = false;
             monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
@@ -2526,7 +2526,7 @@ private:
             unsigned long long bitsToWrite = 0;
             unsigned int bitsToWritePos = 7;
             unsigned long long upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             bool sparseBlock = false, monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
             else if (blockLenInBits == L) monoBlock = true;
@@ -2609,7 +2609,7 @@ private:
             bitsToWrite = 0;
             bitsToWritePos = 7;
             upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             sparseBlock = false;
             monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
@@ -2836,7 +2836,7 @@ private:
             unsigned int bitsToWritePos = 7;
             unsigned long long bitTableLen = 0;
             unsigned long long upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             bool sparseBlock = false, monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
             else if (blockLenInBits == L) monoBlock = true;
@@ -2950,7 +2950,7 @@ private:
             bitsToWrite = 0;
             bitsToWritePos = 7;
             upToBitPos = selectsTemp[2];
-            blockLenInBits = selectsTemp[2] - selectsTemp[0];
+            blockLenInBits = selectsTemp[2] - selectsTemp[0] + 1;
             sparseBlock = false;
             monoBlock = false;
             if (blockLenInBits > THRESHOLD) sparseBlock = true;
