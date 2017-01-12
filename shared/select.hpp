@@ -62,6 +62,7 @@ private:
                             this->alignedSelects[selectCounter++] = lastSelectPos;
                             this->alignedSelects[selectCounter++] = 0;
                             blockLenInBits = this->alignedSelects[selectCounter - 2] - this->alignedSelects[selectCounter - 4];
+                            if (selectCounter == 4) ++blockLenInBits;
                             if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned int) * (L - 1);
                             else if (blockLenInBits > L) {
                                 //blockLenInBits -= (lastSelectPos - prevSelectPos - 1);
@@ -202,6 +203,7 @@ private:
                             selectsTemp[selectCounter++] = lastSelectPos;
                             selectsTemp[selectCounter++] = 0;
                             blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                            if (selectCounter == 4) ++blockLenInBits;
                             if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned int) * (L - 1);
                             else if (blockLenInBits > L) {
                                 //blockLenInBits -= (lastSelectPos - prevSelectPos - 1);
@@ -612,6 +614,7 @@ private:
                             this->alignedSelects[selectCounter++] = lastSelectPos;
                             this->alignedSelects[selectCounter++] = 0;
                             blockLenInBits = this->alignedSelects[selectCounter - 2] - this->alignedSelects[selectCounter - 4];
+                            if (selectCounter == 4) ++blockLenInBits;
                             if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned long long) * (L - 1);
                             else if (blockLenInBits > L) {
                                 //blockLenInBits -= (lastSelectPos - prevSelectPos - 1);
@@ -760,6 +763,7 @@ private:
                             selectsTemp[selectCounter++] = lastSelectPos;
                             selectsTemp[selectCounter++] = 0;
                             blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                            if (selectCounter == 4) ++blockLenInBits;
                             if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned long long) * (L - 1);
                             else if (blockLenInBits > L) {
                                 //blockLenInBits -= (lastSelectPos - prevSelectPos - 1);
@@ -1202,6 +1206,7 @@ private:
                             selectsTemp[selectCounter++] = lastSelectPos;
                             selectsTemp[selectCounter++] = 0;
                             blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                            if (selectCounter == 4) ++blockLenInBits;
                             if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned int) * (L - 1);
                             else if (blockLenInBits > L) {
                                 if (selectCounter == 4) { //for select[0] = 0
@@ -1502,6 +1507,7 @@ private:
                             selectsTemp[selectCounter++] = lastSelectPos;
                             selectsTemp[selectCounter++] = 0;
                             blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                            if (selectCounter == 4) ++blockLenInBits;
                             if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned int) * (L - 1);
                             else if (blockLenInBits > L) {
                                 if (selectCounter == 4) { //for select[0] = 0
@@ -2485,6 +2491,7 @@ private:
                             selectsTemp[selectCounter++] = lastSelectPos;
                             selectsTemp[selectCounter++] = 0;
                             blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                            if (selectCounter == 4) ++blockLenInBits;
                             if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned long long) * (L - 1);
                             else if (blockLenInBits > L) {
                                 if (selectCounter == 4) { //for select[0] = 0
@@ -2793,6 +2800,7 @@ private:
                             selectsTemp[selectCounter++] = lastSelectPos;
                             selectsTemp[selectCounter++] = 0;
                             blockLenInBits = selectsTemp[selectCounter - 2] - selectsTemp[selectCounter - 4];
+                            if (selectCounter == 4) ++blockLenInBits;
                             if (blockLenInBits > THRESHOLD) this->bitsLen += sizeof(unsigned long long) * (L - 1);
                             else if (blockLenInBits > L) {
                                 if (selectCounter == 4) { //for select[0] = 0
