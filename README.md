@@ -1,15 +1,11 @@
 # Rank&Select library
 
 ##What is it?
-The Rank&Select library contains several implementations of the primitive operations rank and select on binary sequences. The operation rank(B, i) (which can also be called rank_1(B, i)) returns the number of set bits in B[1..i], where B is a binary sequence, while select(B, j) tells the position of the j-th set bit in B (that is, returns such i that rank(B, i) = j and rank(B, i - 1) = j - 1).).
+The Rank&Select library contains several implementations of the primitive operations rank and select on binary sequences. The operation rank(B, i) (which can also be called rank_1(B, i)) returns the number of set bits in B[1..i], where B is a binary sequence, while select(B, j) tells the position of the j-th set bit in B (that is, returns such i that rank(B, i) = j and rank(B, i - 1) = j - 1).
 
-Note that rank_0(B, i) = i - rank_1(B, i), yet rank_0 is not yet directly supported in our API.
+Note that rank_0(B, i) = i - rank_1(B, i), yet rank_0 is not yet directly supported in our API. There is no similar relation between select_0 and select_1.
 
-There is no similar relation between select_0 and select_1.
-
-Efficient rank/select implementations replace B with a compressed/compact representation while still answering queries fast.
-
-Our implementations are described in \[[1](#references)\]
+Efficient rank/select implementations replace B with a compressed/compact representation while still answering queries fast. Our implementations are described in \[[1](#references)\]
 
 Additionally, we incorporated our rank implementations into a standard FM-index with a Huffman-shaped wavelet tree.
 
