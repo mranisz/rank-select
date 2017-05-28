@@ -1,6 +1,6 @@
 # Rank&Select library
 
-##What is it?
+## What is it?
 The Rank&Select library contains several implementations of the primitive operations rank and select on binary sequences. The operation rank(B, i) (which can also be called rank_1(B, i)) returns the number of set bits in B[1..i], where B is a binary sequence, while select(B, j) tells the position of the j-th set bit in B (that is, returns such i that rank(B, i) = j and rank(B, i - 1) = j - 1).
 
 Note that rank_0(B, i) = i - rank_1(B, i), yet rank_0 is not yet directly supported in our API. There is no similar relation between select_0 and select_1.
@@ -9,13 +9,13 @@ Efficient rank/select implementations replace B with a compressed/compact repres
 
 Additionally, we incorporated our rank implementations into a standard FM-index with a Huffman-shaped wavelet tree.
 
-##Requirements
+## Requirements
 The Rank&Select library require:
 - C++11 ready compiler such as g++ version 4.7 or higher
 - a 64-bit operating system
 - text size < 512MB (4GB of bits) for 32bit versions of rank, select and FMHWT
 
-##Installation
+## Installation
 To download and build the library use the following commands:
 ```
 git clone https://github.com/mranisz/rank-select.git
@@ -23,14 +23,14 @@ cd rank-select
 make
 ```
 
-##Usage
+## Usage
 To use the Rank&Select library:
 - compile your project with "-std=c++11 -O3 -mpopcnt" options and link it with libraries:
   - rank-select/libshared.a
   - rank-select/libs/libaelf64.a (linux) or samsami/libs/libacof64.lib (windows)
 - use "shared" namespace
 
-##API (32bit rank and 32bit select)
+## API (32bit rank and 32bit select)
 - **build** the rank or select using text and textLen:
 ```
 void build(unsigned char *text, unsigned int textLen);
@@ -64,7 +64,7 @@ unsigned int rank(unsigned int i);
 unsigned int select(unsigned int i);
 ```
 
-##API (64bit rank and 64bit select)
+## API (64bit rank and 64bit select)
 - **build** the rank or select using text and textLen:
 ```
 void build(unsigned char *text, unsigned long long textLen);
@@ -98,7 +98,7 @@ unsigned long long rank(unsigned long long i);
 unsigned long long select(unsigned long long i);
 ```
 
-##RankBasic32\<RankBasicType T\>
+## RankBasic32\<RankBasicType T\>
 
 Parameters:
 - T:
@@ -110,14 +110,14 @@ Constructors:
 RankBasic32<RankBasicType T>();
 ```
 
-##RankCF32
+## RankCF32
 
 Constructors:
 ```
 RankCF32<RankBasicType T>();
 ```
 
-##RankMPE32\<RankMPEType T\>
+## RankMPE32\<RankMPEType T\>
 
 Parameters:
 - T:
@@ -130,7 +130,7 @@ Constructors:
 RankMPE32<RankMPEType T>();
 ```
 
-##SelectBasic32\<SelectBasicType T, unsigned int L, unsigned int THRESHOLD\>
+## SelectBasic32\<SelectBasicType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -147,7 +147,7 @@ Constructors:
 SelectBasic32<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
-##SelectMPE32\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
+## SelectMPE32\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -166,7 +166,7 @@ Constructors:
 SelectMPE32<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
-##RankBasic64\<RankBasicType T\>
+## RankBasic64\<RankBasicType T\>
 
 Parameters:
 - T:
@@ -178,14 +178,14 @@ Constructors:
 RankBasic64<RankBasicType T>();
 ```
 
-##RankCF64
+## RankCF64
 
 Constructors:
 ```
 RankCF64<RankBasicType T>();
 ```
 
-##RankMPE64\<RankMPEType T\>
+## RankMPE64\<RankMPEType T\>
 
 Parameters:
 - T:
@@ -198,7 +198,7 @@ Constructors:
 RankMPE64<RankMPEType T>();
 ```
 
-##SelectBasic64\<SelectBasicType T, unsigned int L, unsigned int THRESHOLD\>
+## SelectBasic64\<SelectBasicType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -215,7 +215,7 @@ Constructors:
 SelectBasic64<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
-##SelectMPE64\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
+## SelectMPE64\<SelectMPEType T, unsigned int L, unsigned int THRESHOLD\>
 
 Parameters:
 - T:
@@ -234,7 +234,7 @@ Constructors:
 SelectMPE64<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
 ```
 
-##Rank usage example
+## Rank usage example
 ```
 #include <iostream>
 #include <stdlib.h>
@@ -275,7 +275,7 @@ int main(int argc, char *argv[]) {
 ```
 Using other types of rank is analogous.
 
-##Select usage example
+## Select usage example
 ```
 #include <iostream>
 #include <stdlib.h>
@@ -316,7 +316,7 @@ int main(int argc, char *argv[]) {
 ```
 Using other types of select is analogous.
 
-##API (32bit FMHWT index)
+## API (32bit FMHWT index)
 - **build** the index using text file called textFileName:
 ```
 void build(const char *textFileName);
@@ -346,7 +346,7 @@ unsigned int getTextSize();
 unsigned int count(unsigned char *pattern, unsigned int patternLen);
 ```
 
-##API (64bit FMHWT index)
+## API (64bit FMHWT index)
 - **build** the index using text file called textFileName:
 ```
 void build(const char *textFileName);
@@ -376,7 +376,7 @@ unsigned long long getTextSize();
 unsigned long long count(unsigned char *pattern, unsigned int patternLen);
 ```
 
-##FMHWT32\<class RANK32\>
+## FMHWT32\<class RANK32\>
 
 Parameters:
 - RANK32 class:
@@ -389,7 +389,7 @@ Constructors:
 FMHWT32<class RANK32>();
 ```
 
-##FMHWT32Hash\<class RANK32\>
+## FMHWT32Hash\<class RANK32\>
 FMHWT32Hash is FMHWT32 with hashed k-symbol prefixes of suffixes from suffix array to speed up searches (k ≥ 2). This variant is particularly efficient in speed for short patterns (not much longer than k).
 
 Parameters:
@@ -410,7 +410,7 @@ Constructors:
 FMHWT32Hash<class RANK32>();
 ```
 
-##FMHWT64\<class RANK64\>
+## FMHWT64\<class RANK64\>
 
 Parameters:
 - RANK64 class:
@@ -423,7 +423,7 @@ Constructors:
 FMHWT64<class RANK64>();
 ```
 
-##FMHWT64Hash\<class RANK64\>
+## FMHWT64Hash\<class RANK64\>
 FMHWT64Hash is FMHWT64 with hashed k-symbol prefixes of suffixes from suffix array to speed up searches (k ≥ 2). This variant is particularly efficient in speed for short patterns (not much longer than k).
 
 Parameters:
@@ -444,7 +444,7 @@ Constructors:
 FMHWT64Hash<class RANK64>();
 ```
 
-##FMHWT usage example
+## FMHWT usage example
 ```
 #include <iostream>
 #include <stdlib.h>
@@ -486,14 +486,14 @@ int main(int argc, char *argv[]) {
 ```
 Using other types of FMHWT index is analogous.
 
-##External resources used in Rank&Select project
+## External resources used in Rank&Select project
 - Suffix array building by Yuta Mori (sais)
 - A multi-platform library of highly optimized functions for C and C++ by Agner Fog (asmlib)
 - A very fast hash function by Yann Collet (xxHash)
 
-##References
+## References
 1. Sz. Grabowski, M. Raniszewski. Rank and select: Another lesson learned. CoRR, abs/1605.01539, 2016.
 
-##Authors
+## Authors
 - Szymon Grabowski
 - [Marcin Raniszewski](https://github.com/mranisz)
