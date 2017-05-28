@@ -27,7 +27,7 @@ make
 To use the Rank&Select library:
 - compile your project with "-std=c++11 -O3 -mpopcnt" options and link it with libraries:
   - rank-select/libshared.a
-  - rank-select/libs/libaelf64.a (linux) or samsami/libs/libacof64.lib (windows)
+  - rank-select/libs/libaelf64.a (linux) or rank-select/libs/libacof64.lib (windows)
 - use "shared" namespace
 
 ## API (32bit rank and 32bit select)
