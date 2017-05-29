@@ -143,7 +143,7 @@ void fmHWT32Basic(const char *textFileName, unsigned int queriesNum, unsigned in
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-basic " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -191,7 +191,7 @@ void fmHWT32Bch(const char *textFileName, unsigned int queriesNum, unsigned int 
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-bch " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -239,7 +239,7 @@ void fmHWT32CF(const char *textFileName, unsigned int queriesNum, unsigned int m
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-cf " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -287,7 +287,7 @@ void fmHWT32MPE1(const char *textFileName, unsigned int queriesNum, unsigned int
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-mpe1 " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -335,7 +335,7 @@ void fmHWT32MPE2(const char *textFileName, unsigned int queriesNum, unsigned int
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-mpe2 " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -383,7 +383,7 @@ void fmHWT32MPE3(const char *textFileName, unsigned int queriesNum, unsigned int
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-mpe3 " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -431,7 +431,7 @@ void fmHWT32HashBasic(string k, string loadFactor, const char *textFileName, uns
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-hash-basic-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -479,7 +479,7 @@ void fmHWT32HashBch(string k, string loadFactor, const char *textFileName, unsig
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-hash-bch-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -527,7 +527,7 @@ void fmHWT32HashCF(string k, string loadFactor, const char *textFileName, unsign
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-hash-cf-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -575,7 +575,7 @@ void fmHWT32HashMPE1(string k, string loadFactor, const char *textFileName, unsi
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-hash-mpe1-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -623,7 +623,7 @@ void fmHWT32HashMPE2(string k, string loadFactor, const char *textFileName, unsi
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-hash-mpe2-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -671,7 +671,7 @@ void fmHWT32HashMPE3(string k, string loadFactor, const char *textFileName, unsi
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT32-hash-mpe3-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -719,7 +719,7 @@ void fmHWT64Basic(const char *textFileName, unsigned int queriesNum, unsigned in
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-basic " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -767,7 +767,7 @@ void fmHWT64Bch(const char *textFileName, unsigned int queriesNum, unsigned int 
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-bch " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -815,7 +815,7 @@ void fmHWT64CF(const char *textFileName, unsigned int queriesNum, unsigned int m
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-cf " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -863,7 +863,7 @@ void fmHWT64MPE1(const char *textFileName, unsigned int queriesNum, unsigned int
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-mpe1 " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -911,7 +911,7 @@ void fmHWT64MPE2(const char *textFileName, unsigned int queriesNum, unsigned int
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-mpe2 " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -959,7 +959,7 @@ void fmHWT64MPE3(const char *textFileName, unsigned int queriesNum, unsigned int
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-mpe3 " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -1007,7 +1007,7 @@ void fmHWT64HashBasic(string k, string loadFactor, const char *textFileName, uns
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-hash-basic-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -1055,7 +1055,7 @@ void fmHWT64HashBch(string k, string loadFactor, const char *textFileName, unsig
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-hash-bch-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -1103,7 +1103,7 @@ void fmHWT64HashCF(string k, string loadFactor, const char *textFileName, unsign
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-hash-cf-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -1151,7 +1151,7 @@ void fmHWT64HashMPE1(string k, string loadFactor, const char *textFileName, unsi
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-hash-mpe1-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -1199,7 +1199,7 @@ void fmHWT64HashMPE2(string k, string loadFactor, const char *textFileName, unsi
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-hash-mpe2-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -1247,7 +1247,7 @@ void fmHWT64HashMPE3(string k, string loadFactor, const char *textFileName, unsi
 	}
 	timer.stopTimer();
 
-	string resultFileName = "results/rank-select/" + string(textFileName) + "_count_FMHWT-hash.txt";
+	string resultFileName = "results/" + string(textFileName) + "_count_FMHWT-hash.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)fm->getIndexSize() / (double)fm->getTextSize();
 	cout << "count FMHWT64-hash-mpe3-" << k << "-" << loadFactor << " " << textFileName << " m=" << m << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;

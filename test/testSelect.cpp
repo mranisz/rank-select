@@ -172,7 +172,7 @@ void selectBasic_32_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-basic-32-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -215,7 +215,7 @@ void selectBasic_32_512_8192(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-basic-32-512-8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -258,7 +258,7 @@ void selectBch_32_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-bch-32-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -301,7 +301,7 @@ void selectBch_32_512_8192(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-bch-32-512-8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -344,7 +344,7 @@ void selectMpe1_32_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe1-32-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -387,7 +387,7 @@ void selectMpe2_32_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe2-32-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -430,7 +430,7 @@ void selectMpe3_32_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe3-32-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -473,7 +473,7 @@ void selectBasic_64_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-basic-64-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -516,7 +516,7 @@ void selectBasic_64_512_8192(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-basic-64-512-8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -559,7 +559,7 @@ void selectBch_64_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-bch-64-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -602,7 +602,7 @@ void selectBch_64_512_8192(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-bch-64-512-8192 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -645,7 +645,7 @@ void selectMpe1_64_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe1-64-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -688,7 +688,7 @@ void selectMpe2_64_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe2-64-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -731,7 +731,7 @@ void selectMpe3_64_128_4096(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resSelect[i] = select->select(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)select->getSize() / (double)select->getTextSize();
 	cout << "select-mpe3-64-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;

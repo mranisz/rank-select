@@ -162,7 +162,7 @@ void rankBasic_32(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-basic-32 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -205,7 +205,7 @@ void rankBch_32(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-bch-32 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -248,7 +248,7 @@ void rankCF_32(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-cf-32 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -291,7 +291,7 @@ void rankMPE1_32(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe1-32 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -334,7 +334,7 @@ void rankMPE2_32(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe2-32 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -377,7 +377,7 @@ void rankMPE3_32(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe3-32 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -420,7 +420,7 @@ void rankBasic_64(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-basic-64 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -463,7 +463,7 @@ void rankBch_64(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-bch-64 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -506,7 +506,7 @@ void rankCF_64(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-cf-64 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -549,7 +549,7 @@ void rankMPE1_64(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe1-64 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -592,7 +592,7 @@ void rankMPE2_64(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe2-64 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
@@ -635,7 +635,7 @@ void rankMPE3_64(const char *fileName, const char *queriesNum) {
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(patterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/rank-select/" + string(fileName) + "_rank.txt";
+	string resultFileName = "results/" + string(fileName) + "_rank.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = (double)rank->getSize() / (double)rank->getTextSize();
 	cout << "rank-mpe3-64 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
