@@ -486,6 +486,16 @@ int main(int argc, char *argv[]) {
 ```
 Using other types of FMHWT index is analogous.
 
+## Benchmark
+Benchmark scripts:
+- testRank.sh - benchmark for rank operations
+- testSelect.sh - benchmark script for select operations
+- countFMHWT.sh - benchmark script for FM-index with a Huffman-shaped wavelet tree
+Benchmark scripts should be run with superuser priviliges (as the memory cache is cleared before each test). Benchmark results are saved in the "results" folder. 
+Before launching a benchmark please download the following data files and extract them into the main project folder:
+- testRank.sh and testSelect.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/](http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/)
+- countFMHWT.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/text_files/](http://ranisz.iis.p.lodz.pl/indexes/data/text_files/)
+
 ## External resources used in Rank&Select project
 - Suffix array building by Yuta Mori (sais)
 - A multi-platform library of highly optimized functions for C and C++ by Agner Fog (asmlib)
