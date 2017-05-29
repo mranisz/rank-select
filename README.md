@@ -491,7 +491,9 @@ Benchmark scripts:
 - testRank.sh - benchmark for rank operations
 - testSelect.sh - benchmark script for select operations
 - countFMHWT.sh - benchmark script for FM-index with a Huffman-shaped wavelet tree
-Benchmark scripts should be run with superuser priviliges (as the memory cache is cleared before each test). Benchmark results are saved in the "results" folder. 
+
+Benchmark scripts should be run with superuser priviliges (as the memory cache is cleared before each test). Benchmark results are saved in the "results" folder.
+
 Before launching a benchmark please download the following data files and extract them into the main project folder:
 - testRank.sh and testSelect.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/](http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/)
 - countFMHWT.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/text_files/](http://ranisz.iis.p.lodz.pl/indexes/data/text_files/)
