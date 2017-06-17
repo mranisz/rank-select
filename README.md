@@ -121,9 +121,9 @@ RankCF32<RankBasicType T>();
 
 Parameters:
 - T:
-      - RANK_MPE1
-      - RANK_MPE2
-      - RANK_MPE3
+  - RANK_MPE1
+  - RANK_MPE2
+  - RANK_MPE3
 
 Constructors:
 ```
@@ -134,8 +134,8 @@ RankMPE32<RankMPEType T>();
 
 Parameters:
 - T:
-      - SELECT_BASIC_STANDARD
-      - SELECT_BASIC_COMPRESSED_HEADERS
+  - SELECT_BASIC_STANDARD
+  - SELECT_BASIC_COMPRESSED_HEADERS
 - L and THRESHOLD - some "internal" parameters, which in practice can be set to (L = 128, THRESHOLD = 4096) or (512, 8192); more details can be found in Sect. 3.2 of \[[1](#references)\]
 
 Limitations: 
@@ -151,9 +151,9 @@ SelectBasic32<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 
 Parameters:
 - T:
-      - SELECT_MPE1
-      - SELECT_MPE2
-      - SELECT_MPE3
+  - SELECT_MPE1
+  - SELECT_MPE2
+  - SELECT_MPE3
 - L and THRESHOLD - some "internal" parameters, which in practice can be set to (L = 128, THRESHOLD = 4096); more details can be found in Sect. 3.2 of \[[1](#references)\]
 
 Limitations: 
@@ -170,8 +170,8 @@ SelectMPE32<SelectMPEType T, unsigned int L, unsigned int THRESHOLD>();
 
 Parameters:
 - T:
-      - RANK_BASIC_STANDARD
-      - RANK_BASIC_COMPRESSED_HEADERS
+  - RANK_BASIC_STANDARD
+  - RANK_BASIC_COMPRESSED_HEADERS
 
 Constructors:
 ```
@@ -189,9 +189,9 @@ RankCF64<RankBasicType T>();
 
 Parameters:
 - T:
-      - RANK_MPE1
-      - RANK_MPE2
-      - RANK_MPE3
+  - RANK_MPE1
+  - RANK_MPE2
+  - RANK_MPE3
 
 Constructors:
 ```
@@ -202,8 +202,8 @@ RankMPE64<RankMPEType T>();
 
 Parameters:
 - T:
-      - SELECT_BASIC_STANDARD
-      - SELECT_BASIC_COMPRESSED_HEADERS
+  - SELECT_BASIC_STANDARD
+  - SELECT_BASIC_COMPRESSED_HEADERS
 - L and THRESHOLD - some "internal" parameters, which in practice can be set to (L = 128, THRESHOLD = 4096) or (512, 8192); more details can be found in Sect. 3.2 of \[[1](#references)\]
 
 Limitations: 
@@ -219,9 +219,9 @@ SelectBasic64<SelectBasicType T, unsigned int L, unsigned int THRESHOLD>();
 
 Parameters:
 - T:
-      - SELECT_MPE1
-      - SELECT_MPE2
-      - SELECT_MPE3
+  - SELECT_MPE1
+  - SELECT_MPE2
+  - SELECT_MPE3
 - L and THRESHOLD - some "internal" parameters, which in practice can be set to (L = 128, THRESHOLD = 4096); more details can be found in Sect. 3.2 of \[[1](#references)\]
 
 Limitations: 
@@ -380,9 +380,9 @@ unsigned long long count(unsigned char *pattern, unsigned int patternLen);
 
 Parameters:
 - RANK32 class:
-      - RankBasic32\<RankBasicType T\>
-      - RankCF32
-      - RankMPE32\<RankMPEType T\>
+  - RankBasic32\<RankBasicType T\>
+  - RankCF32
+  - RankMPE32\<RankMPEType T\>
 
 Constructors:
 ```
@@ -394,9 +394,9 @@ FMHWT32Hash is FMHWT32 with hashed k-symbol prefixes of suffixes from suffix arr
 
 Parameters:
 - RANK32 class:
-      - RankBasic32\<RankBasicType T\>
-      - RankCF32
-      - RankMPE32\<RankMPEType T\>
+  - RankBasic32\<RankBasicType T\>
+  - RankCF32
+  - RankMPE32\<RankMPEType T\>
 - k - length of prefixes of suffixes from suffix array
 - loadFactor - hash table load factor
 
@@ -414,9 +414,9 @@ FMHWT32Hash<class RANK32>();
 
 Parameters:
 - RANK64 class:
-      - RankBasic64\<RankBasicType T\>
-      - RankCF64
-      - RankMPE64\<RankMPEType T\>
+  - RankBasic64\<RankBasicType T\>
+  - RankCF64
+  - RankMPE64\<RankMPEType T\>
 
 Constructors:
 ```
@@ -428,9 +428,9 @@ FMHWT64Hash is FMHWT64 with hashed k-symbol prefixes of suffixes from suffix arr
 
 Parameters:
 - RANK64 class:
-      - RankBasic64\<RankBasicType T\>
-      - RankCF64
-      - RankMPE64\<RankMPEType T\>
+  - RankBasic64\<RankBasicType T\>
+  - RankCF64
+  - RankMPE64\<RankMPEType T\>
 - k - length of prefixes of suffixes from suffix array
 - loadFactor - hash table load factor
 
