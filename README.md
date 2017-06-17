@@ -102,8 +102,8 @@ unsigned long long select(unsigned long long i);
 
 Parameters:
 - T:
-      - RANK_BASIC_STANDARD
-      - RANK_BASIC_COMPRESSED_HEADERS
+  - RANK_BASIC_STANDARD
+  - RANK_BASIC_COMPRESSED_HEADERS
 
 Constructors:
 ```
