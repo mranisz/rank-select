@@ -13,7 +13,7 @@ Additionally, we incorporated our rank implementations into a standard FM-index 
 The Rank&Select library require:
 - C++11 ready compiler such as g++ version 4.7 or higher
 - a 64-bit UNIX operating system
-- text size < 512MB (4GB of bits) for 32bit versions of rank, select and FMHWT
+- text size < 512MB (4G of bits) for 32bit versions of rank, select and FMHWT
 
 ## Installation
 To download and build the library use the following commands:
