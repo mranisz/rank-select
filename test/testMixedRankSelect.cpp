@@ -14,21 +14,21 @@ using namespace shared;
 
 ChronoStopWatch timer;
 
-void rankSelectBch_32(const char *fileName, const char *rankSelectProp, const char *queriesNum);
-void rankSelectMPE2_32(const char *fileName, const char *rankSelectProp, const char *queriesNum);
+void rankSelectBch_32(const char *fileName, const char *propFileName, const char *queriesNum);
+void rankSelectMPE2_32(const char *fileName, const char *propFileName, const char *queriesNum);
 
 void getUsage(char **argv) {
-	cout << "Select rank you want to test:" << endl;
-	cout << "rank-select-bch: " << argv[0] << " bch fileName propFile queriesNum" << endl;
-	cout << "rank-select-mpe2: " << argv[0] << " mpe2 fileName propFileName queriesNum" << endl;
+	cout << "Select mixed rank&select you want to test:" << endl;
+	cout << "mixed-rank-select-bch: " << argv[0] << " bch fileName propFileName queriesNum" << endl;
+	cout << "mixed-rank-select-mpe2: " << argv[0] << " mpe2 fileName propFileName queriesNum" << endl;
 	cout << "where:" << endl;
 	cout << "fileName - name of bits file" << endl;
-	cout << "propFileName - name of the file with rank-select query distribution" << endl;
+	cout << "propFileName - name of the file with mixed-rank-select query distribution" << endl;
 	cout << "queriesNum - number of queries" << endl << endl;
 }
 
 int main(int argc, char *argv[]) {
-	if (argc < 6) {
+	if (argc < 5) {
 		getUsage(argv);
 		exit(1);
 	}
@@ -164,7 +164,7 @@ unsigned long long *getPatternsForSelect64(const char *fileName, const char *que
 	return patSelects;
 }
 
-void rankSelectBch_32(const char *fileName, const char *rankSelectProp, const char *queriesNum) {
+void rankSelectBch_32(const char *fileName, const char *propFileName, const char *queriesNum) {
 	RankBasic32<RANK_BASIC_COMPRESSED_HEADERS> *rank = new RankBasic32<RANK_BASIC_COMPRESSED_HEADERS>();
 	string rankFileNameString = (string)fileName + "-bch-32.rank";
 	const char *rankFileName = rankFileNameString.c_str();
@@ -176,7 +176,7 @@ void rankSelectBch_32(const char *fileName, const char *rankSelectProp, const ch
 	unsigned int textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 	unsigned int propLen;
-	unsigned char* prop = readText(rankSelectProp, propLen, 0);
+	unsigned char* prop = readText(propFileName, propLen, 0);
 
 	if (fileExists(rankFileName)) {
 		FILE *inFile;
@@ -219,11 +219,11 @@ void rankSelectBch_32(const char *fileName, const char *rankSelectProp, const ch
 	}
 	timer.stopTimer();
 	
-	string resultFileName = "results/" + string(fileName) + "_rank_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_mixed_rank_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = ((double)rank->getSize() + (double)select->getSize()) / (double)rank->getTextSize();
-	cout << "rank-bch-32-select-bch-32-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << queriesNum << " bch-32 128 4096 " << size << " " << timer.getElapsedTime() << endl;
+	cout << "mixed-rank-select-bch-32-128-4096 " << fileName << " " << propFileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " bch-32 128 4096 " << propFileName << " " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;
@@ -238,7 +238,7 @@ void rankSelectBch_32(const char *fileName, const char *rankSelectProp, const ch
     exit(0);
 }
 
-void rankSelectMPE2_32(const char *fileName, const char *rankSelectProp, const char *queriesNum) {
+void rankSelectMPE2_32(const char *fileName, const char *propFileName, const char *queriesNum) {
 	RankMPE32<RANK_MPE2> *rank = new RankMPE32<RANK_MPE2>();
 	string rankFileNameString = (string)fileName + "-mpe2-32.rank";
 	const char *rankFileName = rankFileNameString.c_str();
@@ -250,7 +250,7 @@ void rankSelectMPE2_32(const char *fileName, const char *rankSelectProp, const c
 	unsigned int textLen;
 	unsigned char* text = readText(fileName, textLen, 0);
 	unsigned int propLen;
-	unsigned char* prop = readText(rankSelectProp, propLen, 0);
+	unsigned char* prop = readText(propFileName, propLen, 0);
 
 	if (fileExists(rankFileName)) {
 		FILE *inFile;
@@ -296,11 +296,11 @@ void rankSelectMPE2_32(const char *fileName, const char *rankSelectProp, const c
     for (unsigned int i = 0; i < queriesNumInt; ++i) resRank[i] = rank->rank(rankPatterns[i]);
     timer.stopTimer();
 	
-	string resultFileName = "results/" + string(fileName) + "_rank_select.txt";
+	string resultFileName = "results/" + string(fileName) + "_mixed_rank_select.txt";
 	fstream resultFile(resultFileName.c_str(), ios::out | ios::binary | ios::app);
 	double size = ((double)rank->getSize() + (double)select->getSize()) / (double)rank->getTextSize();
-	cout << "rank-mpe2-32-select-mpe2-32-128-4096 " << fileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
-	resultFile << queriesNum << " mpe2-32 128 4096 " << size << " " << timer.getElapsedTime() << endl;
+	cout << "mixed-rank-select-mpe2-32-128-4096 " << fileName << " " << propFileName << " queries=" << queriesNum << " size=" << size << "n time=" << timer.getElapsedTime() << endl;
+	resultFile << queriesNum << " mpe2-32 128 4096 " << propFileName << " " << size << " " << timer.getElapsedTime() << endl;
 	resultFile.close();
 
     delete[] text;

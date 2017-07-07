@@ -17,8 +17,8 @@ testRank: test/testRank.cpp libshared.a libs/$(ASMLIB)
 testSelect: test/testSelect.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/testSelect.cpp libshared.a libs/$(ASMLIB) -o test/testSelect
 	
-testRankSelect: test/testRankSelect.cpp libshared.a libs/$(ASMLIB)
-	$(CXX) $(CFLAGS) test/testRankSelect.cpp libshared.a libs/$(ASMLIB) -o test/testRankSelect
+testRankSelect: test/testMixedRankSelect.cpp libshared.a libs/$(ASMLIB)
+	$(CXX) $(CFLAGS) test/testMixedRankSelect.cpp libshared.a libs/$(ASMLIB) -o test/testMixedRankSelect
 	
 countFMHWT: test/countFMHWT.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/countFMHWT.cpp libshared.a libs/$(ASMLIB) -o test/countFMHWT
@@ -32,4 +32,4 @@ cleanObjects:
 	rm -f *o
 
 clean:
-	rm -f *o test/testRank test/testSelect test/countFMHWT test/testRankSelect libshared.a
+	rm -f *o test/testRank test/testSelect test/countFMHWT test/testMixedRankSelect libshared.a
