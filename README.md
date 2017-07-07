@@ -490,13 +490,13 @@ Using other types of FMHWT index is analogous.
 Benchmark scripts:
 - testRank.sh - benchmark for rank operations
 - testSelect.sh - benchmark script for select operations
-- testRankSelect.sh - benchmark script for rank&select operations
+- testMixedRankSelect.sh - benchmark script for mixed rank&select operations
 - countFMHWT.sh - benchmark script for FM-index with a Huffman-shaped wavelet tree
 
 Benchmark scripts should be run with superuser privileges (as the memory cache is cleared before each test). Benchmark results are saved in the "results" folder.
 
 Before launching a benchmark please download the following data files and extract them into the main project folder:
-- testRank.sh, testSelect.sh and testRankSelect.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/](http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/)
+- testRank.sh, testSelect.sh and testMixedRankSelect.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/](http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/)
 - countFMHWT.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/text_files/](http://ranisz.iis.p.lodz.pl/indexes/data/text_files/)
 
 ## External resources used in Rank&Select project
