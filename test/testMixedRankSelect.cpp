@@ -34,10 +34,10 @@ int main(int argc, char *argv[]) {
 	}
 	
 	if (string(argv[1]) == "bch") {
-		rankSelectBch_32(argv[3], argv[4], argv[5]);
+		rankSelectBch_32(argv[2], argv[3], argv[4]);
 	}
 	if (string(argv[1]) == "mpe2") {
-		rankSelectMPE2_32(argv[3], argv[4], argv[5]);
+		rankSelectMPE2_32(argv[2], argv[3], argv[4]);
 	}
 	
 	getUsage(argv);
