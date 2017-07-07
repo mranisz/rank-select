@@ -9,13 +9,16 @@ endif
 CXX=g++
 CFLAGS=-Wall -std=c++11 -O3 -mpopcnt
 	
-all: testRank testSelect countFMHWT
+all: testRank testSelect countFMHWT testRankSelect
 	
 testRank: test/testRank.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/testRank.cpp libshared.a libs/$(ASMLIB) -o test/testRank
 	
 testSelect: test/testSelect.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/testSelect.cpp libshared.a libs/$(ASMLIB) -o test/testSelect
+	
+testRankSelect: test/testRankSelect.cpp libshared.a libs/$(ASMLIB)
+	$(CXX) $(CFLAGS) test/testRankSelect.cpp libshared.a libs/$(ASMLIB) -o test/testRankSelect
 	
 countFMHWT: test/countFMHWT.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/countFMHWT.cpp libshared.a libs/$(ASMLIB) -o test/countFMHWT
@@ -29,4 +32,4 @@ cleanObjects:
 	rm -f *o
 
 clean:
-	rm -f *o test/testRank test/testSelect test/countFMHWT libshared.a
+	rm -f *o test/testRank test/testSelect test/countFMHWT test/testRankSelect libshared.a
