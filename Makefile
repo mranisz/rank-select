@@ -9,7 +9,7 @@ endif
 CXX=g++
 CFLAGS=-Wall -std=c++11 -O3 -mpopcnt
 	
-all: testRank testSelect countFMHWT testRankSelect
+all: testRank testSelect countFMHWT testMixedRankSelect
 	
 testRank: test/testRank.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/testRank.cpp libshared.a libs/$(ASMLIB) -o test/testRank
@@ -17,7 +17,7 @@ testRank: test/testRank.cpp libshared.a libs/$(ASMLIB)
 testSelect: test/testSelect.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/testSelect.cpp libshared.a libs/$(ASMLIB) -o test/testSelect
 	
-testRankSelect: test/testMixedRankSelect.cpp libshared.a libs/$(ASMLIB)
+testMixedRankSelect: test/testMixedRankSelect.cpp libshared.a libs/$(ASMLIB)
 	$(CXX) $(CFLAGS) test/testMixedRankSelect.cpp libshared.a libs/$(ASMLIB) -o test/testMixedRankSelect
 	
 countFMHWT: test/countFMHWT.cpp libshared.a libs/$(ASMLIB)
