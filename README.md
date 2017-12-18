@@ -25,7 +25,7 @@ make
 
 ## Usage
 To use the Rank&Select library:
-- compile your project with "-std=c++11 -O3 -mpopcnt" options and link it with libraries:
+- compile your project with "-faligned-new -std=c++11 -O3 -mpopcnt" options and link it with libraries:
   - rank-select/libshared.a
   - rank-select/libs/libaelf64.a
 - use "shared" namespace

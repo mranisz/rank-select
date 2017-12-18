@@ -7,7 +7,7 @@ ASMLIB = libacof64.lib
 endif
 
 CXX=g++
-CFLAGS=-Wall -std=c++11 -O3 -mpopcnt
+CFLAGS=-Wall -faligned-new -std=c++11 -O3 -mpopcnt
 	
 all: testRank testSelect countFMHWT testMixedRankSelect
 	
