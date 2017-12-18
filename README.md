@@ -497,7 +497,7 @@ Benchmark scripts should be run with superuser privileges (as the memory cache i
 
 Before launching a benchmark please download the following data files and extract them into the main project folder:
 - testRank.sh, testSelect.sh and testMixedRankSelect.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/](http://ranisz.iis.p.lodz.pl/indexes/data/wt_files/)
-- countFMHWT.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/text_files/](http://ranisz.iis.p.lodz.pl/indexes/data/text_files/)
+- countFMHWT.sh: [http://ranisz.iis.p.lodz.pl/indexes/data/text_files/200/](http://ranisz.iis.p.lodz.pl/indexes/data/text_files/200/) and [http://ranisz.iis.p.lodz.pl/indexes/data/text_files/full/](http://ranisz.iis.p.lodz.pl/indexes/data/text_files/full/)
 
 ## External resources used in Rank&Select project
 - Suffix array building by Yuta Mori (sais)
